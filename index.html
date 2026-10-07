@@ -11027,4 +11027,345 @@ img{max-width:100%;height:auto}
 })();
 </script>
 
+<!-- ===== SCL SHELL v2: Feed & Resource Hub redesign (additive; Classic view restores the original) ===== -->
+<style id="scl-shell-css">
+#sclShell{--mr:#650007;--mr2:#8a1020;--gd:#F2AE00;--cr:#FFFBF2;--ink:#2a1216;--mut:#6b4a3a;--card:rgba(255,255,255,.86);--line:rgba(242,174,0,.38);--sh:0 10px 30px rgba(101,0,7,.12);
+ position:relative;z-index:10;color:var(--ink);font-family:'Fredoka','Nunito Sans','Segoe UI',system-ui,sans-serif;min-height:100vh}
+body.scl-night #sclShell{--ink:#fbeedc;--mut:#d9b9a3;--card:rgba(42,10,18,.82);--line:rgba(242,174,0,.28)}
+#sclShell[hidden]{display:none!important}
+body.scl-shell-on:not(.scl-classic) main.wrap,body.scl-shell-on:not(.scl-classic) .bottom,body.scl-shell-on:not(.scl-classic) .scl-logo-coin-dock,body.scl-shell-on:not(.scl-classic) #sclThemeToggle,body.scl-shell-on:not(.scl-classic) #sclShortcutToggle,body.scl-shell-on:not(.scl-classic) #sclVoiceFab{display:none!important}
+body.scl-classic #sclShell{display:none!important}
+#sclShell *{box-sizing:border-box}
+#sclShell button{font-family:inherit;cursor:pointer}
+.sh-top{position:sticky;top:0;z-index:12;display:flex;align-items:center;gap:10px;padding:max(10px,env(safe-area-inset-top)) 16px 10px;background:var(--card);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.sh-brand{display:flex;align-items:center;gap:10px;font-weight:700;color:var(--mr);font-size:20px;letter-spacing:.04em;background:none;border:0;padding:0;min-height:44px}
+body.scl-night .sh-brand{color:var(--gd)}
+.sh-brand img{width:40px;height:40px;object-fit:contain;border-radius:10px}
+.sh-brand small{display:block;font-size:10px;font-weight:600;letter-spacing:.08em;color:var(--mut);line-height:1}
+.sh-sp{flex:1}
+.sh-ic{position:relative;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--card);display:grid;place-items:center;font-size:19px;padding:0;color:var(--ink)}
+.sh-dot{position:absolute;top:8px;right:9px;width:10px;height:10px;border-radius:50%;background:#d93a36;border:2px solid #fff;display:none}
+.sh-dot.on{display:block}
+.sh-cta{background:var(--mr);color:#fff;border:2px solid var(--gd);border-radius:999px;padding:0 18px;min-height:44px;font-weight:700;font-size:15px}
+.sh-av{width:44px;height:44px;border-radius:50%;border:2px solid var(--gd);background:linear-gradient(135deg,#8a1020,#650007);color:#fff;font-weight:700;display:none;place-items:center;padding:0;font-size:16px}
+.sh-menu{position:absolute;right:12px;top:calc(100% + 6px);min-width:210px;background:var(--card);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:16px;box-shadow:var(--sh);padding:6px;display:none}
+.sh-menu.on{display:block}
+.sh-menu button{display:flex;width:100%;gap:10px;align-items:center;text-align:left;background:none;border:0;padding:0 12px;min-height:44px;border-radius:10px;font-size:15px;color:var(--ink)}
+.sh-menu button:hover{background:rgba(242,174,0,.18)}
+.sh-body{display:flex;gap:0;max-width:1280px;margin:0 auto}
+.sh-rail{position:sticky;top:68px;align-self:flex-start;display:flex;flex-direction:column;gap:6px;padding:14px 8px;margin:14px 0 0 10px;background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--sh);height:max-content}
+.sh-rail button{width:52px;min-height:52px;border:0;border-radius:14px;background:transparent;color:var(--mr);display:grid;place-items:center;gap:0;font-size:20px;padding:4px 0;position:relative}
+body.scl-night .sh-rail button{color:var(--gd)}
+.sh-rail button span{font-size:9px;font-weight:600;color:var(--mut);letter-spacing:.02em}
+.sh-rail button.on{background:rgba(101,0,7,.12);box-shadow:inset 3px 0 0 var(--mr)}
+.sh-main{flex:1;min-width:0;padding:18px 18px 40px}
+.sh-page{display:none;animation:shIn .35s ease both}.sh-page.on{display:block}
+@keyframes shIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.sh-card{background:var(--card);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border:1.5px solid var(--line);border-radius:22px;box-shadow:var(--sh)}
+.sh-hero{display:grid;grid-template-columns:1.1fr 1fr;gap:20px;align-items:center;padding:6px 0 18px}
+.sh-rib{display:inline-block;background:var(--gd);color:#4a0008;font-weight:700;font-size:12px;letter-spacing:.1em;padding:4px 12px;border-radius:999px}
+.sh-hero h1{font-size:clamp(28px,4.4vw,46px);line-height:1.08;margin:10px 0 8px;color:var(--mr)}
+body.scl-night .sh-hero h1{color:var(--gd)}
+.sh-hero h1 span{display:block;color:var(--ink)}
+.sh-hero p{margin:0 0 8px;color:var(--mut);font-size:15px;line-height:1.5;max-width:46ch}
+.sh-chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 14px}
+.sh-chip{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:12.5px;font-weight:600;color:var(--mr)}
+body.scl-night .sh-chip{color:var(--gd)}
+.sh-btns{display:flex;flex-wrap:wrap;gap:10px}
+.sh-btn{background:var(--mr);color:#fff;border:2px solid var(--gd);border-radius:999px;min-height:48px;padding:0 24px;font-weight:700;font-size:16px;box-shadow:0 6px 16px rgba(101,0,7,.28);transition:transform .15s}
+.sh-btn:active{transform:scale(.97)}.sh-btn.alt{background:transparent;color:var(--mr);box-shadow:none}
+body.scl-night .sh-btn.alt{color:var(--gd)}
+.sh-comp{padding:14px}
+.sh-comp-h{display:flex;justify-content:space-between;align-items:center;font-weight:700;color:var(--mr);margin-bottom:10px}
+body.scl-night .sh-comp-h{color:var(--gd)}
+.sh-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;background:rgba(101,0,7,.08);padding:4px;border-radius:999px;margin-bottom:10px}
+.sh-tabs button{border:0;background:transparent;min-height:40px;border-radius:999px;font-weight:600;font-size:14px;color:var(--mut)}
+.sh-tabs button.on{background:var(--card);color:var(--mr);box-shadow:0 2px 8px rgba(0,0,0,.12)}
+body.scl-night .sh-tabs button.on{color:var(--gd)}
+.sh-drop{display:grid;place-items:center;text-align:center;min-height:130px;border:2px dashed var(--line);border-radius:16px;background:rgba(242,174,0,.08);padding:10px;margin-bottom:10px;overflow:hidden;color:var(--mut);font-size:14px}
+.sh-drop img{max-height:170px;max-width:100%;border-radius:12px}
+#sclShell .sh-in{width:100%;border:1.5px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);padding:10px 12px;font-size:16px;font-family:inherit;margin-bottom:8px}
+#sclShell textarea.sh-in{min-height:84px;resize:vertical}
+.sh-note{font-size:12px;color:var(--mut);margin:6px 2px 10px}
+.sh-trio{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:6px 0 16px}
+.sh-trio button{display:flex;align-items:center;justify-content:center;gap:8px;min-height:58px;padding:8px 10px;font-weight:700;font-size:15px;color:var(--ink);text-align:center}
+.sh-trio button:hover,.sh-trio button:focus-visible{transform:translateY(-3px)}
+.sh-h2{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:18px 0 10px;font-size:20px;color:var(--mr)}
+body.scl-night .sh-h2{color:var(--gd)}
+.sh-tts{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--card);font-size:17px;padding:0}
+.sh-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px}
+.sh-stat{padding:12px;text-align:center}.sh-stat b{display:block;font-size:26px;color:var(--mr)}.sh-stat small{color:var(--mut);font-weight:600}
+body.scl-night .sh-stat b{color:var(--gd)}
+.sh-feed{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.sh-post{overflow:hidden;display:flex;flex-direction:column;transition:transform .25s,box-shadow .25s}
+.sh-post:hover{transform:translateY(-4px);box-shadow:0 16px 34px rgba(101,0,7,.2)}
+.sh-post-h{display:flex;align-items:center;gap:8px;padding:10px 12px;font-weight:700;font-size:13px}
+.sh-post-h i{width:28px;height:28px;border-radius:50%;background:var(--mr);color:#fff;display:grid;place-items:center;font-style:normal;font-size:13px}
+.sh-post img{width:100%;aspect-ratio:1/1;object-fit:cover;background:rgba(242,174,0,.14)}
+.sh-post-b{padding:10px 12px 12px;display:flex;flex-direction:column;gap:6px;flex:1}
+.sh-post-b h3{margin:0;font-size:16px;line-height:1.25}
+.sh-post-b p{margin:0;font-size:13.5px;color:var(--mut);line-height:1.45;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.sh-post-b .acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto}
+.sh-post-b a,.sh-link{display:inline-flex;align-items:center;min-height:36px;padding:0 12px;border-radius:999px;background:var(--mr);color:#fff;text-decoration:none;font-weight:600;font-size:12.5px}
+.sh-two{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:6px}.sh-two .sh-card{padding:14px}.sh-two h3{margin:0 0 8px;color:var(--mr)}.sh-two p{margin:6px 0;font-size:14px;color:var(--mut)}
+body.scl-night .sh-two h3{color:var(--gd)}
+.sh-back{background:none;border:0;color:var(--mr);font-weight:700;font-size:15px;min-height:44px;padding:0}
+body.scl-night .sh-back{color:var(--gd)}
+.sh-hubh{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.sh-hubh h1{margin:0;font-size:clamp(24px,4vw,36px);color:var(--ink)}
+.sh-sub{color:var(--mut);margin:2px 0 14px;font-size:15px}
+.sh-roles{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.sh-role{padding:14px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px}
+.sh-role .face{width:84px;height:84px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#ffe9a8,#F6B21B);display:grid;place-items:center;font-size:44px;box-shadow:inset 0 0 0 4px rgba(255,255,255,.6)}
+.sh-role b{font-size:18px}.sh-role small{color:var(--mut)}
+.sh-role .sh-btn{min-height:44px;font-size:14px;padding:0 16px;width:100%;margin-top:4px}
+.sh-tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
+.sh-tile{border-radius:22px;padding:16px;color:#fff;display:flex;flex-direction:column;gap:8px;position:relative;box-shadow:0 12px 26px rgba(0,0,0,.18);min-height:220px;transition:transform .25s}
+.sh-tile:hover{transform:translateY(-4px)}
+.sh-tile.y{background:linear-gradient(150deg,#F9C23C,#E8A20C);color:#3a2300}.sh-tile.r{background:linear-gradient(150deg,#E5514C,#C42B2A)}.sh-tile.g{background:linear-gradient(150deg,#39AE66,#238048)}.sh-tile.b{background:linear-gradient(150deg,#3D7DEB,#2557BD)}
+.sh-tile h3{margin:0;font-size:22px;line-height:1.1}
+.sh-tile .big{font-size:34px}
+.sh-tile .sh-tts{position:absolute;top:12px;right:12px;width:36px;height:36px;font-size:14px;background:rgba(255,255,255,.85);color:#222}
+.sh-tile button.row{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.22);border:0;color:inherit;border-radius:12px;min-height:44px;padding:0 10px;font-size:14px;font-weight:600;text-align:left}
+.sh-tile button.row:hover{background:rgba(255,255,255,.4)}
+.sh-search{display:flex;gap:8px;margin:8px 0 12px}
+.sh-all{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.sh-all .scl-shortcut-item{all:unset;box-sizing:border-box;cursor:pointer;display:block;min-height:64px;padding:10px 12px;border-radius:16px;background:var(--card);border:1px solid var(--line);font-weight:700;font-size:14px;color:var(--ink);transition:transform .2s}
+.sh-all .scl-shortcut-item:hover{transform:translateY(-3px)}.sh-all .scl-shortcut-item small{display:block;font-weight:500;color:var(--mut);font-size:12px;margin-top:3px}
+.sh-all .scl-shortcut-item:focus-visible{outline:3px solid var(--gd)}
+.sh-help{position:fixed;right:18px;bottom:20px;width:52px;height:52px;border-radius:50%;background:var(--mr);color:#fff;border:3px solid var(--gd);font-size:22px;font-weight:700;box-shadow:0 8px 22px rgba(0,0,0,.3);z-index:13;padding:0}
+.sh-sheet{position:fixed;inset:0;z-index:14;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;padding:16px}
+.sh-sheet.on{display:flex}.sh-sheet .sh-card{width:min(440px,100%);padding:16px;max-height:86vh;overflow:auto}
+.sh-sheet a.sh-link{margin:4px 6px 4px 0}
+@media(max-width:860px){
+ .sh-hero{grid-template-columns:1fr}.sh-roles{grid-template-columns:1fr}.sh-two{grid-template-columns:1fr}
+ .sh-body{display:block}
+ .sh-rail{position:fixed;left:0;right:0;bottom:0;top:auto;margin:0;flex-direction:row;justify-content:flex-start;overflow-x:auto;border-radius:18px 18px 0 0;padding:6px 8px max(6px,env(safe-area-inset-bottom));z-index:13;gap:2px;scrollbar-width:none}
+ .sh-rail button{flex:0 0 auto;width:64px}.sh-rail button.on{box-shadow:inset 0 3px 0 var(--mr)}
+ .sh-main{padding:12px 12px 96px}.sh-trio{grid-template-columns:1fr}.sh-help{bottom:86px;right:12px;width:46px;height:46px}
+ .sh-brand small{display:none}.sh-cta{padding:0 12px;font-size:14px}
+ body.scl-shell-on #sclToTop{bottom:90px}
+}
+@media(prefers-reduced-motion:reduce){.sh-page{animation:none}.sh-post,.sh-tile,.sh-all .scl-shortcut-item{transition:none}}
+</style>
+<div id="sclShell" hidden>
+ <header class="sh-top">
+  <button class="sh-brand" type="button" data-go="home" aria-label="School home"><img id="shLogo" alt="Shining Child Leaders School logo"><span>SCL<small>SHINING CHILD LEADERS</small></span></button>
+  <span class="sh-sp"></span>
+  <button class="sh-ic" type="button" id="shLinks" aria-label="Official school links" title="Official school links">🌐</button>
+  <button class="sh-ic" type="button" id="shBell" aria-label="Announcements and notifications" title="Notices">🔔<i class="sh-dot" id="shDot"></i></button>
+  <button class="sh-cta" type="button" id="shSign">Sign up</button>
+  <button class="sh-av" type="button" id="shAv" aria-label="Account menu" aria-haspopup="true">S</button>
+  <div class="sh-menu" id="shMenu" role="menu">
+   <button type="button" data-act="profile">👤 My profile</button>
+   <button type="button" data-act="children">👨‍👩‍👧 My children</button>
+   <button type="button" data-act="notice">📢 School notices</button>
+   <button type="button" data-act="theme">🌓 Day / Night</button>
+   <button type="button" data-act="classic">🖥️ Classic view</button>
+   <button type="button" data-act="logout">↩️ Log out</button>
+  </div>
+ </header>
+ <div class="sh-body">
+  <nav class="sh-rail" aria-label="Main navigation">
+   <button type="button" data-go="home" class="on" aria-label="Home">🏠<span>Home</span></button>
+   <button type="button" data-go="hub" aria-label="Resource hub">🧭<span>Hub</span></button>
+   <button type="button" data-act="activities" aria-label="School activities">📸<span>Activities</span></button>
+   <button type="button" data-act="anthem" aria-label="School anthem">🎵<span>Anthem</span></button>
+   <button type="button" data-act="collab" aria-label="Collaboration and leaders">🤝<span>Community</span></button>
+   <button type="button" data-act="materials" aria-label="School materials">📦<span>Materials</span></button>
+   <button type="button" data-act="all" aria-label="All features">⚡<span>All</span></button>
+   <button type="button" data-act="profile" aria-label="Profile and settings">⚙️<span>Profile</span></button>
+  </nav>
+  <main class="sh-main" id="shMain">
+   <section class="sh-page on" id="shHome" aria-label="Feed and post creator">
+    <div class="sh-hero">
+     <div>
+      <span class="sh-rib" id="shRib">WELCOME TO</span>
+      <h1 id="shTitle">Shining Child <span>Leaders School</span></h1>
+      <p id="shTag"></p><p id="shTag2"></p>
+      <div class="sh-chips" id="shChips"></div>
+      <div class="sh-btns"><button class="sh-btn" type="button" id="shAdd">Add Post</button><button class="sh-btn alt" type="button" data-act="register">Register your child</button></div>
+     </div>
+     <div class="sh-card sh-comp" id="shComposer">
+      <div class="sh-comp-h"><span>📝 Post</span><button type="button" class="sh-tts" id="shClr" aria-label="Clear draft">✕</button></div>
+      <div class="sh-tabs" role="tablist"><button type="button" class="on" data-t="image">Image</button><button type="button" data-t="audio">Audio</button><button type="button" data-t="video">Video</button><button type="button" data-t="text">Text</button></div>
+      <div class="sh-drop" id="shDrop"><span>Tap to choose an image</span></div>
+      <input class="sh-in" id="shFile" type="file" hidden>
+      <input class="sh-in" id="shUrl" type="url" placeholder="Link (optional)" hidden>
+      <input class="sh-in" id="shPT" type="text" placeholder="Title" maxlength="120">
+      <textarea class="sh-in" id="shPB" placeholder="Write about a student, parents or teachers…" maxlength="1200"></textarea>
+      <button class="sh-btn" style="width:100%" type="button" id="shSend">Add Post</button>
+      <p class="sh-note" id="shNote"></p>
+     </div>
+    </div>
+    <div class="sh-trio">
+     <button class="sh-card" type="button" data-act="anthem">🎙️ Audio / Podcast</button>
+     <button class="sh-card" type="button" id="shSoc">📷 Social Media Links</button>
+     <button class="sh-card" type="button" data-act="materials">📄 Document / Link</button>
+    </div>
+    <div class="sh-stats" id="shStats"></div>
+    <h2 class="sh-h2"><span>📣 School Feed</span><button class="sh-tts" type="button" data-say="#shFeed" aria-label="Read the feed aloud">🔊</button></h2>
+    <div class="sh-feed" id="shFeed" aria-live="polite"></div>
+    <div class="sh-two" id="shTwo"></div>
+   </section>
+   <section class="sh-page" id="shHub" aria-label="Resource hub and portals">
+    <button class="sh-back" type="button" data-go="home">‹ Back</button>
+    <div class="sh-hubh"><h1>Resource Hub &amp; Portals</h1><button class="sh-tts" type="button" data-say="#shHub" aria-label="Read this page aloud">🔊</button></div>
+    <p class="sh-sub" id="shHubSub">Everything a parent needs to start, in one place.</p>
+    <div class="sh-roles">
+     <div class="sh-card sh-role"><div class="face">🎒</div><b>I am a Student</b><small>Results, timetable and learning materials</small><button class="sh-btn" type="button" data-act="results">Open my results</button></div>
+     <div class="sh-card sh-role"><div class="face">👨‍👧</div><b>I am a Parent</b><small>Link and follow your children</small><button class="sh-btn" type="button" data-act="children">My children</button></div>
+     <div class="sh-card sh-role"><div class="face">🍎</div><b>I am a Teacher / Staff</b><small>Staff portal, attendance and results upload</small><button class="sh-btn" type="button" data-act="workers">Staff portal</button></div>
+    </div>
+    <h2 class="sh-h2"><span>Quick actions</span></h2>
+    <div class="sh-tiles">
+     <div class="sh-tile y"><button class="sh-tts" type="button" data-say-t="Pupil Corner. Learning notes, results, timetable." aria-label="Read aloud">🔊</button><div class="big">📚</div><h3>Pupil Corner</h3>
+      <button class="row" data-act="curriculum">📘 Curriculum &amp; notes</button><button class="row" data-act="results">🏆 Results</button><button class="row" data-act="timetable">🗓️ Timetable</button></div>
+     <div class="sh-tile r"><button class="sh-tts" type="button" data-say-t="Admissions. Register your child, uniform, announcements." aria-label="Read aloud">🔊</button><div class="big">📜</div><h3>Admissions</h3>
+      <button class="row" data-act="register">👤 Register your child</button><button class="row" data-act="uniform">👕 School uniform</button><button class="row" data-act="notice">📢 Announcements</button></div>
+     <div class="sh-tile g"><button class="sh-tts" type="button" data-say-t="Attendance and Worker. Staff portal login and vacancies." aria-label="Read aloud">🔊</button><div class="big">📋</div><h3>Attendance &amp; Worker</h3>
+      <button class="row" data-act="workers">🧑‍🏫 Staff portal &amp; vacancies</button><button class="row" data-act="attendance">✅ Attendance</button><button class="row" data-act="profile">🏅 My profile</button></div>
+     <div class="sh-tile b"><button class="sh-tts" type="button" data-say-t="Fees and Receipts. Payment portal and already paid." aria-label="Read aloud">🔊</button><div class="big">💳</div><h3>Fees &amp; Receipts</h3>
+      <button class="row" data-act="fees">💳 School fees &amp; payments</button><button class="row" data-act="bulk">🧾 Already paid / bulk</button><button class="row" data-act="cert">📜 Certificates</button></div>
+    </div>
+    <h2 class="sh-h2"><span>All school tools</span></h2>
+    <div class="sh-search"><input class="sh-in" id="shQ" type="search" placeholder="Search every school feature…" aria-label="Search school tools" style="margin:0"></div>
+    <div class="sh-all" id="shAll"></div>
+   </section>
+  </main>
+ </div>
+ <button class="sh-help" type="button" data-act="support" aria-label="Support: chat with an administrator" title="Support">?</button>
+ <div class="sh-sheet" id="shSheet" role="dialog" aria-modal="true" aria-label="Official school links"><div class="sh-card"><div class="sh-hubh"><b>🌐 Official SCL channels</b><button class="sh-tts" type="button" id="shSheetX" aria-label="Close">✕</button></div><div id="shSheetBody" style="margin-top:10px"></div></div></div>
+</div>
+<script id="scl-shell-js">
+(function(){'use strict';
+var d=document,w=window,$=function(i){return d.getElementById(i)},Q=function(s,r){return (r||d).querySelector(s)},QA=function(s,r){return Array.prototype.slice.call((r||d).querySelectorAll(s))};
+function tx(s){var e=Q(s);return e?(e.textContent||'').trim():''}
+function toast(m){try{w.toast?w.toast(m):alert(m)}catch(_){}}
+function call(n){var a=[].slice.call(arguments,1);try{if(typeof w[n]==='function')return w[n].apply(w,a)}catch(e){console.warn('SCL',n,e)}toast('This feature is not available right now.')}
+function live(){try{return !!(w.sclHasLiveSession&&w.sclHasLiveSession())}catch(_){return false}}
+function auth(){try{return JSON.parse(sessionStorage.getItem('sclAuthSession')||'null')}catch(_){return null}}
+function isAdmin(){var a=auth();return !!(a&&(a.roles||[]).some(function(r){return /admin|developer|management/i.test(String(r))}))}
+function safe(u){u=String(u||'').trim();return /^(https?:|data:image\/)/i.test(u)?u:''}
+function el(t,c,x){var e=d.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+var shell=$('sclShell'),gate=$('accessGate');
+/* ---- show only after the access gate is dismissed ---- */
+function sync(){var g=gate&&!gate.hidden&&getComputedStyle(gate).display!=='none';var on=!g;shell.hidden=!on;d.body.classList.toggle('scl-shell-on',on);if(on)fill()}
+if(gate){try{new MutationObserver(sync).observe(gate,{attributes:true,attributeFilter:['hidden','style','class']})}catch(_){}}
+setInterval(sync,1500);
+/* ---- content that always comes from the live page ---- */
+var filled=0;
+function fill(){
+ var logo=Q('img.logo');if(logo&&!$('shLogo').src)$('shLogo').src=logo.src;
+ var h=Q('#home .copy');if(h&&!filled){filled=1;
+  $('shRib').textContent=tx('#home .ribbon')||'WELCOME TO';
+  var h2=Q('#home h2');if(h2){var sp=Q('span',h2);$('shTitle').innerHTML='';$('shTitle').append(d.createTextNode((h2.childNodes[0]||{}).textContent||''),Object.assign(el('span'),{textContent:sp?sp.textContent:''}))}
+  var ps=QA('#home .copy p');$('shTag').textContent=ps[0]?ps[0].textContent:'';$('shTag2').textContent=ps[1]?ps[1].textContent:'';
+  [tx('#gateSubtitle'),tx('.ag-admit'),tx('.ag-badge')?tx('.ag-badge b')+' '+tx('.ag-badge small').replace(/\s+/g,' '):''].forEach(function(t){if(t)$('shChips').appendChild(el('span','sh-chip',t))});
+  var st=$('shStats');QA('#schoolStats .stat').forEach(function(s){var c=el('div','sh-card sh-stat');c.appendChild(el('b','',tx_(s,'b')));c.appendChild(el('small','',(s.textContent||'').replace(tx_(s,'b'),'').trim()));st.appendChild(c)});
+  var two=$('shTwo');QA('#life .panel').forEach(function(p){var c=el('div','sh-card');QA('h3,p',p).forEach(function(n){c.appendChild(el(n.tagName.toLowerCase(),'',n.textContent))});two.appendChild(c)});
+  var ab=Q('#about>div');if(ab){var c=el('div','sh-card');c.appendChild(el('h3','',tx_(ab,'h3')));c.appendChild(el('p','',tx_(ab,'p')));two.appendChild(c)}
+  var wc=Q('#academics');if(wc){var c2=el('div','sh-card');c2.appendChild(el('h3','',tx_(wc,'h3')));QA('li',wc).forEach(function(li){c2.appendChild(el('p','','✔ '+li.textContent))});two.appendChild(c2)}
+  var sub=Q('#sclKeyInfo p');if(sub)$('shHubSub').textContent=sub.textContent;
+ }
+ var user=auth()&&auth().user;var on=live();
+ $('shSign').style.display=on?'none':'';$('shAv').style.display=on?'grid':'none';
+ if(on&&user){var nm=(user.user_metadata&&(user.user_metadata.full_name||user.user_metadata.name))||user.email||'S';$('shAv').textContent=nm.trim().charAt(0).toUpperCase()}
+ $('shNote').textContent=isAdmin()?'Admin: your draft is copied, then the school activities admin panel opens so you can publish it to the feed.':(on?'Your draft is copied and a school administrator chat opens so you can send it to the school.':'Sign in to share a post with the school.');
+ buildAll();
+}
+function tx_(p,s){var e=Q(s,p);return e?e.textContent.trim():''}
+/* ---- feed (real community data; falls back to the site's own pictures) ---- */
+var feedTries=0;
+function feed(){
+ var box=$('shFeed');var cd=w.sclCommunityData||{};var items=[];
+ (cd.activities||[]).forEach(function(x){items.push({t:x.title,b:x.body,i:x.image_url,m:x.media_url,s:x.social_url,sp:x.social_platform,who:'School activity'})});
+ (cd.announcements||[]).forEach(function(x){items.push({t:x.title,b:x.body,i:'',m:x.external_url,who:'Announcement'})});
+ if(!items.length){
+  var poster=Q('.scl-hero-poster');if(poster)items.push({t:tx('#home h2'),b:tx('.scl-hero-image-caption'),i:poster.src,who:'SCL'});
+  QA('.scl-building-slide img').forEach(function(im){items.push({t:im.alt||'School building',b:'',i:im.src,who:'Our school building'})});
+  var rp=Q('#life .panel');if(rp)items.push({t:tx_(rp,'p b'),b:QA('p',rp)[1]?QA('p',rp)[1].textContent:'',i:'',who:'Recent post'});
+ }
+ box.textContent='';
+ items.slice(0,40).forEach(function(x){var c=el('article','sh-card sh-post');var h=el('div','sh-post-h');h.appendChild(el('i','','★'));h.appendChild(el('span','',x.who||'SCL'));c.appendChild(h);
+  var u=safe(x.i);if(u){var im=el('img');im.loading='lazy';im.alt=x.t||'';im.src=u;im.onerror=function(){im.style.display='none'};c.appendChild(im)}
+  var b=el('div','sh-post-b');b.appendChild(el('h3','',x.t||''));if(x.b)b.appendChild(el('p','',x.b));
+  var a=el('div','acts'),m=safe(x.m),s=safe(x.s);if(m&&!/^data:/.test(m)){var l=el('a','','View');l.href=m;l.target='_blank';l.rel='noopener noreferrer';a.appendChild(l)}
+  if(s){var l2=el('a','',x.sp||'Social');l2.href=s;l2.target='_blank';l2.rel='noopener noreferrer';a.appendChild(l2)}
+  if(a.children.length)b.appendChild(a);c.appendChild(b);box.appendChild(c)});
+ var n=(cd.announcements||[]).length+(cd.notifications||[]).length;$('shDot').classList.toggle('on',n>0);
+}
+function loadFeed(){try{w.sclLoadCommunity&&w.sclLoadCommunity()}catch(_){}feed();if(!(w.sclCommunityData)&&feedTries++<12)setTimeout(loadFeed,2500)}
+setInterval(function(){if(!shell.hidden)feed()},20000);
+/* ---- all-tools grid cloned from the site's own feature list, so no feature can be lost ---- */
+function buildAll(){
+ var src=QA('#sclShortcutGrid .scl-shortcut-item');var box=$('shAll');if(!box||!src.length)return;
+ var key=src.length+'|'+live()+'|'+isAdmin();if(box.dataset.k===key)return;box.dataset.k=key;box.textContent='';
+ src.forEach(function(b){var c=b.cloneNode(true);c.removeAttribute('id');box.appendChild(c)});filterAll();
+}
+function filterAll(){var q=($('shQ').value||'').toLowerCase().trim();QA('.scl-shortcut-item',$('shAll')).forEach(function(b){b.style.display=!q||b.textContent.toLowerCase().indexOf(q)>-1?'':'none'})}
+$('shQ').addEventListener('input',filterAll);
+/* ---- composer ---- */
+var type='image',fileUrl='';
+var HINT={image:'Tap to choose an image',audio:'Tap to choose an audio file, or paste a link below',video:'Tap to choose a video, or paste a link below',text:''};
+function setType(t){type=t;QA('.sh-tabs button').forEach(function(b){b.classList.toggle('on',b.dataset.t===t)});
+ var f=$('shFile');f.accept=t==='image'?'image/*':t==='audio'?'audio/*':t==='video'?'video/*':'';f.value='';fileUrl='';
+ $('shDrop').style.display=t==='text'?'none':'';$('shUrl').hidden=t==='image'||t==='text';$('shDrop').innerHTML='';$('shDrop').appendChild(el('span','',HINT[t]))}
+QA('.sh-tabs button').forEach(function(b){b.addEventListener('click',function(){setType(b.dataset.t)})});
+$('shDrop').addEventListener('click',function(){$('shFile').click()});
+$('shFile').addEventListener('change',function(){var f=this.files&&this.files[0];if(!f)return;var dr=$('shDrop');dr.textContent='';
+ if(f.size>25*1024*1024){toast('Please choose a file under 25 MB.');this.value='';return}
+ if(type==='image'&&/^image\//.test(f.type)){fileUrl=URL.createObjectURL(f);var im=el('img');im.alt='Selected image preview';im.src=fileUrl;dr.appendChild(im)}else dr.appendChild(el('span','','Selected: '+f.name))});
+function clear(){$('shPT').value='';$('shPB').value='';$('shUrl').value='';setType(type)}
+$('shClr').addEventListener('click',clear);
+function copy(t){try{if(navigator.clipboard&&navigator.clipboard.writeText)return navigator.clipboard.writeText(t)}catch(_){}try{var a=el('textarea');a.value=t;d.body.appendChild(a);a.select();d.execCommand('copy');a.remove()}catch(_){}return Promise.resolve()}
+function send(){
+ if(!live()){toast('Please sign in first.');call('sclOpenSignInChoice');return}
+ var t=$('shPT').value.trim(),b=$('shPB').value.trim(),u=$('shUrl').value.trim(),f=$('shFile').files&&$('shFile').files[0];
+ if(!t&&!b&&!u&&!f){toast('Add a title, some text or a file first.');return}
+ var txt='['+type.toUpperCase()+' POST] '+t+(b?'\n'+b:'')+(u?'\n'+u:'')+(f?'\n(Attachment: '+f.name+')':'');
+ copy(txt).then(function(){
+  if(isAdmin()){call('openCollaboration');setTimeout(function(){try{w.showCommunityTab&&w.showCommunityTab('activities')}catch(_){}},80);toast('Draft copied. Paste it into the activity form to publish.')}
+  else{call('openWhatsAppChoices');toast('Draft copied. Send it to a school administrator.')}});
+}
+$('shSend').addEventListener('click',send);
+$('shAdd').addEventListener('click',function(){$('shComposer').scrollIntoView({behavior:'smooth',block:'center'});setTimeout(function(){$('shPT').focus({preventScroll:true})},350)});
+/* ---- navigation, rail and actions ---- */
+function go(p){QA('.sh-page').forEach(function(s){s.classList.toggle('on',s.id==='sh'+(p==='hub'?'Hub':'Home'))});QA('.sh-rail [data-go]').forEach(function(b){b.classList.toggle('on',b.dataset.go===p)});w.scrollTo({top:0});if(p==='hub')buildAll()}
+var ACT={
+ profile:function(){live()?call('sclOpenModernProfile'):call('sclOpenSignInChoice')},children:function(){live()?call('openMyChildren'):call('sclOpenSignInChoice')},
+ notice:function(){call('openSclAlerts')},register:function(){call('pickRegistration')},fees:function(){call('pickFees')},bulk:function(){call('openBulkPayment')},cert:function(){call('openCertificate')},
+ results:function(){call('openResults')},curriculum:function(){call('openSchoolCurriculum')},timetable:function(){try{w.openM('sclSuiteModal');w.sclSuiteTab('timetable')}catch(_){toast('Timetable is not available right now.')}},
+ uniform:function(){call('openUniformCatalogue')},workers:function(){call('openWorkers')},attendance:function(){live()?call('sclOpenAttendance',isAdmin()?'admin':'self'):call('sclOpenSignInChoice')},materials:function(){call('openMaterials')},
+ collab:function(){call('openCollaboration')},activities:function(){call('sclOpenSchoolActivities')},anthem:function(){call('openCollaboration');setTimeout(function(){try{w.showCommunityTab('anthem')}catch(_){}},80)},
+ support:function(){call('openWhatsAppChoices')},all:function(){var b=$('sclShortcutToggle');b?b.click():toast('Feature list is not available.')},
+ theme:function(){var b=$('sclThemeToggle');b&&b.click()},classic:function(){d.body.classList.add('scl-classic');var p=$('shBackNew');if(!p){p=el('button','','← New view');p.id='shBackNew';p.type='button';p.setAttribute('style','position:fixed;top:max(8px,env(safe-area-inset-top));right:8px;z-index:10070;background:#650007;color:#fff;border:2px solid #F2AE00;border-radius:999px;min-height:44px;padding:0 16px;font-weight:700');p.onclick=function(){d.body.classList.remove('scl-classic');p.remove();w.scrollTo({top:0})};d.body.appendChild(p)}},
+ logout:function(){call('sclLogout')}
+};
+shell.addEventListener('click',function(e){
+ var g=e.target.closest('[data-go]');if(g){go(g.dataset.go);return}
+ var a=e.target.closest('[data-act]');if(a&&ACT[a.dataset.act]){$('shMenu').classList.remove('on');ACT[a.dataset.act]();return}
+ var s=e.target.closest('[data-say]');if(s){say(tx(s.dataset.say)||(Q(s.dataset.say)||{}).innerText||'');return}
+ var s2=e.target.closest('[data-say-t]');if(s2){say(s2.dataset.sayT);return}
+ if(!e.target.closest('#shMenu,#shAv'))$('shMenu').classList.remove('on');
+});
+$('shBell').addEventListener('click',ACT.notice);
+$('shSign').addEventListener('click',function(){call('sclOpenSignInChoice')});
+$('shAv').addEventListener('click',function(e){e.stopPropagation();$('shMenu').classList.toggle('on')});
+function sheet(){var b=$('shSheetBody');b.textContent='';var n=0;QA('.scl-social-grid a.scl-social-link').forEach(function(a){var l=el('a','sh-link',(a.textContent||'').trim());l.href=a.href;l.target='_blank';l.rel='noopener noreferrer';b.appendChild(l);n++});
+ var em=Q('.scl-contact-card button[onclick*="openSchoolEmail"]');if(!n)b.appendChild(el('p','sh-note','Official links will appear here when they are added.'));$('shSheet').classList.add('on')}
+$('shSoc').addEventListener('click',sheet);$('shLinks').addEventListener('click',sheet);
+$('shSheetX').addEventListener('click',function(){$('shSheet').classList.remove('on')});
+$('shSheet').addEventListener('click',function(e){if(e.target===this)this.classList.remove('on')});
+d.addEventListener('keydown',function(e){if(e.key==='Escape'){$('shSheet').classList.remove('on');$('shMenu').classList.remove('on')}});
+/* ---- text-to-speech (browser built-in, no network) ---- */
+function say(t){var ss=w.speechSynthesis;if(!ss||!w.SpeechSynthesisUtterance){toast('Read-aloud is not supported on this device.');return}
+ if(ss.speaking){ss.cancel();return}var u=new SpeechSynthesisUtterance(String(t).replace(/\s+/g,' ').slice(0,3500));u.lang=d.documentElement.lang||'en';ss.speak(u)}
+/* ---- boot ---- */
+setType('image');
+w.addEventListener('scl:student-registered',function(){fill()});
+setTimeout(function(){sync();loadFeed()},800);
+})();
+</script>
+
 </body></html>
