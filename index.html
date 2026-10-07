@@ -7891,7 +7891,7 @@ function render(rs){const b=document.getElementById('sclActivityLogBody');if(!b)
 async function load(){if(!isAdmin())return;const au=a();if(!au?.accessToken)throw new Error('Administrator authentication is required.');const u=window.SCL_SUPABASE_URL+'/rest/v1/'+AUDIT+'?select=*&order=created_at.desc&limit=200',r=await fetch(u,{headers:{apikey:window.SCL_SUPABASE_PUBLISHABLE_KEY,Authorization:'Bearer '+au.accessToken}});let d={};try{d=await r.json()}catch(_){}if(!r.ok)throw new Error(d?.message||d?.error||'The activity log table is not available yet.');return Array.isArray(d)?d:[]}
 window.sclLoadActivityLog=async function(){try{const rs=await load();render(rs);status(rs.length?'Live log connected • '+rs.length+' recent event(s) loaded.':'Connected • No activity has been recorded yet. The table is ready for live events.',true);if(!ch&&window.sclSupabase?.channel){ch=window.sclSupabase.channel('scl-activity-log-live').on('postgres_changes',{event:'INSERT',schema:'public',table:AUDIT},p=>{const b=document.getElementById('sclActivityLogBody');if(b){const em=b.querySelector('td[colspan="7"]');if(em)b.innerHTML='';b.insertAdjacentHTML('afterbegin',row(p.new||{}));const rows=b.querySelectorAll('tr');if(rows.length>200)rows[rows.length-1].remove()}status('LIVE • New activity received '+new Date().toLocaleTimeString('en-NG'),true)}).subscribe()}}catch(err){render([]);status(err.message||'Activity log unavailable. Run the supplied Supabase activity-log SQL first.',false)}};
 const old=window.sclOpenModernProfile;if(typeof old==='function')window.sclOpenModernProfile=async function(){await old.apply(this,arguments);if(isAdmin())setTimeout(()=>window.sclLoadActivityLog(),250)};
-})();</script>\n
+})();</script>
 <style id="scl-v208-admin-cms-css">
 #sclAdminCmsPanel{position:fixed;inset:0;z-index:2147483000;display:none;background:rgba(20,8,5,.58);backdrop-filter:blur(8px);padding:14px;box-sizing:border-box}
 #sclAdminCmsPanel.open{display:flex;align-items:center;justify-content:center}
@@ -8788,7 +8788,7 @@ body.scl-admin-overlay-active #sclV211AdminPanel.open{z-index:3000!important}
 #sclAdminCmsPanel.open,#sclV210AdminIdentityModal.open,.modal.open.scl-v94-front{z-index:12000!important;display:flex!important;visibility:visible!important;opacity:1!important}
 </style>
 
-\n
+
 
 <script id="scl-v98-refinement-runtime">
 (function(){'use strict';
@@ -11368,4 +11368,241 @@ setTimeout(function(){sync();loadFeed()},800);
 })();
 </script>
 
+<!-- SCL PORTAL V3: 2-page overlay (additive; existing IDs/hooks untouched) -->
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&display=swap" rel="stylesheet">
+<style id="scl-portal-v3-css">
+:root{--p3-crimson:#650007;--p3-gold:#F2AE00;--p3-bg:#FFFBF2;--p3-card:#fff;--p3-ink:#2a0a0c}
+#p3Bar,#p3Page,#p3Fab{font-family:'Fredoka','Chalkboard SE','Segoe UI',system-ui,sans-serif;color:var(--p3-ink)}
+#p3Bar{position:sticky;top:0;z-index:900;display:flex;gap:8px;align-items:center;padding:8px 12px;background:rgba(255,251,242,.92);backdrop-filter:blur(10px);border-bottom:3px solid var(--p3-gold)}
+#p3Bar button,#p3Page button,#p3Page .p3b{min-height:48px;border:0;border-radius:20px;font:inherit;font-weight:600;cursor:pointer;transition:transform .15s,box-shadow .15s}
+#p3Bar .tab{flex:1;background:#fff;color:var(--p3-crimson);border:2px solid var(--p3-crimson)}
+#p3Bar .tab.on{background:var(--p3-crimson);color:#fff}
+#p3Bar input{flex:2;min-height:48px;border:2px solid #e8d9b8;border-radius:20px;padding:0 14px;font:inherit;min-width:0}
+#p3Page{display:none;position:relative;min-height:80vh;padding:16px 12px 110px;background:var(--p3-bg);overflow:hidden}
+body.p3-on #p3Page{display:block}
+body.p3-on main.wrap,body.p3-on .scl-social-panel{display:none!important}
+#p3Page::before,#p3Page::after{content:"";position:absolute;border-radius:50%;filter:blur(60px);opacity:.35;z-index:0;animation:p3f 14s ease-in-out infinite alternate}
+#p3Page::before{width:320px;height:320px;background:var(--p3-gold);top:-80px;right:-60px}
+#p3Page::after{width:300px;height:300px;background:var(--p3-crimson);bottom:60px;left:-90px;animation-delay:-6s}
+@keyframes p3f{to{transform:translate(30px,40px) scale(1.15)}}
+@media(prefers-reduced-motion:reduce){#p3Page::before,#p3Page::after{animation:none}}
+#p3Page>section{position:relative;z-index:1;max-width:1100px;margin:0 auto}
+.p3card{background:var(--p3-card);border-radius:24px;box-shadow:0 8px 24px rgba(101,0,7,.12);padding:16px}
+.p3glass{background:rgba(255,255,255,.7);backdrop-filter:blur(12px);border:1px solid rgba(242,174,0,.5)}
+.p3h{margin:0 0 10px;font-size:22px;color:var(--p3-crimson)}
+.p3q{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.p3q button{flex:1 1 120px;background:#fff7e0;color:var(--p3-crimson);border:2px solid var(--p3-gold)}
+.p3q button.on{background:var(--p3-gold)}
+.p3sq{aspect-ratio:1/1;max-width:260px;margin:0 auto 12px;border:3px dashed var(--p3-gold);border-radius:24px;display:grid;place-items:center;text-align:center;background:#fff;overflow:hidden;font-size:15px;padding:8px}
+.p3sq img,.p3sq video{width:100%;height:100%;object-fit:cover}
+.p3in{width:100%;min-height:48px;border:2px solid #e8d9b8;border-radius:18px;padding:10px 14px;font:inherit;margin-bottom:10px;box-sizing:border-box}
+.p3go{width:100%;background:var(--p3-crimson);color:#fff;font-size:18px}
+.p3go:hover,.p3role:hover,.p3z:hover{transform:translateY(-3px);box-shadow:0 12px 24px rgba(101,0,7,.25)}
+#p3Feed{columns:1;gap:12px;margin-top:14px}
+@media(min-width:760px){#p3Feed{columns:2}}@media(min-width:1060px){#p3Feed{columns:3}}
+#p3Feed .p3card{break-inside:avoid;margin-bottom:12px}
+#p3Feed small{color:#7a5a5a}
+.wave{display:flex;gap:3px;align-items:center;height:36px;margin:6px 0}.wave i{flex:1;background:var(--p3-gold);border-radius:3px;animation:p3w 1s ease-in-out infinite alternate}
+@keyframes p3w{from{height:20%}to{height:100%}}
+.p3roles{display:grid;gap:12px;grid-template-columns:1fr}@media(min-width:760px){.p3roles{grid-template-columns:repeat(3,1fr)}}
+.p3role{display:flex;gap:12px;align-items:center;text-align:left;background:#fff;border:3px solid var(--p3-crimson);padding:14px;min-height:72px}
+.p3role.on{background:var(--p3-crimson);color:#fff}.p3role .e{font-size:34px}.p3role small{display:block;font-weight:400}
+.p3grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.p3z{min-height:150px;padding:14px;color:#fff;text-align:left;display:flex;flex-direction:column;justify-content:space-between;border-radius:24px!important}
+.p3z .e{font-size:34px}.p3z b{font-size:17px}.p3z small{font-weight:400;opacity:.95}
+.z1{background:#c98d00}.z2{background:#a3121f}.z3{background:#1f7a3d}.z4{background:#1f5fa8}
+#p3Sub{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+#p3Sub button{flex:1 1 150px;background:#fff;color:var(--p3-crimson);border:2px solid var(--p3-crimson)}
+#p3Fab{position:fixed;right:14px;bottom:86px;z-index:950;width:60px;height:60px;border-radius:50%!important;background:var(--p3-gold);color:var(--p3-crimson);font-size:28px;border:3px solid var(--p3-crimson);box-shadow:0 8px 20px rgba(0,0,0,.3);cursor:pointer}
+#p3Fab[aria-pressed=true]{background:var(--p3-crimson);color:#fff}
+#p3Page :focus-visible,#p3Bar :focus-visible,#p3Fab:focus-visible{outline:4px solid #1f5fa8;outline-offset:2px}
+</style>
+<div id="p3Bar" role="navigation" aria-label="Portal pages">
+ <button class="tab" id="p3T0" type="button" onclick="p3Show('')">🏫 Site</button>
+ <button class="tab" id="p3T1" type="button" onclick="p3Show('feed')">📣 Feed</button>
+ <button class="tab" id="p3T2" type="button" onclick="p3Show('hub')">🧭 Hub</button>
+ <input id="p3Search" type="search" placeholder="🔎 Search posts & notes" aria-label="Search">
+</div>
+<div id="p3Page">
+ <section id="p3FeedPg" hidden>
+  <div class="p3card p3glass" style="position:sticky;top:70px;z-index:5">
+   <h2 class="p3h">Let's Share Our Learning Journey!</h2>
+   <div class="p3q" id="p3Tabs">
+    <button type="button" data-k="image">📷 Image</button><button type="button" data-k="audio">🎙️ Audio</button><button type="button" data-k="video">🎥 Video</button><button type="button" data-k="social">🔗 Social</button><button type="button" data-k="doc">📄 Link</button>
+   </div>
+   <div class="p3sq" id="p3Prev">Pick a type, then add your file or link</div>
+   <input class="p3in" id="p3File" type="file" hidden>
+   <input class="p3in" id="p3Link" placeholder="Paste a link (https://…)" hidden>
+   <input class="p3in" id="p3Cap" placeholder="Say something about it…" maxlength="280">
+   <button class="p3go" id="p3Add" type="button">Add Post</button>
+  </div>
+  <div id="p3Feed" aria-live="polite"></div>
+ </section>
+ <section id="p3HubPg" hidden>
+  <h2 class="p3h">Who are you today?</h2>
+  <div class="p3roles">
+   <button class="p3role" type="button" data-r="student"><span class="e">🎒</span><span><b>I am a Student</b><small>Pupil corner, notes, schedules</small></span></button>
+   <button class="p3role" type="button" data-r="parent"><span class="e">👨‍👩‍👧</span><span><b>I am a Parent</b><small>Fees, receipts, announcements</small></span></button>
+   <button class="p3role" type="button" data-r="staff"><span class="e">🍎</span><span><b>I am a Teacher / Staff</b><small>Login, attendance, results</small></span></button>
+  </div>
+  <div class="p3grid">
+   <button class="p3z z1" type="button" data-z="pupil"><span class="e">🟡</span><span><b>Pupil Corner</b><br><small>Curriculum finder, schedules, notes, results</small></span></button>
+   <button class="p3z z2" type="button" data-z="adm"><span class="e">🔴</span><span><b>Admissions &amp; News</b><br><small>Announcements, transfers, registration</small></span></button>
+   <button class="p3z z3" type="button" data-z="att"><span class="e">🟢</span><span><b>Attendance &amp; Staff</b><br><small>Teacher login, attendance, staff registration</small></span></button>
+   <button class="p3z z4" type="button" data-z="fee"><span class="e">🔵</span><span><b>Fees &amp; Receipts</b><br><small>Schedules, bank details, receipt upload</small></span></button>
+  </div>
+  <div id="p3Sub" aria-live="polite"></div>
+ </section>
+</div>
+<button id="p3Fab" type="button" aria-pressed="false" aria-label="Read screen to me">🔊</button>
+<script id="scl-portal-v3-js">
+(function(){
+ var $=function(i){return document.getElementById(i)},call=function(n){var a=[].slice.call(arguments,1);try{if(typeof window[n]==='function')return window[n].apply(null,a)}catch(e){}try{if(typeof openM==='function'&&n.indexOf('M:')===0)return openM(n.slice(2))}catch(e){}if(typeof toast==='function')toast('That option is not available yet.')};
+ function mount(){var m=document.querySelector('main.wrap');if(m&&m.parentNode){m.parentNode.insertBefore($('p3Bar'),m);m.parentNode.insertBefore($('p3Page'),m)}}
+ mount();
+ window.p3Show=function(k){document.body.classList.toggle('p3-on',!!k);$('p3FeedPg').hidden=k!=='feed';$('p3HubPg').hidden=k!=='hub';['p3T0','p3T1','p3T2'].forEach(function(id,i){$(id).classList.toggle('on',(i===0&&!k)||(i===1&&k==='feed')||(i===2&&k==='hub'))});if(k==='feed')load();scrollTo({top:0,behavior:'smooth'})};
+ p3Show('');
+ /* ---- Feed ---- */
+ var kind='image',posts=[];
+ var hint={image:'📷 Tap to choose a picture',audio:'🎙️ Tap to choose an audio clip',video:'🎥 Tap to choose a video',social:'🔗 Paste a YouTube / TikTok link below',doc:'📄 Paste a document link below'};
+ function setKind(k){kind=k;[].forEach.call($('p3Tabs').children,function(b){b.classList.toggle('on',b.dataset.k===k)});var f=k==='image'||k==='audio'||k==='video';$('p3File').hidden=true;$('p3Link').hidden=f;$('p3File').accept=k+'/*';$('p3Prev').textContent=hint[k];$('p3Prev').dataset.f=f?'1':''}
+ $('p3Tabs').onclick=function(e){var b=e.target.closest('button');if(b)setKind(b.dataset.k)};
+ $('p3Prev').onclick=function(){if($('p3Prev').dataset.f)$('p3File').click()};
+ var cur=null;
+ $('p3File').onchange=function(){var f=this.files[0];cur=null;if(!f)return;if(f.size>8*1024*1024){toast&&toast('Please choose a file under 8 MB.');return}var r=new FileReader();r.onload=function(){cur=r.result;var p=$('p3Prev');p.innerHTML='';var el=document.createElement(kind==='image'?'img':kind==='video'?'video':'div');if(kind==='audio'){el.textContent='🎵 '+f.name}else{el.src=cur;if(kind==='video')el.controls=true}p.appendChild(el)};r.readAsDataURL(f)};
+ function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(m){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]})}
+ function safe(u){try{var x=new URL(u);return /^https?:$/.test(x.protocol)?x.href:''}catch(_){return ''}}
+ function card(p){var b='';if(p.kind==='image'&&p.data)b='<img alt="" style="width:100%;border-radius:16px" src="'+esc(p.data)+'">';else if(p.kind==='video'&&p.data)b='<video controls style="width:100%;border-radius:16px" src="'+esc(p.data)+'"></video>';else if(p.kind==='audio'&&p.data)b='<div class="wave" aria-hidden="true">'+Array(24).join('<i style="animation-delay:'+Math.random().toFixed(2)+'s"></i>').replace(/^/,'<i></i>')+'</div><audio controls style="width:100%" src="'+esc(p.data)+'"></audio>';else if(p.link)b='<a class="p3b" style="display:flex;align-items:center;justify-content:center;background:var(--p3-gold);color:var(--p3-crimson);text-decoration:none;padding:0 14px" target="_blank" rel="noopener noreferrer" href="'+esc(p.link)+'">🔗 Open link</a>';return '<article class="p3card" data-t="'+esc((p.cap||'').toLowerCase())+'">'+b+'<p>'+esc(p.cap)+'</p><small>'+esc(new Date(p.at).toLocaleString())+'</small></article>'}
+ function render(){var q=($('p3Search').value||'').toLowerCase();var l=posts.filter(function(p){return !q||(p.cap||'').toLowerCase().indexOf(q)>-1});$('p3Feed').innerHTML=l.length?l.map(card).join(''):'<div class="p3card">No posts yet. Be the first to share! 🌟</div>'}
+ function load(){var s=null;try{s=JSON.parse(sessionStorage.getItem('sclAuthSession')||'null')}catch(_){}try{posts=JSON.parse(localStorage.getItem('sclP3Posts')||'[]')}catch(_){posts=[]}render()}
+ $('p3Search').oninput=render;
+ $('p3Add').onclick=function(){var s=null;try{s=JSON.parse(sessionStorage.getItem('sclAuthSession')||'null')}catch(_){}if(!s){toast&&toast('Please sign in to share a post.');call('M:loginModal');return}
+  var link=safe($('p3Link').value.trim()),cap=$('p3Cap').value.trim();var f=kind==='image'||kind==='audio'||kind==='video';if(f&&!cur||!f&&!link){toast&&toast(f?'Add a file first.':'Paste a valid link first.');return}
+  var p={kind:kind,data:f?cur:'',link:f?'':link,cap:cap,at:Date.now()};posts.unshift(p);try{localStorage.setItem('sclP3Posts',JSON.stringify(posts.slice(0,20)))}catch(_){toast&&toast('Saved for this view only (storage full).')}
+  cur=null;$('p3Cap').value='';$('p3Link').value='';setKind(kind);render();toast&&toast('Posted! 🎉')};
+ setKind('image');
+ /* ---- Hub ---- */
+ var role='';var M={
+  student:['pupil'],parent:['fee','adm'],staff:['att']};
+ var SUB={
+  pupil:[['📚 Curriculum finder',function(){call('sclOpenCurriculum')}],['📅 Daily schedules',function(){call('openSuite','timetable')}],['📝 Learning notes',function(){call('openMaterials')}],['📊 Results',function(){call('openResults')}]],
+  adm:[['📢 Announcements',function(){p3Show('feed')}],['📝 Register a child',function(){call('pickRegistration')}],['📬 Contact school',function(){call('openSchoolEmail')}]],
+  att:[['🔑 Teacher sign in',function(){call('M:loginModal')}],['🗓️ Attendance',function(){call('openSuite','attendance')}],['🧑‍🏫 Staff registration',function(){call('openWorkers')}]],
+  fee:[['💳 Fee schedule & pay',function(){call('pickFees')}],['🧾 Upload receipt',function(){call('pickFees')}],['🎓 Results & PIN',function(){call('openResults')}]]};
+ function showSub(z){var h='';(SUB[z]||[]).forEach(function(s,i){h+='<button type="button" data-i="'+i+'">'+s[0]+'</button>'});$('p3Sub').innerHTML=h;$('p3Sub').dataset.z=z;[].forEach.call(document.querySelectorAll('.p3z'),function(b){b.style.outline=b.dataset.z===z?'4px solid var(--p3-crimson)':''});$('p3Sub').scrollIntoView({behavior:'smooth',block:'nearest'})}
+ $('p3Sub').onclick=function(e){var b=e.target.closest('button');if(!b)return;SUB[this.dataset.z][+b.dataset.i][1]()};
+ document.querySelector('.p3grid').onclick=function(e){var b=e.target.closest('.p3z');if(b)showSub(b.dataset.z)};
+ document.querySelector('.p3roles').onclick=function(e){var b=e.target.closest('.p3role');if(!b)return;role=b.dataset.r;[].forEach.call(document.querySelectorAll('.p3role'),function(x){x.classList.toggle('on',x===b)});showSub(M[role][0])};
+ /* ---- Read screen aloud ---- */
+ var on=false;$('p3Fab').onclick=function(){var ss=window.speechSynthesis;if(!ss){toast&&toast('Voice is not supported on this device.');return}if(on){ss.cancel();on=false;this.setAttribute('aria-pressed','false');return}
+  var root=document.body.classList.contains('p3-on')?$('p3Page'):(document.querySelector('main.wrap')||document.body);var t=(root.innerText||'').replace(/\s+/g,' ').slice(0,1800);var u=new SpeechSynthesisUtterance(t);u.onend=u.onerror=function(){on=false;$('p3Fab').setAttribute('aria-pressed','false')};on=true;this.setAttribute('aria-pressed','true');ss.speak(u)};
+})();
+</script>
+<!-- /SCL PORTAL V3 -->
+<!-- SCL ORBIT BACKGROUND -->
+<style id="scl-orbit-css">
+#sclOrbit{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;
+background:radial-gradient(circle at 20% 15%,#fff3c4 0,transparent 45%),radial-gradient(circle at 85% 80%,#ffd9d9 0,transparent 45%),linear-gradient(135deg,#FFFBF2,#fff0cf 55%,#ffe3e0)}
+main.wrap,#p3Bar,#p3Page,.scl-social-panel{position:relative;z-index:1}
+#p3Bar{position:sticky}
+#p3Page{background:transparent!important}
+</style>
+<canvas id="sclOrbit" aria-hidden="true"></canvas>
+<script id="scl-orbit-js">
+(function(){
+ var c=document.getElementById('sclOrbit');if(!c)return;document.body.insertBefore(c,document.body.firstChild);
+ var x=c.getContext('2d'),W,H,D=innerWidth<760?1:Math.min(devicePixelRatio||1,2),t=0,run=true;
+ var still=matchMedia('(prefers-reduced-motion: reduce)').matches;
+ var cols=['#650007','#F2AE00','#c98d00','#a3121f','#1f7a3d','#1f5fa8'];
+ var rings=[],stars=[];
+ function size(){W=c.width=innerWidth*D;H=c.height=innerHeight*D;c.style.width=innerWidth+'px';c.style.height=innerHeight+'px';
+  var m=Math.max(W,H),n=5;rings=[];for(var i=0;i<n;i++){var r=m*(.16+i*.13),k=2+(i%3);var dots=[];for(var j=0;j<k;j++)dots.push({a:Math.random()*6.283,s:(.0016+Math.random()*.002)*(i%2?-1:1)*(1.6-i*.2),r:(5+Math.random()*7)*D,c:cols[(i+j)%cols.length]});
+   rings.push({r:r,tilt:.55+i*.04,rot:i*.6,dots:dots})}
+  stars=[];for(var s=0;s<(innerWidth<760?18:40);s++)stars.push({x:Math.random()*W,y:Math.random()*H,p:Math.random()*6.28,r:(1+Math.random()*2)*D})}
+ function frame(){if(!run)return;t++;x.clearRect(0,0,W,H);var cx=W*.5,cy=H*.42;
+  stars.forEach(function(s){var o=.25+.25*Math.sin(t*.03+s.p);x.fillStyle='rgba(242,174,0,'+o+')';x.beginPath();x.arc(s.x,s.y,s.r,0,6.283);x.fill()});
+  rings.forEach(function(g,i){x.save();x.translate(cx,cy);x.rotate(g.rot+t*.0007*(i%2?-1:1));x.scale(1,g.tilt);
+   x.strokeStyle='rgba(101,0,7,.13)';x.lineWidth=2*D;x.setLineDash([6*D,12*D]);x.beginPath();x.arc(0,0,g.r,0,6.283);x.stroke();x.setLineDash([]);
+   g.dots.forEach(function(d){d.a+=still?0:d.s;var px=Math.cos(d.a)*g.r,py=Math.sin(d.a)*g.r;
+    var gr=x.createRadialGradient(px,py,0,px,py,d.r*3.2);gr.addColorStop(0,d.c);gr.addColorStop(1,'rgba(255,255,255,0)');
+    x.globalAlpha=.55;x.fillStyle=gr;x.beginPath();x.arc(px,py,d.r*3.2,0,6.283);x.fill();x.globalAlpha=.95;x.fillStyle=d.c;x.beginPath();x.arc(px,py,d.r,0,6.283);x.fill()});
+   x.restore()});
+  x.globalAlpha=1;var sg=x.createRadialGradient(cx,cy,0,cx,cy,90*D);sg.addColorStop(0,'rgba(242,174,0,.55)');sg.addColorStop(1,'rgba(242,174,0,0)');x.fillStyle=sg;x.beginPath();x.arc(cx,cy,90*D,0,6.283);x.fill();
+  if(!still)requestAnimationFrame(frame)}
+ size();addEventListener('resize',function(){size();if(still)frame()});
+ document.addEventListener('visibilitychange',function(){run=!document.hidden;if(run)requestAnimationFrame(frame)});
+ frame();
+})();
+</script>
+<!-- SCL MOBILE OPTIMIZATION -->
+<style id="scl-mobile-css">
+#p3Read{display:none}#p3Bar .tab span:first-child{margin-right:6px}
+#p3Bar{justify-content:center}
+#p3Bar .tab{max-width:200px}
+@media(max-width:760px){
+ html{-webkit-text-size-adjust:100%;scroll-padding-top:76px}
+ body{overflow-x:clip;padding-bottom:calc(132px + env(safe-area-inset-bottom,0px))!important}
+ /* bottom tab bar sits just above the existing bottom bar */
+ #p3Bar{position:fixed!important;top:auto!important;left:0;right:0;bottom:calc(58px + env(safe-area-inset-bottom,0px));z-index:1001;gap:6px;padding:6px 8px;border-top:3px solid #F2AE00;border-bottom:0;border-radius:18px 18px 0 0;box-shadow:0 -6px 18px rgba(101,0,7,.18)}
+ #p3Bar .tab span:first-child{margin:0}
+ #p3Bar .tab,#p3Read{display:flex;flex:1;max-width:none;min-height:52px;padding:0 4px;align-items:center;justify-content:center;flex-direction:column;gap:0;font-size:12px;line-height:1.15;border-radius:16px;font-family:'Fredoka',system-ui,sans-serif}
+ #p3Read{border:2px solid #650007;background:#fff;color:#650007;font-weight:600}
+ #p3Read[aria-pressed=true]{background:#650007;color:#fff}
+ #p3Fab{display:none}
+ /* keep floating helpers clear of the new bar */
+ .wa{bottom:136px!important}
+ .scl-ai-float{bottom:136px!important}
+ #sclToTop{bottom:200px!important}
+ /* pages */
+ #p3Page{padding:84px 10px 24px}
+ #p3FeedPg .p3glass{position:static!important}
+ #p3Tabs{flex-wrap:nowrap!important;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:4px}
+ #p3Tabs::-webkit-scrollbar{display:none}
+ #p3Tabs button{flex:0 0 auto!important;scroll-snap-align:start;padding:0 16px}
+ .p3sq{max-width:200px}
+ .p3roles{display:flex!important;overflow-x:auto;scroll-snap-type:x mandatory;gap:10px;padding-bottom:6px;scrollbar-width:none}
+ .p3roles::-webkit-scrollbar{display:none}
+ .p3role{flex:0 0 78%;scroll-snap-align:center}
+ .p3z{min-height:132px}
+ #p3Sub button{flex:1 1 100%}
+ .p3h{font-size:20px}
+ /* home page */
+ main.wrap{padding-left:10px!important;padding-right:10px!important}
+ main.wrap>nav>div{display:flex!important;overflow-x:auto;flex-wrap:nowrap!important;gap:6px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:6px 2px}
+ main.wrap>nav>div::-webkit-scrollbar{display:none}
+ main.wrap>nav a{flex:0 0 auto;min-height:44px;display:inline-flex;align-items:center;padding:0 14px;white-space:nowrap;scroll-snap-align:start}
+ main.wrap .btn{min-height:48px}
+ main.wrap .hero .copy .btn{width:100%;margin:6px 0}
+ .scl-home-action-clean{display:grid!important;grid-template-columns:1fr 1fr!important;gap:10px!important}
+ .scl-home-action-clean>button{min-height:96px;touch-action:manipulation}
+ .scl-home-register-primary{grid-column:1/-1}
+ .stats{display:grid!important;grid-template-columns:1fr 1fr!important;gap:10px!important}
+ .columns{display:grid!important;grid-template-columns:1fr!important;gap:12px!important}
+ img,video,canvas.scl-fit{max-width:100%;height:auto}
+ input,select,textarea{font-size:16px!important}
+ button,.btn,a.btn{touch-action:manipulation;-webkit-tap-highlight-color:rgba(242,174,0,.35)}
+ .modal .card{max-height:calc(100dvh - 24px);overflow:auto;-webkit-overflow-scrolling:touch;border-radius:20px}
+}
+@media(max-width:380px){.p3z b{font-size:15px}.p3z small{font-size:12px}#p3Bar .tab,#p3Read{font-size:11px}}
+</style>
+<script id="scl-mobile-js">
+(function(){
+ var $=function(i){return document.getElementById(i)};
+ var bar=$('p3Bar'),fab=$('p3Fab'),s=$('p3Search'),fp=$('p3FeedPg');if(!bar||!fp)return;
+ /* search lives inside the Feed page */
+ if(s){s.className='p3in';s.style.cssText='margin:0 0 12px;flex:none';fp.insertBefore(s,fp.firstChild)}
+ /* 4th tab: read aloud (mobile bottom bar) */
+ var r=document.createElement('button');r.id='p3Read';r.type='button';r.setAttribute('aria-pressed','false');r.setAttribute('aria-label','Read screen to me');r.innerHTML='🔊 Read';
+ r.onclick=function(){if(fab)fab.click()};bar.appendChild(r);
+ if(fab&&window.MutationObserver)new MutationObserver(function(){r.setAttribute('aria-pressed',fab.getAttribute('aria-pressed'))}).observe(fab,{attributes:true,attributeFilter:['aria-pressed']});
+ /* labels stack icon over word on phones */
+ [['p3T0','🏫','Site'],['p3T1','📣','Feed'],['p3T2','🧭','Hub']].forEach(function(a){var b=$(a[0]);if(b)b.innerHTML='<span aria-hidden="true">'+a[1]+'</span><span>'+a[2]+'</span>'});
+ r.innerHTML='<span aria-hidden="true">🔊</span><span>Read</span>';
+ /* hide the bottom tab bar while a modal is open so it never covers forms */
+ function sync(){var open=document.querySelector('.modal.open,.modal[aria-hidden="false"]');bar.style.display=open?'none':''}
+ if(window.MutationObserver)new MutationObserver(sync).observe(document.body,{attributes:true,subtree:true,attributeFilter:['class','aria-hidden']});
+ /* light the Site tab again after jumping to a home section */
+ addEventListener('hashchange',function(){if(document.body.classList.contains('p3-on')&&/^#(home|about|academics|admissions|life)$/.test(location.hash)&&window.p3Show)p3Show('')});
+})();
+</script>
 </body></html>
