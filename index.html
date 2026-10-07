@@ -10927,4 +10927,104 @@ html body .hv2-hero h1,html body .hv2-hero .sub,html body .hv2-sec h2,html body 
 html body .hv2-hero h1 em,html body .hv2-hero h1{color:#f3dca0!important}
 </style>
 <style id="scl-tile-dedupe-v103d">.hv2-tile::before,.hv2-tile b::before{content:none!important;display:none!important}.hv2-tile{display:flex;flex-direction:column;align-items:center;min-height:110px}.hv2-tile b,.hv2-tile small{position:relative;z-index:1}</style>
+<!-- ===== SCL UX ENHANCEMENT LAYER v1 (appended; original app untouched) ===== -->
+<style id="scl-ux-enhancements">
+/* 1. LIVING AMBIENT BACKGROUND (drifting aurora + floating school motifs) */
+#sclAmbient{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;contain:strict}
+#sclAmbient .blob{position:absolute;border-radius:50%;filter:blur(70px);opacity:.55;will-change:transform}
+#sclAmbient .b1{width:55vmax;height:55vmax;left:-15vmax;top:-18vmax;background:radial-gradient(circle,rgba(242,174,0,.55),transparent 65%);animation:sclDrift1 22s ease-in-out infinite alternate}
+#sclAmbient .b2{width:50vmax;height:50vmax;right:-18vmax;top:8vmax;background:radial-gradient(circle,rgba(179,0,27,.38),transparent 65%);animation:sclDrift2 28s ease-in-out infinite alternate}
+#sclAmbient .b3{width:60vmax;height:60vmax;left:10vmax;bottom:-30vmax;background:radial-gradient(circle,rgba(242,174,0,.40),transparent 65%);animation:sclDrift3 26s ease-in-out infinite alternate}
+#sclAmbient .b4{width:40vmax;height:40vmax;right:-8vmax;bottom:-14vmax;background:radial-gradient(circle,rgba(101,0,7,.28),transparent 65%);animation:sclDrift1 32s ease-in-out infinite alternate-reverse}
+@keyframes sclDrift1{0%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(8vmax,5vmax,0) scale(1.12)}100%{transform:translate3d(-4vmax,9vmax,0) scale(.94)}}
+@keyframes sclDrift2{0%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(-9vmax,6vmax,0) scale(1.08)}100%{transform:translate3d(4vmax,-6vmax,0) scale(1.15)}}
+@keyframes sclDrift3{0%{transform:translate3d(0,0,0) scale(1.05)}100%{transform:translate3d(-10vmax,-8vmax,0) scale(.92)}}
+#sclAmbient .mote{position:absolute;bottom:-40px;font-size:20px;opacity:0;animation:sclRise linear infinite;filter:drop-shadow(0 2px 4px rgba(101,0,7,.25))}
+@keyframes sclRise{0%{transform:translate3d(0,0,0) rotate(0);opacity:0}10%{opacity:.5}85%{opacity:.35}100%{transform:translate3d(var(--dx,30px),-112vh,0) rotate(360deg);opacity:0}}
+body.scl-night #sclAmbient .b1{background:radial-gradient(circle,rgba(242,174,0,.22),transparent 65%)}
+body.scl-night #sclAmbient .b2{background:radial-gradient(circle,rgba(179,0,27,.30),transparent 65%)}
+body.scl-night #sclAmbient .b3{background:radial-gradient(circle,rgba(90,60,200,.22),transparent 65%)}
+body.scl-night #sclAmbient .b4{background:radial-gradient(circle,rgba(242,174,0,.14),transparent 65%)}
+body.scl-night #sclAmbient .mote{filter:drop-shadow(0 0 6px rgba(242,174,0,.6))}
+/* 2. GLASS CARDS (opt-in class + auto-applied to common site cards) */
+.glass-card{background:rgba(255,255,255,.82)!important;-webkit-backdrop-filter:blur(12px)!important;backdrop-filter:blur(12px)!important;border:2px solid rgba(242,174,0,.3)!important;border-radius:20px!important;box-shadow:0 8px 32px rgba(101,0,7,.08)!important;transition:transform .25s cubic-bezier(.4,0,.2,1),box-shadow .25s ease!important}
+.glass-card:hover{transform:translateY(-4px)!important;box-shadow:0 14px 36px rgba(101,0,7,.15)!important}
+body.scl-night .glass-card{background:rgba(40,8,16,.72)!important;color:#fbeedc;border-color:rgba(242,174,0,.25)!important}
+/* 3. RESPONSIVE GRID */
+.scl-container-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr));gap:20px;padding:20px;max-width:1200px;margin:0 auto}
+@media(max-width:768px){.scl-container-grid{grid-template-columns:1fr;padding:12px}}
+/* Touch targets: scoped so checkboxes, tiny toolbar chips and icon buttons keep their layout */
+button:not(.scl-profile-toolbar button):not(.ag-eye):not(.ag-mini):not(.ag-roles button),input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=file]),select{min-height:44px}
+input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=file]),select{font-size:16px;border-radius:12px} /* 16px stops iOS zoom-on-focus */
+button{transition:transform .2s ease,box-shadow .2s ease,filter .2s ease}
+button:active{transform:scale(.97)}
+:focus-visible{outline:3px solid #F2AE00;outline-offset:2px}
+/* Audio post card */
+.audio-post-card{display:flex;align-items:center;gap:12px;padding:14px;background:#fff;border-radius:16px;border-left:5px solid #650007}
+body.scl-night .audio-post-card{background:#2a0a12;color:#fbeedc}
+/* Floating voice-assist (reads the visible page aloud; uses browser speech only) */
+.fab-voice-assist{position:fixed;bottom:24px;right:24px;width:56px;height:56px;border-radius:50%;background:#650007;color:#fff;border:3px solid #F2AE00;display:grid;place-items:center;font-size:24px;box-shadow:0 6px 20px rgba(0,0,0,.25);cursor:pointer;z-index:999;padding:0}
+.fab-voice-assist.speaking{animation:sclPulse 1.2s ease-in-out infinite}
+@keyframes sclPulse{0%,100%{box-shadow:0 0 0 0 rgba(242,174,0,.7)}50%{box-shadow:0 0 0 14px rgba(242,174,0,0)}}
+/* Durability add-ons */
+#sclNetBar{position:fixed;left:50%;top:max(10px,env(safe-area-inset-top));transform:translate(-50%,-140%);background:#650007;color:#fff;border:2px solid #F2AE00;padding:8px 16px;border-radius:999px;font:700 13px/1.2 system-ui,sans-serif;z-index:2147483600;transition:transform .35s ease;pointer-events:none}
+#sclNetBar.show{transform:translate(-50%,0)}
+#sclToTop{position:fixed;left:16px;bottom:24px;width:44px;height:44px;border-radius:50%;background:#fff;color:#650007;border:2px solid #F2AE00;font-size:20px;display:grid;place-items:center;padding:0;box-shadow:0 4px 14px rgba(0,0,0,.2);z-index:998;opacity:0;pointer-events:none;transition:opacity .25s}
+#sclToTop.show{opacity:1;pointer-events:auto}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+img{max-width:100%;height:auto}
+@media(prefers-reduced-motion:reduce){#sclAmbient .blob,#sclAmbient .mote,.fab-voice-assist.speaking{animation:none!important}#sclAmbient .mote{display:none}html{scroll-behavior:auto}}
+@media print{#sclAmbient,.fab-voice-assist,#sclToTop,#sclNetBar{display:none!important}}
+</style>
+<div id="sclAmbient" aria-hidden="true"><i class="blob b1"></i><i class="blob b2"></i><i class="blob b3"></i><i class="blob b4"></i></div>
+<button class="fab-voice-assist" id="sclVoiceFab" type="button" aria-label="Read this page aloud" title="Read this page aloud" hidden>🔊</button>
+<button id="sclToTop" type="button" aria-label="Back to top" title="Back to top">↑</button>
+<div id="sclNetBar" role="status" aria-live="polite"></div>
+<script id="scl-ux-enhancements-js">
+(function(){
+ 'use strict';
+ var d=document,w=window;
+ function ready(f){d.readyState!=='loading'?f():d.addEventListener('DOMContentLoaded',f)}
+ ready(function(){
+  /* floating motifs (pure decoration, pauses when tab hidden or motion reduced) */
+  var amb=d.getElementById('sclAmbient'),reduce=w.matchMedia&&w.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  if(amb&&!reduce){
+   var icons=['⭐','📚','✏️','🎓','🔔','🌟','📖'],n=w.innerWidth<700?7:12;
+   for(var i=0;i<n;i++){var m=d.createElement('span');m.className='mote';m.textContent=icons[i%icons.length];
+    m.style.left=(Math.random()*96)+'%';m.style.fontSize=(14+Math.random()*16)+'px';
+    m.style.animationDuration=(18+Math.random()*22)+'s';m.style.animationDelay=(-Math.random()*30)+'s';
+    m.style.setProperty('--dx',(Math.random()*120-60)+'px');amb.appendChild(m)}
+   d.addEventListener('visibilitychange',function(){amb.style.display=d.hidden?'none':''});
+  }
+  /* auto-glass: apply to existing cards without touching their markup */
+  try{d.querySelectorAll('.scl-v300-card,.hv2-card,.news-card,.post-card').forEach(function(e){e.classList.add('glass-card')})}catch(e){}
+  /* back to top */
+  var tt=d.getElementById('sclToTop');
+  w.addEventListener('scroll',function(){tt.classList.toggle('show',(w.scrollY||0)>600)},{passive:true});
+  tt.addEventListener('click',function(){w.scrollTo({top:0})});
+  /* online/offline notice */
+  var nb=d.getElementById('sclNetBar'),t;
+  function net(msg,keep){nb.textContent=msg;nb.classList.add('show');clearTimeout(t);if(!keep)t=setTimeout(function(){nb.classList.remove('show')},2600)}
+  w.addEventListener('offline',function(){net('You are offline. Some features need internet.',true)});
+  w.addEventListener('online',function(){net('Back online')});
+  /* voice assist: reads visible headings/text via the browser's own speech engine */
+  var fab=d.getElementById('sclVoiceFab'),ss=w.speechSynthesis;
+  if(ss&&w.SpeechSynthesisUtterance){
+   fab.hidden=false;
+   fab.addEventListener('click',function(){
+    if(ss.speaking){ss.cancel();fab.classList.remove('speaking');return}
+    var scope=d.querySelector('.modal.open,.modal.show,[role=dialog]:not([hidden])')||d.querySelector('main')||d.body,txt=[];
+    scope.querySelectorAll('h1,h2,h3,p,li').forEach(function(e){if(e.offsetParent!==null&&!e.closest('#sclShortcutPanel')){var s=(e.innerText||'').trim();if(s)txt.push(s)}});
+    var u=new SpeechSynthesisUtterance(txt.join('. ').slice(0,3500));u.lang=d.documentElement.lang||'en';
+    u.onend=u.onerror=function(){fab.classList.remove('speaking')};fab.classList.add('speaking');ss.speak(u)});
+   w.addEventListener('pagehide',function(){ss.cancel()});
+  }
+  /* keep copyright year current forever */
+  d.querySelectorAll('[data-year],.scl-year').forEach(function(e){e.textContent=new Date().getFullYear()});
+ });
+ /* never let one failing script blank the page */
+ w.addEventListener('error',function(e){try{console.warn('SCL non-fatal:',e.message)}catch(_){}},true);
+})();
+</script>
+
 </body></html>
