@@ -113,7 +113,7 @@ if(typeof window.esc!=="function"){window.esc=function(v){return String(v==null?
 </script>
 <script id="scl-build-refresh">
 /* One-time refresh: clears old cached copies of the site so visitors never see an outdated gate. */
-(function(){try{var V="2026-10-02-redesign-v2",K="sclBuild";if(localStorage.getItem(K)===V)return;localStorage.setItem(K,V);
+(function(){try{var V="2026-10-07-uiux-parent-whatsapp-v3",K="sclBuild";if(localStorage.getItem(K)===V)return;localStorage.setItem(K,V);
 var jobs=[];
 if(window.caches&&caches.keys)jobs.push(caches.keys().then(function(ks){return Promise.all(ks.map(function(x){return caches.delete(x)}))}));
 if(navigator.serviceWorker&&navigator.serviceWorker.getRegistrations)jobs.push(navigator.serviceWorker.getRegistrations().then(function(rs){return Promise.all(rs.map(function(r){return r.update().catch(function(){})}))}));
@@ -121,7 +121,7 @@ if(jobs.length)Promise.all(jobs).then(function(){if(!sessionStorage.getItem("scl
 </script>
 <meta content="#650007" name="theme-color"/><meta name="description" content="Shining Child Leaders School — quality education, experienced teachers and strong moral discipline."/>
 <meta charset="utf-8"/><meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
-<meta content="SCL Official Website V1025" name="scl-version"/>
+<meta content="SCL Official Website V1026" name="scl-version"/>
 <meta content="mdmasterdan@gmail.com" name="creator-automation-email"/>
 <title>Shining Child Leaders School — Official Website</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -768,6 +768,31 @@ html,body{max-width:100%;overflow-x:hidden}
 
 #accessGate::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='90' viewBox='0 0 90 90'%3E%3Cpath d='M33 12h24l21 21v24L57 78H33L12 57V33z' fill='none' stroke='%23e3b23c' stroke-opacity='.16' stroke-width='1.2'/%3E%3Cpath d='M0 -5l5 5-5 5-5-5zM90 -5l5 5-5 5-5-5zM0 85l5 5-5 5-5-5zM90 85l5 5-5 5-5-5z' fill='%23e3b23c' fill-opacity='.30'/%3E%3C/svg%3E");opacity:.55}
 </style>
+
+<style id="scl-ui-ux-final-polish">
+/* Final compact UX layer: clearer hierarchy, safer tap targets, fewer visual collisions. */
+body{line-height:1.45}
+.wrap{width:min(94%,1200px)}
+button,a{ -webkit-tap-highlight-color:transparent }
+.btn,.quick button,.scl-shortcut-item,.worker-btn{min-height:42px}
+.hero{box-shadow:0 16px 38px rgba(80,0,4,.18)}
+.hero h2{letter-spacing:-.02em}
+.announcement{box-shadow:0 7px 20px rgba(90,0,16,.08)}
+.quick button{transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease}
+.quick button:hover,.quick button:focus-visible{transform:translateY(-2px);box-shadow:0 8px 20px rgba(90,0,16,.12);border-color:#d6ae53;outline:none}
+.scl-contact-card,.panel,.about>div{transition:box-shadow .16s ease,transform .16s ease}
+.scl-contact-card:hover,.panel:hover{box-shadow:0 10px 24px rgba(90,0,16,.10)}
+@media(max-width:600px){
+  .top{font-size:11px}
+  .head{gap:8px}
+  .brand h1{line-height:1.05}
+  .hero h2{line-height:.98}
+  nav div{justify-content:flex-start}
+  nav a{padding:12px 11px}
+  .quick button{padding:13px 8px}
+}
+</style>
+
 </head>
 <body>
 <!-- ACCESS GATE (merged from the access-gate page) -->
@@ -2307,7 +2332,7 @@ function rankHtml(d){const next=d.next_due_date?rankDate(d.next_due_date):'Not d
     let saved=null;try{saved=await api('/api/registrations',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)})}catch(_){}
     if(!saved){d.status='New';d.registrationId='REG-'+Date.now();d.studentId=d.studentId||'LOCAL-'+Date.now();d.accessPin=d.accessPin||'123456';try{localStorage.setItem('lastRegistration',JSON.stringify(d))}catch(_){}saved=d;toast('Registration saved on this device. Connect the SCL backend to make it official.')}else toast('Registration submitted successfully.');
     window.__sclParentChildRelationship='';window.__sclParentChildPhone='';window.__sclParentChildEmail='';
-    closeM('reg');if(saved&&saved.studentId){try{document.dispatchEvent(new CustomEvent('scl:student-registered',{detail:{studentId:saved.studentId,className:saved.class||d.class||selectedClass}}))}catch(_){}alert('Registration successful.\nStudent ID: '+saved.studentId+'\nResult PIN: '+saved.accessPin+(saved.officialAcademicEmail?'\nOfficial Academic Email: '+saved.officialAcademicEmail:''));openFees(saved.class||d.class||selectedClass)}
+    closeM('reg');if(saved&&saved.studentId){try{document.dispatchEvent(new CustomEvent('scl:student-registered',{detail:{studentId:saved.studentId,className:saved.class||d.class||selectedClass}}))}catch(_){}alert('Registration successful.\nStudent ID: '+saved.studentId+'\nResult PIN: '+saved.accessPin+(saved.officialAcademicEmail?'\nOfficial Academic Email: '+saved.officialAcademicEmail:''));openFees(saved.class||d.class||selectedClass);if((d.relationship==='Parent'||d.relationship==='Guardian')&&window.sclOfferParentGroup)setTimeout(window.sclOfferParentGroup,450)}
   },true)}
 })();
 </script>
@@ -8664,7 +8689,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
       const data=await rpc('scl_claim_existing_student',{p_full_name:matchedStudent.child_name,p_date_of_birth:matchedStudent.date_of_birth,p_student_id:matchedStudent.student_id,p_relationship:relationship,p_phone:phone||''});
       setStep(5);
       document.getElementById('sclPCCDone').innerHTML='<b>✅ Child successfully linked.</b><br>'+escPC(data?.child_name||matchedStudent.child_name)+' is now connected to your SCL account as '+escPC(data?.relationship||relationship)+'.<br><small>Student ID: '+escPC(data?.student_id||matchedStudent.student_id)+'</small>';
-      try{window.sclRefreshHome?.();}catch(_){}
+      try{window.sclRefreshHome?.();}catch(_){};if((relationship==='Parent'||relationship==='Guardian')&&window.sclOfferParentGroup)setTimeout(window.sclOfferParentGroup,450)
     }catch(e){
       st.innerHTML='<b>Could not complete the claim.</b><br>'+escPC(e?.message||'Please contact the school for assistance.');
     }
@@ -8688,6 +8713,105 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   };
 })();
 </script>
+
+<!-- SCL PARENT / GUARDIAN GENERAL WHATSAPP GROUP -->
+<style id="scl-parent-group-ui">
+#sclParentGroupModal{z-index:10080}
+#sclParentGroupModal .scl-parent-group-card{
+  width:min(520px,96vw); overflow:hidden; border-radius:24px;
+  background:#fffdf8; box-shadow:0 24px 80px rgba(0,0,0,.35);
+}
+.scl-parent-group-hero{
+  position:relative; min-height:150px; padding:28px 24px 22px;
+  color:#fff; overflow:hidden;
+  background:
+    linear-gradient(120deg,rgba(74,0,8,.94),rgba(101,0,7,.88)),
+    url("https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1200&q=82") center/cover;
+}
+.scl-parent-group-hero:after{
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background:radial-gradient(circle at 85% 15%,rgba(245,197,66,.35),transparent 35%);
+}
+.scl-parent-group-hero>*{position:relative;z-index:1}
+.scl-parent-group-hero h3{margin:0 0 7px;font-size:23px}
+.scl-parent-group-hero p{margin:0;line-height:1.45;font-size:13px;color:#fff8e6}
+.scl-parent-group-body{padding:20px 22px}
+.scl-parent-group-note{
+  display:flex;gap:10px;align-items:flex-start;padding:13px 14px;margin-bottom:15px;
+  border:1px solid #ead5b6;border-radius:14px;background:#fff7df;color:#4d3b2d;font-size:13px;line-height:1.45
+}
+.scl-parent-group-actions{display:grid;grid-template-columns:1fr;gap:9px}
+.scl-parent-group-actions button,.scl-parent-group-actions a{
+  width:100%;box-sizing:border-box;border-radius:12px;padding:13px 15px;
+  font-weight:800;text-align:center;text-decoration:none;cursor:pointer
+}
+.scl-parent-group-join{
+  border:0;background:linear-gradient(135deg,#16a34a,#087f36);color:#fff;
+  box-shadow:0 8px 20px rgba(8,127,54,.24)
+}
+.scl-parent-group-skip{border:1px solid #d8c8af;background:#fff;color:#650007}
+.scl-parent-group-small{margin-top:11px;text-align:center;color:#786b5e;font-size:11px}
+@media(max-width:600px){.scl-parent-group-body{padding:16px}.scl-parent-group-hero{min-height:138px;padding:22px 18px}}
+/* Visual consistency: reuse the school's real in-file gallery imagery as subtle section accents. */
+.scl-learning-section{
+  background:
+    linear-gradient(90deg,rgba(255,255,255,.97),rgba(255,247,232,.94)),
+    url("https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1200&q=75") center/cover!important;
+}
+#about,#life,.scl-sec,.aac-section,#sclSocial{
+  background:
+    linear-gradient(rgba(255,255,255,.91),rgba(255,255,255,.91)),
+    url("https://images.unsplash.com/photo-1561489396-888724a1543d?auto=format&fit=crop&w=1200&q=75") center/cover!important;
+}
+.admission{
+  background:
+    linear-gradient(115deg,rgba(101,0,7,.97),rgba(101,0,7,.90)),
+    url("https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=1200&q=75") center/cover!important;
+}
+</style>
+<div aria-hidden="true" class="modal" id="sclParentGroupModal">
+  <div class="scl-parent-group-card">
+    <div class="scl-parent-group-hero">
+      <h3>👨‍👩‍👧‍👦 Join the SCL Parents & Guardians Group</h3>
+      <p>Welcome to the SCL parent community. This is the general WhatsApp group for registered parents and guardians.</p>
+    </div>
+    <div class="scl-parent-group-body">
+      <div class="scl-parent-group-note">
+        <span>📢</span>
+        <span>Please join the official group after your registration/child connection is completed. School-wide parent notices, updates and important information may be shared there.</span>
+      </div>
+      <div class="scl-parent-group-actions">
+        <a id="sclParentGroupJoin" class="scl-parent-group-join" href="https://chat.whatsapp.com/IJkuBDfiG8yIlUj4JTpRhf" target="_blank" rel="noopener noreferrer">
+          💬 JOIN THE GENERAL WHATSAPP GROUP
+        </a>
+        <button class="scl-parent-group-skip" type="button" onclick="sclCloseParentGroup()">I'll join later</button>
+      </div>
+      <div class="scl-parent-group-small">This invitation is shown only for the Parent / Guardian registration flow.</div>
+    </div>
+  </div>
+</div>
+<script id="scl-parent-group-js">
+(function(){
+  const GROUP='https://chat.whatsapp.com/IJkuBDfiG8yIlUj4JTpRhf';
+  window.SCL_PARENT_WHATSAPP_GROUP=GROUP;
+  window.sclCloseParentGroup=function(){
+    const m=document.getElementById('sclParentGroupModal');
+    if(!m)return;
+    m.classList.remove('open');m.style.display='none';m.setAttribute('aria-hidden','true');
+    if(!document.querySelector('.modal.open'))document.body.classList.remove('modal-open');
+  };
+  window.sclOfferParentGroup=function(){
+    const m=document.getElementById('sclParentGroupModal');
+    const a=document.getElementById('sclParentGroupJoin');
+    if(!m)return;
+    if(a)a.href=GROUP;
+    m.classList.add('open');m.style.display='flex';m.setAttribute('aria-hidden','false');
+    document.body.classList.add('modal-open');
+  };
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')window.sclCloseParentGroup?.()});
+})();
+</script>
+
 <!-- SCL V91: GLOBAL SCHOOL IDENTITY + SINGLE SCHOOL-WIDE REGISTRATION SEQUENCE -->
 <style id="scl-v91-global-identity-css">
 #sclIdentityModal .scl-id-box{max-width:780px;width:min(96vw,780px)}
