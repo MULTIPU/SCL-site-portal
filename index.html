@@ -11014,4 +11014,227 @@ html body .hv2,html body main.wrap{background:transparent!important}
  var n=0,t=setInterval(function(){watch();if(++n>80)clearInterval(t)},500);
 })();
 </script>
+<style id="scl-v300-patch">
+/* ===== SCL v300: liquid-glass WhatsApp, smooth page-by-page scroll, role-based Add sheet ===== */
+html body .wa{
+  background:linear-gradient(135deg,rgba(255,255,255,.34) 0%,rgba(255,255,255,.07) 42%,rgba(8,92,48,.30) 100%)!important;
+  -webkit-backdrop-filter:blur(16px) saturate(185%) brightness(1.08);
+  backdrop-filter:blur(16px) saturate(185%) brightness(1.08);
+  border:1px solid rgba(255,255,255,.6)!important;
+  border-radius:999px!important;
+  color:#fff!important;
+  text-shadow:0 1px 3px rgba(0,0,0,.55);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.8),inset 0 -10px 16px rgba(255,255,255,.10),inset 0 0 0 1px rgba(255,255,255,.10),0 10px 26px rgba(0,0,0,.24),0 0 0 1px rgba(37,211,102,.28)!important;
+  overflow:hidden;isolation:isolate;
+  transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s ease;
+  -webkit-tap-highlight-color:transparent;
+}
+html body .wa::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:-1;
+  background:linear-gradient(180deg,rgba(255,255,255,.55),rgba(255,255,255,0) 50%);opacity:.6}
+html body .wa:hover{transform:translateY(-1px);box-shadow:inset 0 1px 1px rgba(255,255,255,.9),0 14px 30px rgba(0,0,0,.28),0 0 0 1px rgba(37,211,102,.4)!important}
+html body .wa:active{transform:scale(.96)}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  html body .wa{background:rgba(22,160,80,.72)!important}
+}
+
+/* ---- smoother scrolling ---- */
+html{scroll-behavior:smooth;scroll-snap-type:y proximity;scroll-padding-bottom:64px;overscroll-behavior-y:none}
+html:has(body.modal-open),html.scl-add-open{scroll-snap-type:none}
+main.wrap>section{scroll-snap-align:start;scroll-snap-stop:normal}
+#about,#schoolStats,#life,#sclSocial{content-visibility:auto;contain-intrinsic-size:auto 640px}
+button,a,[role=button]{touch-action:manipulation}
+html.scl-scrolling body *,html.scl-scrolling body *::before,html.scl-scrolling body *::after{
+  -webkit-backdrop-filter:none!important;backdrop-filter:none!important;animation-play-state:paused!important}
+html.scl-scrolling body .wa{-webkit-backdrop-filter:blur(16px) saturate(185%) brightness(1.08)!important;backdrop-filter:blur(16px) saturate(185%) brightness(1.08)!important}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;scroll-snap-type:none}}
+
+/* ---- Add sheet ---- */
+#sclAddSheet{position:fixed;inset:0;z-index:100000;display:none;align-items:flex-end;justify-content:center;background:rgba(10,0,4,.55);-webkit-tap-highlight-color:transparent}
+#sclAddSheet.open{display:flex}
+#sclAddSheet .scl-add-card{width:min(520px,100%);max-height:88vh;max-height:88dvh;display:flex;flex-direction:column;background:#fffaf0;color:#2a0f12;border-radius:22px 22px 0 0;box-shadow:0 -12px 40px rgba(0,0,0,.35);animation:sclAddUp .26s cubic-bezier(.2,.8,.2,1);padding-bottom:env(safe-area-inset-bottom,0px)}
+@keyframes sclAddUp{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
+#sclAddSheet .scl-add-head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px 10px;border-bottom:1px solid #ead5b6}
+#sclAddSheet .scl-add-head b{font-size:1.1rem;color:#450000}
+#sclAddSheet .scl-add-x{border:0;background:#f2ae00;color:#450000;width:38px;height:38px;border-radius:50%;font-size:16px;font-weight:700;cursor:pointer}
+#sclAddSheet .scl-add-body{padding:14px 18px 20px;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+#sclAddSheet .scl-add-note{font-size:.85rem;color:#6b4b2a;background:#fff3d2;border:1px solid #f2dca0;border-radius:12px;padding:10px 12px;margin:0 0 12px}
+#sclAddSheet .scl-add-item{display:flex;align-items:center;gap:12px;width:100%;text-align:left;min-height:56px;margin:0 0 8px;padding:10px 14px;border:1px solid #ead5b6;border-radius:14px;background:#fff;color:inherit;font:inherit;cursor:pointer}
+#sclAddSheet .scl-add-item:active{background:#fff3d2}
+#sclAddSheet .scl-add-item .ic{font-size:1.5rem}
+#sclAddSheet .scl-add-item b{display:block;font-size:.98rem}
+#sclAddSheet .scl-add-item small{color:#7a5a38}
+#sclAddSheet label{display:block;font-size:.82rem;font-weight:700;color:#450000;margin:10px 0 4px}
+#sclAddSheet input,#sclAddSheet textarea{width:100%;box-sizing:border-box;font:inherit;font-size:16px;padding:11px 12px;border:1px solid #d8c093;border-radius:12px;background:#fff;color:#2a0f12}
+#sclAddSheet textarea{min-height:110px;resize:vertical}
+#sclAddSheet .scl-add-actions{display:flex;gap:10px;margin-top:16px}
+#sclAddSheet .scl-add-btn{flex:1;min-height:46px;border-radius:12px;border:1px solid #450000;background:#fff;color:#450000;font:inherit;font-weight:700;cursor:pointer}
+#sclAddSheet .scl-add-btn.primary{background:#450000;color:#f2ae00}
+#sclAddSheet .scl-add-btn[disabled]{opacity:.6}
+#sclAddSheet .scl-add-err{margin-top:10px;color:#a00018;font-size:.88rem}
+#sclAddSheet .scl-add-card2{border:1px solid #ead5b6;border-radius:14px;background:#fff;padding:12px;margin:0 0 10px}
+#sclAddSheet .scl-add-card2 small{display:block;color:#7a5a38;margin-top:2px}
+#sclAddSheet .scl-add-done{text-align:center;padding:10px 0}
+#sclAddSheet .scl-add-done .big{font-size:2.4rem}
+body.scl-night #sclAddSheet .scl-add-card{background:#111827;color:#e5e7eb}
+body.scl-night #sclAddSheet .scl-add-head{border-color:#475569}
+body.scl-night #sclAddSheet .scl-add-head b,body.scl-night #sclAddSheet label{color:#f2ae00}
+body.scl-night #sclAddSheet .scl-add-item,body.scl-night #sclAddSheet .scl-add-card2,body.scl-night #sclAddSheet input,body.scl-night #sclAddSheet textarea{background:#1f2937;color:#e5e7eb;border-color:#475569}
+body.scl-night #sclAddSheet .scl-add-note{background:#2a2410;color:#f3dca0;border-color:#6b5a20}
+body.scl-night #sclAddSheet .scl-add-btn{background:#1f2937;color:#f2ae00;border-color:#f2ae00}
+body.scl-night #sclAddSheet .scl-add-btn.primary{background:#f2ae00;color:#450000}
+</style>
+<script id="scl-v300-add-scroll-glass">
+(function(){'use strict';
+if(window.__sclV300)return;window.__sclV300=true;
+var SCHOOL='shiningchildleader@gmail.com';
+function $(s,r){return (r||document).querySelector(s)}
+function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]})}
+function auth(){try{return JSON.parse(sessionStorage.getItem('sclAuthSession')||'null')}catch(e){return null}}
+function live(){var a=auth();return !!(a&&a.accessToken&&a.user)}
+function roles(){var a=auth();return ((a&&a.roles)||[]).map(function(r){return String(r).toLowerCase()})}
+function level(){var r=roles();
+  if(r.some(function(x){return /^(developer|technical_admin|management_admin|affairs_admin)$/.test(x)}))return 'admin';
+  if(r.some(function(x){return /teacher/.test(x)}))return 'teacher';
+  if(r.some(function(x){return /staff|worker/.test(x)}))return 'staff';
+  if(r.some(function(x){return /parent|guardian/.test(x)}))return 'parent';
+  return 'other'}
+var LV_LABEL={admin:'Administrator',teacher:'Teacher',staff:'Non-teaching staff'};
+
+/* ---------- Supabase REST (table: scl_registrations, see scl_registrations.sql) ---------- */
+function supa(){return (window.SCL_SUPABASE_URL||'').replace(/\/$/,'')}
+function hdr(extra){var a=auth()||{};var h={apikey:window.SCL_SUPABASE_PUBLISHABLE_KEY,Authorization:'Bearer '+(a.accessToken||''),'Content-Type':'application/json'};for(var k in (extra||{}))h[k]=extra[k];return h}
+function rest(path,opt){opt=opt||{};opt.headers=hdr(opt.headers);var f=window.__sclRawFetch||window.fetch;
+  return f.call(window,supa()+'/rest/v1/'+path,opt).then(function(r){return r.text().then(function(t){var d=null;try{d=t?JSON.parse(t):null}catch(e){}
+    if(!r.ok){var m=(d&&(d.message||d.error))||('Request failed ('+r.status+')');
+      if(r.status===404||/scl_registrations|relation|schema cache/i.test(m))m='The registrations table is not set up yet. Run scl_registrations.sql in the Supabase SQL editor.';
+      else if(r.status===401||r.status===403||/row-level security|permission/i.test(m))m='Your account is not allowed to do that.';
+      throw new Error(m)}
+    return d})})}
+
+var KINDS={
+  parent:{icon:'👪',label:'Register a Parent / Guardian',sub:'Create a parent or guardian record',fields:[['full_name','Full name','text',1],['phone','Phone (WhatsApp)','tel',1],['email','Email','email',0],['child_name','Child’s name','text',0],['child_class','Child’s class','text',0]]},
+  student:{icon:'🎒',label:'Register a Student',sub:'New student with parent contact',fields:[['full_name','Student full name','text',1],['class_name','Class','text',1],['parent_name','Parent / guardian name','text',1],['parent_phone','Parent phone','tel',1],['parent_email','Parent email','email',0]]},
+  teacher:{icon:'👩‍🏫',label:'Register a Teacher',sub:'Teaching staff member',fields:[['full_name','Full name','text',1],['phone','Phone','tel',1],['email','Email (their Google sign-in email)','email',1],['subjects','Subjects / classes','text',0]]},
+  staff:{icon:'🧰',label:'Register Non-teaching Staff',sub:'Admin office, security, kitchen, etc.',fields:[['full_name','Full name','text',1],['phone','Phone','tel',1],['email','Email','email',0],['department','Role / department','text',0]]},
+  post:{icon:'📝',label:'New Post / Announcement',sub:'Share news with the school',fields:[['title','Title','text',1],['body','Message','textarea',1]]}
+};
+function menuFor(lv){return lv==='admin'?['parent','student','teacher','staff','post']:['parent','student','post']}
+
+/* ---------- sheet UI ---------- */
+var sheet=null;
+function body(){return $('#sclAddBody')}
+function title(t){var el=$('#sclAddTitle');if(el)el.textContent=t}
+function build(){
+  if(sheet)return sheet;
+  sheet=document.createElement('div');sheet.id='sclAddSheet';sheet.setAttribute('role','dialog');sheet.setAttribute('aria-modal','true');sheet.setAttribute('aria-hidden','true');
+  sheet.innerHTML='<div class="scl-add-card"><div class="scl-add-head"><b id="sclAddTitle">Add</b><button type="button" class="scl-add-x" aria-label="Close" data-a="close">✕</button></div><div class="scl-add-body" id="sclAddBody"></div></div>';
+  document.body.appendChild(sheet);
+  sheet.addEventListener('click',onClick);
+  sheet.addEventListener('submit',onSubmit);
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')close()});
+  return sheet}
+function open(){build();sheet.classList.add('open');sheet.setAttribute('aria-hidden','false');document.documentElement.classList.add('scl-add-open')}
+function close(){if(!sheet)return;sheet.classList.remove('open');sheet.setAttribute('aria-hidden','true');document.documentElement.classList.remove('scl-add-open')}
+
+function renderMenu(){
+  var lv=level(),b=body();title('Add');
+  var h='<p class="scl-add-note">'+(lv==='admin'
+    ?'Signed in as <b>Administrator</b>. Everything you add is active immediately.'
+    :'Signed in as <b>'+esc(LV_LABEL[lv]||'Staff')+'</b>. What you add is sent to the school by email and goes live once an administrator confirms it.')+'</p>';
+  menuFor(lv).forEach(function(k){var c=KINDS[k];h+='<button type="button" class="scl-add-item" data-a="kind" data-k="'+k+'"><span class="ic">'+c.icon+'</span><span><b>'+esc(c.label)+'</b><small>'+esc(c.sub)+'</small></span></button>'});
+  if(lv==='admin')h+='<button type="button" class="scl-add-item" data-a="approvals"><span class="ic">✅</span><span><b>Pending approvals</b><small>Confirm entries from teachers and staff</small></span></button>';
+  b.innerHTML=h}
+
+function renderForm(k){
+  var c=KINDS[k],b=body(),lv=level();title(c.label);
+  var h='<form data-form="'+k+'" autocomplete="off">';
+  if(lv!=='admin')h+='<p class="scl-add-note">This will be sent to the school for confirmation before it goes live.</p>';
+  c.fields.forEach(function(f){
+    h+='<label for="sclF_'+f[0]+'">'+esc(f[1])+(f[3]?' *':'')+'</label>';
+    h+=f[2]==='textarea'?'<textarea id="sclF_'+f[0]+'" name="'+f[0]+'"'+(f[3]?' required':'')+'></textarea>'
+      :'<input id="sclF_'+f[0]+'" name="'+f[0]+'" type="'+f[2]+'"'+(f[3]?' required':'')+'>'});
+  h+='<div class="scl-add-err" id="sclAddErr" role="alert"></div><div class="scl-add-actions"><button type="button" class="scl-add-btn" data-a="menu">Back</button><button type="submit" class="scl-add-btn primary">'+(lv==='admin'?'Register':'Send for confirmation')+'</button></div></form>';
+  b.innerHTML=h;var first=$('input,textarea',b);if(first&&!/Mobi|Android/i.test(navigator.userAgent))first.focus()}
+
+function renderDone(k,data,res){
+  var c=KINDS[k],b=body(),adm=level()==='admin',n=data.full_name||data.title||'';title(adm?'Saved':'Sent');
+  var mail=res&&res.mail,mailLine='';
+  if(!adm){mailLine=mail==='auto'?'The school has been emailed.':mail==='queued'?'The email is queued in the Notification Outbox — open it to send.':'The school can see it under Pending approvals.'}
+  b.innerHTML='<div class="scl-add-done"><div class="big">'+(adm?'✅':'📨')+'</div><p><b>'+esc(n)+'</b><br>'+(adm?'is now active.':'is waiting for confirmation.')+'</p>'+(mailLine?'<p class="scl-add-note">'+esc(mailLine)+'</p>':'')+'</div><div class="scl-add-actions"><button type="button" class="scl-add-btn" data-a="menu">Done</button><button type="button" class="scl-add-btn primary" data-a="kind" data-k="'+k+'">Add another</button></div>'}
+
+function summarize(d){var parts=[];for(var k in d){if(d[k]&&k!=='body')parts.push(k.replace(/_/g,' ')+': '+d[k])}return parts.join(' · ')}
+function save(k,data){
+  if(!live())return Promise.reject(new Error('Please sign in first.'));
+  var lv=level(),adm=lv==='admin',a=auth()||{},who=(a.user&&(a.user.email||a.user.name))||'';
+  var row={kind:k,status:adm?'active':'pending',full_name:data.full_name||data.title||'',email:data.email||data.parent_email||'',phone:data.phone||data.parent_phone||'',details:data,submitted_by_name:who,submitted_by_role:lv};
+  return rest('scl_registrations',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify(row)}).then(function(rows){
+    var res={row:rows&&rows[0],mail:'none'};
+    if(adm||!window.sclNotifyBatch)return res;
+    var link=location.origin+location.pathname+'?approve=1';
+    var text='Approval needed.\n\n'+(KINDS[k].label)+' submitted by '+(who||'a staff member')+' ('+(LV_LABEL[lv]||lv)+').\n\n'+summarize(data)+'\n\nTo confirm or reject, sign in as an administrator, then open: '+link;
+    var to=(a.user&&a.user.email)||SCHOOL;
+    return Promise.resolve(window.sclNotifyBatch([{email:to,subject:'Registration awaiting school confirmation',text:text}],{kind:'registration-approval',summary:'Approval needed: '+KINDS[k].label+' — '+(data.full_name||data.title||'')})).then(function(r){res.mail=r&&r.mode==='auto'?'auto':'queued';return res},function(){res.mail='queued';return res})
+  })}
+
+function onSubmit(e){
+  var f=e.target;if(!f||!f.matches||!f.matches('form[data-form]'))return;
+  e.preventDefault();
+  var k=f.getAttribute('data-form'),data={};
+  new FormData(f).forEach(function(v,key){data[key]=String(v).trim()});
+  var btn=$('button[type=submit]',f),err=$('#sclAddErr'),label=btn.textContent;
+  btn.disabled=true;btn.textContent='Saving…';if(err)err.textContent='';
+  save(k,data).then(function(res){renderDone(k,data,res)}).catch(function(x){btn.disabled=false;btn.textContent=label;if(err)err.textContent=x.message||'Could not save. Please try again.'})}
+
+function renderApprovals(){
+  var b=body();title('Pending approvals');b.innerHTML='<p class="scl-add-note">Loading…</p>';
+  rest('scl_registrations?status=eq.pending&order=created_at.desc&limit=100').then(function(rows){
+    var h='<div class="scl-add-actions" style="margin:0 0 12px"><button type="button" class="scl-add-btn" data-a="menu">Back</button></div>';
+    if(!rows||!rows.length){b.innerHTML=h+'<p class="scl-add-note">Nothing is waiting for confirmation. ✔</p>';return}
+    rows.forEach(function(r){var c=KINDS[r.kind]||{icon:'•',label:r.kind};
+      h+='<div class="scl-add-card2"><b>'+c.icon+' '+esc(r.full_name||'(no name)')+'</b><small>'+esc(c.label)+' · by '+esc(r.submitted_by_name||'unknown')+' ('+esc(r.submitted_by_role||'')+')</small><small>'+esc(summarize(r.details||{}))+'</small>'
+       +'<div class="scl-add-actions"><button type="button" class="scl-add-btn" data-a="reject" data-id="'+esc(r.id)+'">Reject</button><button type="button" class="scl-add-btn primary" data-a="approve" data-id="'+esc(r.id)+'">Approve</button></div></div>'});
+    b.innerHTML=h}).catch(function(x){b.innerHTML='<div class="scl-add-actions" style="margin:0 0 12px"><button type="button" class="scl-add-btn" data-a="menu">Back</button></div><p class="scl-add-err">'+esc(x.message)+'</p>'})}
+
+function decide(id,status,btn){
+  if(btn)btn.disabled=true;
+  rest('scl_registrations?id=eq.'+encodeURIComponent(id),{method:'PATCH',headers:{Prefer:'return=representation'},body:JSON.stringify({status:status,reviewed_at:new Date().toISOString()})}).then(function(rows){
+    if(!rows||!rows.length)throw new Error('Not allowed — only administrators can confirm.');
+    renderApprovals()}).catch(function(x){if(btn)btn.disabled=false;if(window.toast)window.toast(x.message)})}
+
+function onClick(e){
+  if(e.target===sheet){close();return}
+  var t=e.target.closest&&e.target.closest('[data-a]');if(!t)return;
+  var a=t.getAttribute('data-a');
+  if(a==='close')close();
+  else if(a==='menu')renderMenu();
+  else if(a==='kind')renderForm(t.getAttribute('data-k'));
+  else if(a==='approvals')renderApprovals();
+  else if(a==='approve')decide(t.getAttribute('data-id'),'active',t);
+  else if(a==='reject')decide(t.getAttribute('data-id'),'rejected',t)}
+
+function openAdd(){
+  if(!live()){if(window.openM)window.openM('loginModal');return}
+  var lv=level();
+  if(lv==='parent'){if(window.pickRegistration)window.pickRegistration();return}
+  if(lv==='other'){if(window.toast)window.toast('Your account type can’t add records. Please contact the school office.');return}
+  build();renderMenu();open()}
+window.sclOpenAddSheet=openAdd;
+
+/* Capture on window so this runs before the older bottom-bar handler. */
+window.addEventListener('click',function(e){
+  var b=e.target.closest&&e.target.closest('.bottom .scl-bottom-plus');if(!b)return;
+  e.preventDefault();e.stopImmediatePropagation();openAdd()},true);
+
+/* Deep link from the approval email: ?approve=1 */
+try{if(new URLSearchParams(location.search).get('approve')){var tries=0,iv=setInterval(function(){
+  if(++tries>60){clearInterval(iv);return}
+  if(live()&&level()==='admin'){clearInterval(iv);build();open();renderApprovals()}},1000)}}catch(e){}
+
+/* ---------- scroll smoothness: pause heavy effects only while the page is moving ---------- */
+var st=null,root=document.documentElement;
+addEventListener('scroll',function(){
+  if(!root.classList.contains('scl-scrolling'))root.classList.add('scl-scrolling');
+  clearTimeout(st);st=setTimeout(function(){root.classList.remove('scl-scrolling')},140)},{passive:true});
+})();
+</script>
 </body></html>
