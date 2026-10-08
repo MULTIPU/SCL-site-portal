@@ -10989,4 +10989,29 @@ html body .hv2,html body main.wrap{background:transparent!important}
  new MutationObserver(function(){var h=document.getElementById('sclShortcutToggle');if(h&&h.style.display!=='none')h.style.setProperty('display','none','important')}).observe(document.body,{childList:true,subtree:true});
 })();
 </script>
+<!-- SCL v105: "Join the school group" step after registration. Edit the links below (GitHub) to change groups. -->
+<script id="scl-join-group-v105">
+(function(){
+ /* WhatsApp invite links by role. Leave '' to show no group for that role. */
+ var GROUPS={
+  parent:{name:'SCL Parents & Guardians group',url:'https://chat.whatsapp.com/BsJf2zGjbgX7hczSbaKsnd?s=sh&p=a&mlu=4&ilr=4'},
+  guardian:{name:'SCL Parents & Guardians group',url:'https://chat.whatsapp.com/BsJf2zGjbgX7hczSbaKsnd?s=sh&p=a&mlu=4&ilr=4'},
+  staff:{name:'SCL Staff group',url:''},
+  student:{name:'',url:''}
+ };
+ window.SCL_JOIN_GROUPS=GROUPS;
+ function role(){var b=document.querySelector('[data-r].ag-on');return b?b.getAttribute('data-r'):'parent'}
+ function card(r){var g=GROUPS[r];if(!g||!/^https:\/\/chat\.whatsapp\.com\//.test(g.url))return null;
+  var d=document.createElement('div');d.id='ngJoinGroup';d.setAttribute('role','status');
+  d.style.cssText='margin:12px 0;padding:14px;border-radius:16px;border:1px solid #f3dca0;background:rgba(255,255,255,.1);color:#f8f0dc;text-align:center;font:14px/1.4 system-ui,sans-serif';
+  d.innerHTML='<b style="display:block;color:#f3dca0;margin-bottom:4px">Next step: join the school group</b>Get school news and messages in the '+g.name+'. You can join now, even before you confirm your email.<br>';
+  var a=document.createElement('a');a.href=g.url;a.target='_blank';a.rel='noopener';a.textContent='Join on WhatsApp';
+  a.style.cssText='display:inline-block;margin-top:10px;padding:12px 20px;min-height:44px;box-sizing:border-box;border-radius:14px;background:#25d366;color:#06240f;font-weight:800;text-decoration:none';
+  d.appendChild(a);return d}
+ function watch(){var m=document.getElementById('m-r');if(!m||m.dataset.ngj)return;m.dataset.ngj=1;
+  new MutationObserver(function(){if(/account created/i.test(m.textContent||'')&&!document.getElementById('ngJoinGroup')){var c=card(role());if(c)m.insertAdjacentElement('afterend',c)}}).observe(m,{childList:true,characterData:true,subtree:true});
+  var f=m.closest('form')||m.parentElement;new MutationObserver(function(){var c=document.getElementById('ngJoinGroup');if(c&&!/account created/i.test(m.textContent||''))c.remove()}).observe(m,{childList:true,characterData:true,subtree:true})}
+ var n=0,t=setInterval(function(){watch();if(++n>80)clearInterval(t)},500);
+})();
+</script>
 </body></html>
