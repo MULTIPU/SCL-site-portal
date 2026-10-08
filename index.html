@@ -10770,6 +10770,49 @@ window.submitTeacherResult=async function(e){
 document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>window.sclShowResultSchedule?.(),900);});
 })();
 </script>
+
+<style id="scl-main-redesign-20261008">
+/* SCL MAIN PAGE — clean lock-screen visual language */
+:root{--scl-mar:#6b0f1f;--scl-mar2:#3d0812;--scl-gold:#e3b23c;--scl-gold2:#a8791a;--scl-cream:#fbf1dc;--scl-blue:#1f4fd8}
+html,body{background:radial-gradient(900px 500px at 15% 10%,rgba(227,178,60,.22),transparent 60%),radial-gradient(800px 600px at 90% 90%,rgba(31,79,216,.28),transparent 60%),linear-gradient(160deg,#5a0c1a,#2e0610 60%,#0f1233)!important;color:#fff!important;background-attachment:fixed!important}
+body::before{opacity:.09!important;background:repeating-linear-gradient(45deg,#fff 0 1px,transparent 1px 22px),repeating-linear-gradient(-45deg,#fff 0 1px,transparent 1px 22px)!important;background-size:auto!important}
+main.wrap{width:min(1120px,100% - 20px)!important;margin:0 auto!important;padding:0 0 90px!important}
+/* Compact badge bar: replaces the oversized floating logo hub. */
+.scl-main-badgebar{position:sticky;top:8px;z-index:2147482000;display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:8px 0 10px;padding:7px;border:1px solid rgba(227,178,60,.45);border-radius:17px;background:rgba(43,5,12,.72);backdrop-filter:blur(16px) saturate(140%);box-shadow:0 12px 30px rgba(0,0,0,.3)}
+.scl-main-badgebar button{min-height:42px;border:1px solid rgba(227,178,60,.35);border-radius:12px;background:rgba(255,255,255,.07);color:var(--scl-cream);font-weight:800;font-size:11px;cursor:pointer;transition:.18s}
+.scl-main-badgebar button:hover,.scl-main-badgebar button:focus-visible{background:linear-gradient(135deg,var(--scl-gold),var(--scl-gold2));color:#2b0509;transform:translateY(-1px)}
+nav{position:sticky!important;top:65px!important;z-index:2147481900!important;margin:0 0 10px!important;padding:5px!important;border:1px solid rgba(227,178,60,.32)!important;border-radius:14px!important;background:rgba(43,5,12,.62)!important;backdrop-filter:blur(14px)!important;box-shadow:0 8px 24px rgba(0,0,0,.25)!important}
+nav>div{display:flex!important;gap:4px!important;overflow-x:auto!important;scrollbar-width:none!important}nav>div::-webkit-scrollbar{display:none}nav a{color:var(--scl-cream)!important;border:0!important;background:transparent!important;border-radius:10px!important;padding:8px 10px!important;font-size:10px!important;white-space:nowrap!important}nav a.active,nav a:hover{background:var(--scl-gold)!important;color:#2b0509!important}
+.announcement{margin:0 0 10px!important;border:1px solid rgba(227,178,60,.45)!important;border-radius:15px!important;background:linear-gradient(90deg,rgba(107,15,31,.88),rgba(61,8,18,.78))!important;color:var(--scl-cream)!important;box-shadow:0 10px 25px rgba(0,0,0,.25)!important;overflow:hidden}
+.announcement strong{background:var(--scl-gold)!important;color:#2b0509!important;padding:10px 12px!important}.announcement p{padding:0 12px!important}
+.scl-home-action-clean{margin:0 0 12px!important;padding:10px!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;border:1px solid rgba(227,178,60,.32)!important;border-radius:18px!important;background:rgba(43,5,12,.52)!important;backdrop-filter:blur(14px)!important;box-shadow:0 14px 35px rgba(0,0,0,.25)!important}
+.scl-home-action-clean>button{min-height:78px!important;border:1px solid rgba(227,178,60,.28)!important;border-radius:14px!important;background:rgba(255,255,255,.075)!important;color:var(--scl-cream)!important;box-shadow:none!important}
+.scl-home-action-clean>button:hover{background:rgba(227,178,60,.16)!important;box-shadow:0 8px 20px rgba(0,0,0,.2)!important}
+.scl-home-action-clean>button b{color:var(--scl-cream)!important;font-size:11px!important}.scl-home-action-clean>button small{color:rgba(251,241,220,.72)!important}.scl-home-action-clean>button .icon{background:linear-gradient(135deg,var(--scl-gold),var(--scl-gold2))!important;box-shadow:none!important}
+.scl-home-action-clean>.scl-notice-banner{background:linear-gradient(90deg,rgba(227,178,60,.18),rgba(107,15,31,.7))!important;border-color:var(--scl-gold)!important}
+.scl-home-action-clean>.scl-notice-banner b{color:var(--scl-cream)!important}
+/* The old oversized landing hero is no longer needed on the normal page. */
+.hero{display:none!important}
+.about,#life,.scl-sec,.aac-section,#sclSocial,#schoolStats,.scl-footer{border:1px solid rgba(227,178,60,.28)!important;border-radius:18px!important;background:rgba(43,5,12,.58)!important;color:var(--scl-cream)!important;backdrop-filter:blur(12px)!important;box-shadow:0 12px 30px rgba(0,0,0,.22)!important}
+.about h3,.scl-sec h2{color:var(--scl-cream)!important}.about p,.about li,.scl-sec p{color:rgba(251,241,220,.78)!important}
+#schoolStats{background:linear-gradient(135deg,rgba(61,8,18,.92),rgba(107,15,31,.85),rgba(168,121,26,.72))!important}
+.scl-logo-coin-dock{display:none!important}
+@media(min-width:900px){.scl-home-action-clean{grid-template-columns:repeat(4,minmax(0,1fr))!important}.scl-home-action-clean>.scl-home-action-10{grid-column:1/-1!important}}
+@media(max-width:600px){main.wrap{width:calc(100% - 12px)!important;padding-bottom:78px!important}.scl-main-badgebar{top:5px;grid-template-columns:repeat(4,1fr);margin:5px 0 7px;padding:5px}.scl-main-badgebar button{min-height:40px;font-size:9px;padding:4px 2px}nav{top:57px!important}.scl-home-action-clean{grid-template-columns:1fr 1fr!important;padding:7px!important}.scl-home-action-clean>button{min-height:76px!important}.scl-home-action-clean>.scl-home-action-10,.scl-home-action-clean>.scl-notice-banner{grid-column:1/-1!important}}
+</style>
+<script id="scl-main-redesign-20261008-js">
+(function(){
+  function addBadgeBar(){
+    if(document.querySelector('.scl-main-badgebar')) return;
+    const main=document.querySelector('main.wrap'); if(!main) return;
+    const bar=document.createElement('div'); bar.className='scl-main-badgebar'; bar.setAttribute('aria-label','SCL quick badges');
+    bar.innerHTML='<button type="button" data-scl-b="student">🎖️ Student Leaders</button><button type="button" data-scl-b="staff">🏅 Staff Rank</button><button type="button" data-scl-b="medals">🥇 Medals & Records</button><button type="button" data-scl-b="anthem">🎵 Anthem</button>';
+    main.insertBefore(bar,main.firstElementChild);
+    bar.addEventListener('click',function(e){const b=e.target.closest('[data-scl-b]');if(!b)return;const k=b.dataset.sclB;try{if(k==='student'&&typeof openSclLeadership==='function')openSclLeadership();else if(k==='staff'&&typeof sclOpenServiceRank==='function')sclOpenServiceRank();else if(k==='medals'&&typeof openLogoGallery==='function'){openLogoGallery();setTimeout(()=>{if(typeof showCommunityTab==='function')showCommunityTab('medals')},80)}else if(k==='anthem'&&typeof openLogoGallery==='function'){openLogoGallery();setTimeout(()=>{if(typeof showCommunityTab==='function')showCommunityTab('anthem')},80)}}catch(_){} });
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',addBadgeBar);else addBadgeBar();
+})();
+</script>
 </body></html>');w.document.close()}
 const LEH={
  'le-f':()=>{LE.f.cls=v('lf-cls');LE.f.q=v('lf-q');lesRender()},
