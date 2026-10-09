@@ -11237,4 +11237,22 @@ addEventListener('scroll',function(){
   clearTimeout(st);st=setTimeout(function(){root.classList.remove('scl-scrolling')},140)},{passive:true});
 })();
 </script>
+
+<style id="scl-v103-clean-premium-ui">
+/* SCL V103: clean, phone-first finish; keep all existing features and the approved login-gate palette. */
+:root{--scl-maroon:#5a0c1a;--scl-maroon-deep:#2e0610;--scl-gold:#e3b23c;--scl-cream:#fff7e8}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+body{background:radial-gradient(900px 500px at 15% 10%,rgba(227,178,60,.22),transparent 60%),radial-gradient(800px 600px at 90% 90%,rgba(31,79,216,.28),transparent 60%),linear-gradient(160deg,#5a0c1a,#2e0610 60%,#0f1233)!important;background-attachment:fixed!important;color:#fff7e8}
+/* Keep content panels readable over the dark gate background. */
+main,.main-content,.page-content,#mainContent,.scl-main,.container-main{background:transparent}
+button,a,[role="button"]{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+button{transition:transform .16s ease,box-shadow .16s ease}
+button:active{transform:scale(.985)}
+input,select,textarea{max-width:100%;min-height:42px}
+:focus-visible{outline:3px solid #e3b23c!important;outline-offset:2px}
+/* Use consistent spacing and gentle depth for existing dashboard tiles without hiding modules. */
+.scl-card,.dashboard-card,.module-card,.quick-card,.community-card-item,.scl-reg-section{border-radius:16px}
+@media(max-width:650px){body{background-attachment:scroll!important}.scl-card,.dashboard-card,.module-card,.quick-card{margin-inline:0;max-width:100%}button,.scl-btn{min-height:42px}h1{line-height:1.15}h2{line-height:1.2}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+</style>
 </body></html>
