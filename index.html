@@ -2,6 +2,12 @@
 
 <html lang="en">
 <head>
+<script id="scl-perf-early">
+/* Performance guard (runs first): batches MutationObserver callbacks and pauses/limits old polling timers */
+(function(){var M=window.MutationObserver;if(M){var W=function(cb){var q=[],tm=0,self;var o=new M(function(ms,ob){q.push.apply(q,ms);if(tm)return;tm=setTimeout(function(){tm=0;var b=q;q=[];try{cb.call(self,b,ob)}catch(e){console.error(e)}},50)});self=o;return o};W.prototype=M.prototype;window.MutationObserver=W}
+var si=window.setInterval;window.setInterval=function(f,ms){if(typeof f!=='function')return si.apply(window,arguments);var a=[].slice.call(arguments,2);return si.call(window,function(){if(document.hidden)return;f.apply(this,a)},Math.max(ms|0,600))}})();
+</script>
+
 <style id="scl-ui-v1">
 /* profile: four compact categories, always above floating badges */
 .scl-profile-toolbar{display:grid!important;grid-template-columns:repeat(4,1fr);gap:6px;position:sticky;top:env(safe-area-inset-top,0px);z-index:2147483000;padding:8px 6px;background:rgba(60,0,8,.96);border-radius:12px;margin:0 0 10px}
@@ -787,6 +793,7 @@ html,body{max-width:100%;overflow-x:hidden}
 html body button.wa{left:12px!important;right:auto!important;transform:none!important;bottom:calc(84px + env(safe-area-inset-bottom,0px))!important;max-width:calc(100vw - 110px);padding:10px 14px!important;font-size:13px!important}
 html body #sclMultiLogo{right:12px!important;bottom:calc(84px + env(safe-area-inset-bottom,0px))!important}
 html body #sclToTop{right:12px!important;bottom:calc(158px + env(safe-area-inset-bottom,0px))!important}
+
 /* WhatsApp chooser */
 #sclWaChoice{position:fixed;inset:0;z-index:2147483600;display:none;align-items:flex-end;justify-content:center;background:rgba(10,2,6,.72)}
 #sclWaChoice.on{display:flex}
@@ -8827,9 +8834,6 @@ body.scl-admin-overlay-active #sclV211AdminPanel.open{z-index:3000!important}
 #sclV211AdminPanel{z-index:950!important}
 #sclAdminCmsPanel.open,#sclV210AdminIdentityModal.open,.modal.open.scl-v94-front{z-index:12000!important;display:flex!important;visibility:visible!important;opacity:1!important}
 </style>
-
-\n
-
 <script id="scl-v98-refinement-runtime">
 (function(){'use strict';
 const SUP=(window.SCL_SUPABASE_URL||''), KEY=(window.SCL_SUPABASE_PUBLISHABLE_KEY||'');
@@ -11294,6 +11298,20 @@ input,select,textarea{max-width:100%;min-height:42px}
 .scl-card,.dashboard-card,.module-card,.quick-card,.community-card-item,.scl-reg-section{border-radius:16px}
 @media(max-width:650px){body{background-attachment:scroll!important}.scl-card,.dashboard-card,.module-card,.quick-card{margin-inline:0;max-width:100%}button,.scl-btn{min-height:42px}h1{line-height:1.15}h2{line-height:1.2}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+/* ---- smooth scrolling: no fixed-attachment backgrounds, no backdrop blur, no endless decorative animation ---- */
+html body,html body[class],html body.sclcc-hide{background-attachment:scroll!important;background-image:none!important;background-color:#2e0610!important}
+html::before{content:"";position:fixed;inset:0;z-index:-3;pointer-events:none;transform:translateZ(0);
+ background:radial-gradient(900px 500px at 15% 10%,rgba(227,178,60,.22),transparent 60%),radial-gradient(800px 600px at 90% 90%,rgba(31,79,216,.28),transparent 60%),linear-gradient(160deg,#5a0c1a,#2e0610 60%,#0f1233)}
+body>:not(#accessGate),body>:not(#accessGate) *{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+@keyframes sclAurora{from{opacity:1}to{opacity:1}}@keyframes sclBlobs{from{opacity:1}to{opacity:1}}@keyframes sclNb{from{opacity:1}to{opacity:1}}
+@keyframes sclCoinFlip{from{opacity:1}to{opacity:1}}@keyframes sclSpinRing{from{opacity:1}to{opacity:1}}
+.hv2-wm{display:none!important}
+/* curriculum opens as one full sheet */
+#sclCurriculum.scl-cur-open{display:block!important;visibility:visible!important;position:fixed!important;inset:0!important;z-index:2147483200!important;overflow:auto;-webkit-overflow-scrolling:touch;margin:0!important;max-width:none!important;border-radius:0!important;padding:60px 12px 120px!important;background:linear-gradient(160deg,#5a0c1a,#2e0610 60%,#0f1233)!important;color:#fbf1dc}
+#sclCurClose{position:fixed;top:calc(8px + env(safe-area-inset-top,0px));right:12px;z-index:2147483300;min-height:44px;padding:10px 18px;border-radius:14px;border:1px solid #f0c24f;background:#f0c24f;color:#3a0710;font:800 14px system-ui,sans-serif;display:none}
+body.scl-cur-on #sclCurClose{display:block}
+#sclCurClose::before,#sclCurClose::after{content:none!important;display:none!important}
 </style>
 <script id="scl-clean-v1-js">
 /* SCL clean layer v1. Presentation only: no authentication logic here. */
@@ -11322,6 +11340,17 @@ Element.prototype.scrollIntoView=function(){try{var sec=this.closest&&this.close
 document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href^="#"]');if(!a)return;
  var id=a.getAttribute('href').slice(1);if(MAP[id]){setTab(MAP[id],false)}},true);
 var _si=window.setInterval;
+/* Curriculum: the tile opens the full curriculum (all classes, scheme of work, subject notes link) */
+function curOpen(){var s=document.getElementById('sclCurriculum');if(!s)return false;
+ s.classList.remove('scl-curriculum-hidden-source');s.classList.add('scl-cur-open');document.body.classList.add('scl-cur-on');
+ if(s.parentNode!==document.body)document.body.appendChild(s);
+ var c=document.getElementById('sclCurClose');if(!c){c=document.createElement('button');c.id='sclCurClose';c.type='button';c.textContent='Close';c.onclick=curClose;document.body.appendChild(c)}
+ s.scrollTop=0;return true}
+function curClose(){var s=document.getElementById('sclCurriculum');if(s){s.classList.remove('scl-cur-open');s.classList.add('scl-curriculum-hidden-source')}document.body.classList.remove('scl-cur-on')}
+['openSchoolCurriculum','sclOpenCurriculum','sclOpenSchemeOfWork'].forEach(function(n){try{Object.defineProperty(window,n,{configurable:true,get:function(){return curOpen},set:function(){}})}catch(e){}});
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('.ng-card,button,a');if(!b)return;
+ var tx=(b.innerText||'').trim();if(/^\W*(school\s+)?curriculum\b/i.test(tx)&&!b.closest('#sclCurriculum')&&!b.closest('#sclTabs')){e.preventDefault();e.stopImmediatePropagation();curOpen()}},true);
+document.addEventListener('keydown',function(e){if(e.key==='Escape')curClose()});
 /* WhatsApp chooser - links only, never touches sign-in or roles */
 function chooser(){var c=document.getElementById('sclWaChoice');if(c)return c;
  c=document.createElement('div');c.id='sclWaChoice';c.setAttribute('role','dialog');c.setAttribute('aria-modal','true');c.setAttribute('aria-label','WhatsApp options');
