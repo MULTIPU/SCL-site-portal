@@ -993,14 +993,6 @@ html body #sclTabs button>*{display:none!important}
 <svg aria-hidden="true" viewbox="0 0 24 24"><path d="M16.6 3c.3 1.8 1.3 3.2 3.1 3.9v3.1a8.5 8.5 0 0 1-3.1-1v6.2a5.8 5.8 0 1 1-5-5.8v3.2a2.7 2.7 0 1 0 1.9 2.6V3h3.1Z" fill="currentColor"></path></svg>
 <span>TikTok</span>
 </a>
-<button aria-label="Facebook link will be added later" class="scl-social-link facebook disabled" disabled="" type="button">
-<svg aria-hidden="true" viewbox="0 0 24 24"><path d="M13.5 21v-8h2.7l.4-3h-3.1V8.1c0-.9.3-1.5 1.6-1.5h1.7V4a22 22 0 0 0-2.4-.1c-2.4 0-4 1.5-4 4.1V10H8v3h2.4v8h3.1Z" fill="currentColor"></path></svg>
-<span>Facebook</span>
-</button>
-<button aria-label="LinkedIn link will be added later" class="scl-social-link linkedin disabled" disabled="" type="button">
-<svg aria-hidden="true" viewbox="0 0 24 24"><path d="M5.1 8.5A1.8 1.8 0 1 1 5.1 5a1.8 1.8 0 0 1 0 3.5ZM3.5 9.9h3.2V20H3.5V9.9Zm5.2 0h3.1v1.4h.1c.4-.8 1.5-1.7 3.2-1.7 3.4 0 4 2.2 4 5.1V20h-3.2v-4.7c0-1.1 0-2.6-1.6-2.6s-1.9 1.2-1.9 2.5V20H8.7V9.9Z" fill="currentColor"></path></svg>
-<span>LinkedIn</span>
-</button>
 </div>
 </section><button class="wa" onclick="openWhatsAppChoices()" type="button">Chat on WhatsApp</button><div aria-hidden="true" class="modal" id="sclChildrenModal"><div class="card" style="max-width:980px"><div class="mh"><h3>MY CHILDREN — PARENT CARE DASHBOARD</h3><button onclick="closeM('sclChildrenModal')">X</button></div><div class="scl-child-dashboard">
 <div class="scl-child-head"><div><b>Child progress, wellbeing and school communication</b><p class="scl-muted">Parents can review teacher comments, concerns, recommendations, adjustments and current needs over time. Records are tied to the selected child when the SCL backend is connected.</p></div><select id="sclChildSelect" onchange="renderSclChildDashboard()"><option value="">Select registered child</option></select></div>
@@ -11104,7 +11096,7 @@ html body .hv2,html body main.wrap{background:transparent!important}
 (function(){
  var I={reg:'<path d="M6 3h9l3 3v15H6z"/><path d="M9 9h6M9 13h6M9 17h3"/>',results:'<circle cx="12" cy="9" r="5"/><path d="M9 13l-2 8 5-3 5 3-2-8"/>',fees:'<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18M7 15h3"/>',cur:'<path d="M4 5h7a2 2 0 012 2v13a2 2 0 00-2-2H4zM20 5h-7v13h7z"/>',mat:'<path d="M4 20V6l8-3 8 3v14M4 20h16M9 20v-6h6v6"/>',uni:'<path d="M8 3l-5 4 3 3 2-1v12h8V9l2 1 3-3-5-4a4 4 0 01-8 0z"/>'};
  var CARDS=[['reg','Register Your Child','New admission or returning','Register Your Child'],['results','School Results','Result PIN & results','School Results'],['fees','Fees & Payment','Class fees & receipts','School Fees & Payment'],['cur','Curriculum','Programme & subjects','School Curriculum'],['mat','School Materials','Books & official items','School Materials'],['uni','School Uniform','Official catalogue','School Uniform']];
- var BADGES=[['🎖️','Student Leaders','Leadership Badges','openSclLeadership'],['🏅','Staff Rank','My Service Rank','sclOpenServiceRank'],['🥇','Medals & Records','Medals & Records','openLogoGallery'],['🎵','Anthem','School Anthem','openLogoGallery']];
+ var BADGES=[['🎖️','Student Leaders','Leadership Badges','openSclLeadership'],['🏅','Staff Rank','Staff Ranking Diagram','sclOpenStaffRankDiagram'],['🥇','Medals & Records','Medals & Records','openLogoGallery'],['🎵','Anthem','School Anthem','openLogoGallery']];
  function go(a,label,fn){var t=document.querySelector('.hv2-tile[data-a="'+a+'"]');if(t){t.click();return}
   var s=[].slice.call(document.querySelectorAll('.scl-shortcut-item')).filter(function(e){return e.dataset.shortcutLabel===label})[0];if(s){s.click();return}
   if(fn&&typeof window[fn]==='function')window[fn]()}
@@ -11473,6 +11465,29 @@ document.addEventListener('DOMContentLoaded',init);
 if('serviceWorker' in navigator&&location.protocol.indexOf('http')===0){window.addEventListener('load',function(){navigator.serviceWorker.register('./sw.js').then(function(r){r.update().catch(function(){})}).catch(function(){})})}
 })();
 
+</script>
+
+<script id="scl-staff-rank-shortcut-unifier">
+(function(){
+  'use strict';
+  window.sclOpenStaffRankDiagram = function(){
+    try {
+      if (typeof window.openLogoGallery !== 'function' || typeof window.showCommunityTab !== 'function') {
+        if (typeof window.toast === 'function') window.toast('Staff Ranking is temporarily unavailable. Please reload the page and try again.');
+        return false;
+      }
+      window.openLogoGallery();
+      window.setTimeout(function(){
+        try { window.showCommunityTab('rank'); }
+        catch (e) { if (typeof window.toast === 'function') window.toast('Could not open Staff Ranking. Please try again.'); }
+      }, 80);
+      return true;
+    } catch (e) {
+      if (typeof window.toast === 'function') window.toast('Could not open Staff Ranking. Please try again.');
+      return false;
+    }
+  };
+})();
 </script>
 </body></html>
 
