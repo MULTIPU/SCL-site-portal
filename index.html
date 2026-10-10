@@ -9771,7 +9771,7 @@ body.scl-night .hv2-steps button{color:var(--h-gold);border-color:var(--h-gold)}
 .cv-wk dl{margin:8px 0 0;display:grid;gap:6px}.cv-wk dt{font-weight:800;font-size:12.5px;color:var(--h-gold2)}.cv-wk dd{margin:0;font-size:14.5px;line-height:1.5}
 .cv-note{padding:12px;border-radius:12px;background:rgba(227,178,60,.18);font-size:14px}
 /* ===== Profile: mobile-safe, outlined text, MDC logo corner ===== */
-.mdc-corner{position:absolute;left:10px;top:10px;width:46px;height:46px;z-index:2147483000;background:var(--mdc-logo) center/contain no-repeat;pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,.6))}
+.mdc-corner{display:none!important;position:absolute;left:10px;top:10px;width:46px;height:46px;z-index:2147483000;background:var(--mdc-logo) center/contain no-repeat;pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,.6))}
 .modal[id*="rofile" i] .card,.modal[id*="rofile" i] .scl-profile-modal-card{position:relative}
 .modal[id*="rofile" i] .mh{padding-left:64px!important}
 .scl-profile-shell,.scl-profile-shell *,.modal[id*="rofile" i] .card,.modal[id*="rofile" i] .card *{-webkit-text-stroke:.45px rgba(0,0,0,.85);paint-order:stroke fill;text-shadow:0 0 1px #000,1px 0 0 rgba(0,0,0,.7),-1px 0 0 rgba(0,0,0,.7),0 1px 0 rgba(0,0,0,.7),0 -1px 0 rgba(0,0,0,.7)}
@@ -9932,7 +9932,7 @@ function mdl(t){return esc(t).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>')}
 var AU={};
 function auraBuild(){
  if($('#auraPanel'))return;
- var f=D.createElement('button');f.id='auraFab';f.type='button';f.setAttribute('aria-label','Ask Aura, the school assistant');f.innerHTML='<img alt="" src="'+window.SCL_AURA_IMG+'">';
+ var f=D.createElement('button');f.id='auraFab';f.type='button';f.setAttribute('aria-label','Ask Aura, the school assistant');var _bd=D.querySelector('.scl-logo-front img.logo');var _bs=_bd?_bd.src:'';f.innerHTML='<span class="au-coin"><span class="au-face au-a"><img alt="Aura" src="'+window.SCL_AURA_IMG+'"></span><span class="au-face au-b"><img alt="Shining Child Leaders School badge" src="'+_bs+'"></span></span>';D.body.appendChild(f);
  var p=D.createElement('section');p.id='auraPanel';p.setAttribute('aria-label','Aura assistant');
  p.innerHTML='<div class="au-h"><img alt="Aura" src="'+window.SCL_AURA_IMG+'"><div><b>Aura</b><small>School assistant + Educational Intelligence</small></div><button type="button" aria-label="Close" id="auX">×</button></div><div class="au-m" id="auM" aria-live="polite"></div><div class="au-q" id="auQ"></div><form class="au-f" id="auF"><input id="auI" autocomplete="off" placeholder="Ask about the school or any topic"><button type="submit">Send</button></form>';
  D.body.appendChild(p);
@@ -10029,8 +10029,7 @@ function patchWorker(){
  }
 }
 /* ---------- PROFILE CORNER ---------- */
-function corners(){$$('.modal[id*="rofile" i] .card').forEach(function(c){if(!$('.mdc-corner',c)){var d=D.createElement('span');d.className='mdc-corner';d.setAttribute('aria-hidden','true');c.insertBefore(d,c.firstChild)}});
- $$('.scl-profile-shell').forEach(function(c){if(!$('.mdc-corner',c)){c.style.position='relative';var d=D.createElement('span');d.className='mdc-corner';c.insertBefore(d,c.firstChild)}})}
+function corners(){$$('.mdc-corner').forEach(function(n){n.remove()})}
 /* ---------- BOOT ---------- */
 function boot(){
  D.documentElement.style.setProperty('--mdc-logo','url('+window.SCL_MDC_LOGO+')');
@@ -10223,7 +10222,7 @@ function decorate(root){QA('button,a.btn,nav a,.ag-btn,[role=button],.scl-shortc
  if(b.querySelector('svg,img,.icon,.scl-ic'))return;const t=(b.textContent||'').replace(/\s+/g,' ').trim();if(t.length<2||EMO.test(t))return;if(/^x$/i.test(t))return;b.setAttribute('data-scl-ic',iconFor(t))})}
 document.addEventListener('pointerdown',function(e){const b=e.target.closest&&e.target.closest('button,.btn,.scl-shortcut-item,nav a');if(!b||b.disabled||b.matches('.scl-bottom-item,.logo-button,#sclMultiLogo,#sclShortcutToggle'))return;try{const cs=getComputedStyle(b);if(cs.position==='static')b.style.position='relative';b.style.overflow=cs.overflow==='visible'?'hidden':cs.overflow;const r=b.getBoundingClientRect(),s=Math.max(r.width,r.height),sp=document.createElement('span');sp.className='scl-rip';sp.style.cssText='width:'+s+'px;height:'+s+'px;left:'+(e.clientX-r.left-s/2)+'px;top:'+(e.clientY-r.top-s/2)+'px';b.appendChild(sp);setTimeout(()=>sp.remove(),650)}catch(_){}},true);
 /* ---------- Multiple logo (right edge) + school logo hub (left edge) ---------- */
-function installLogos(){if(!$('sclMultiLogo')){const m=document.createElement('button');m.id='sclMultiLogo';m.type='button';m.setAttribute('aria-label','Aura, the school assistant');m.title='Aura';m.innerHTML='<img alt="Shining Child Leaders School logo" src="'+(((document.querySelector('.scl-logo-front img.logo')||{}).src)||'')+'">';m.onclick=()=>fb('Aura, the school assistant','info',2200);document.body.appendChild(m)}
+function installLogos(){{const old=$('sclMultiLogo');if(old)old.remove()}
  if(!$('sclHubMenu')){const items=[['🏅','Student Leaders',()=>gal('studentRanking'),'#ff4fa3','#7b4dff'],['👩‍🏫','Staff Rank',()=>gal('rank'),'#3d7bff','#17b8d9'],['🥇','Medals & Records',()=>gal('medals'),'#ffb300','#ff6a3d'],['🎵','School Anthem',()=>gal('anthem'),'#17b890','#3d7bff'],['🎓','Curriculum',()=>call('openSchoolCurriculum'),'#7b4dff','#3d7bff'],['🗓️','Timetable',()=>suite('timetable'),'#ff6a3d','#ff4fa3'],['✅','Student Attendance',()=>call('openStudentAttendance'),'#17b890','#8bc34a'],['🏆','Results',()=>call('openResults'),'#ffb300','#ff4fa3'],['📜','Certificates',()=>call('openCertificate'),'#3d7bff','#7b4dff'],['🎖️','Prefect Badges',()=>call('openSclLeadership'),'#e91e63','#ff9800'],['🧠','CBT Tests',()=>suite('cbt'),'#00acc1','#3d7bff'],['📝','Assignments',()=>suite('assignments'),'#43a047','#00acc1'],['📓','Lesson Notes',()=>suite('lessons'),'#8e24aa','#ff4fa3'],['📊','Bulk Excel',()=>suite('bulk'),'#ef6c00','#f9a825'],['📨','Notifications',()=>call('sclOpenOutbox'),'#d81b60','#8e24aa']];
  const h=document.createElement('div');h.id='sclHubMenu';h.innerHTML='<div class="hub-panel"><button class="scl300-x" type="button" aria-label="Close">✖</button><h3>Academic Activities</h3><small>Tap an icon to open it.</small><div class="hub-grid"></div></div>';document.body.appendChild(h);
  const g=Q('.hub-grid',h);items.forEach((it,i)=>{const b=document.createElement('button');b.type='button';b.style.cssText='--i:'+i+';--a:'+it[3]+';--b:'+it[4];b.innerHTML='<span>'+it[0]+'</span>'+esc(it[1]);b.onclick=()=>{closeHub();setTimeout(it[2],120)};g.appendChild(b)});
@@ -10784,7 +10783,19 @@ html body :is(.btn,.scl-btn,.hv2-btn)[data-scl-ic]::before{vertical-align:-.1em;
 
 <style id="scl-v95-refine">
 /* Aura now lives on the back of the MultiPu coin; its old floating button is gone and the spot is clear */
-html body #auraFab{display:none!important}
+html body #auraFab{display:block!important;position:fixed!important;right:14px!important;bottom:76px!important;width:64px!important;height:64px!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important;overflow:visible!important;perspective:700px;-webkit-perspective:700px;z-index:10080!important;cursor:pointer;transition:opacity .2s ease,visibility .2s ease}
+html body #auraFab:after{display:none!important}
+html body #auraFab .au-coin{position:relative;display:block;width:100%;height:100%;transform-style:preserve-3d;-webkit-transform-style:preserve-3d;animation:sclAuraFlip 10s ease-in-out infinite;will-change:transform}
+html body #auraFab .au-face{position:absolute;top:0;right:0;bottom:0;left:0;border-radius:50%;box-sizing:border-box;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:block}
+html body #auraFab .au-a{background:#0b1426;border:2.5px solid #f2ae00;box-shadow:0 6px 18px rgba(0,0,0,.45)}
+html body #auraFab .au-a img{width:100%;height:100%;object-fit:cover;object-position:50% 22%;display:block;border-radius:50%}
+html body #auraFab .au-b{transform:rotateY(180deg);-webkit-transform:rotateY(180deg);background:#fff;border:3px solid #d6a93d;box-shadow:0 6px 18px rgba(0,0,0,.4)}
+html body #auraFab .au-b img{width:88%;height:88%;margin:6%;object-fit:contain;display:block;border-radius:50%}
+/* Aura shows ~7s, school badge ~1.6s, each flip ~0.8s */
+@keyframes sclAuraFlip{0%,58%{transform:rotateY(0deg)}66%,82%{transform:rotateY(180deg)}90%,100%{transform:rotateY(360deg)}}
+html body.sclcc-hide #auraFab,html body.scl-profile-open #auraFab,html body:has(#sclModernProfileModal.open) #auraFab,html body:has(#sclV211AdminPanel.open) #auraFab{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
+@media(max-height:480px){html body #auraFab{width:52px!important;height:52px!important}}
+@media(prefers-reduced-motion:reduce){html body #auraFab .au-coin{animation:none}}
 html body #sclMultiLogo .sclcc-back{padding:0;background:#0b1426}
 html body #sclMultiLogo .sclcc-back img{width:100%;height:100%;object-fit:cover;object-position:50% 22%;display:block;border-radius:50%}
 /* home page background: slightly darker (night mode keeps its own colours) */
