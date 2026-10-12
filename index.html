@@ -11836,123 +11836,7 @@ window.addEventListener('load',function(){setTimeout(watch,600);setTimeout(watch
 </script>
 
 
-<!-- SCL teaching allocation console: one integrated entry point; server-side authorization enforced by RPC/RLS. -->
-<style id="scl-teaching-allocation-style">
-#sclTeachAdminLauncher{position:fixed;left:12px;bottom:14px;z-index:12000;display:none;border:1px solid #d4a52d;border-radius:999px;padding:11px 15px;background:#3b0005;color:#fff;font-weight:800;box-shadow:0 5px 20px #0003}
-#sclTeachAdminModal{position:fixed;inset:0;z-index:12001;background:#170004b8;display:none;align-items:center;justify-content:center;padding:12px}
-#sclTeachAdminModal.open{display:flex}
-#sclTeachAdminModal .panel{background:#fffaf2;color:#260c0d;border-radius:16px;max-width:760px;width:100%;max-height:92vh;overflow:auto;padding:18px;box-shadow:0 16px 60px #0005}
-#sclTeachAdminModal h2{margin:0 0 8px;color:#650007;font-size:21px}
-#sclTeachAdminModal .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
-#sclTeachAdminModal label{display:block;font-size:12px;font-weight:800;margin:10px 0 5px}
-#sclTeachAdminModal select,#sclTeachAdminModal input{width:100%;padding:10px;border:1px solid #c9b9a7;border-radius:8px;background:#fff}
-#sclTeachAdminModal .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
-#sclTeachAdminModal button{border:0;border-radius:8px;padding:10px 13px;font-weight:800;cursor:pointer}
-#sclTeachAdminModal .primary{background:#650007;color:#fff}
-#sclTeachAdminModal .secondary{background:#eadfc9;color:#2b1713}
-#sclTeachAdminModal .status{padding:10px;border-radius:8px;background:#f1e9d8;margin:10px 0;white-space:pre-wrap}
-#sclTeachAdminModal .assignment{border-bottom:1px solid #e1d4c3;padding:9px 0;font-size:13px}
-</style>
-<button id="sclTeachAdminLauncher" type="button">Teaching Allocation</button>
-<div id="sclTeachAdminModal" aria-hidden="true">
- <section class="panel" role="dialog" aria-modal="true" aria-labelledby="sclTeachTitle">
-  <div style="display:flex;justify-content:space-between;gap:12px;align-items:center">
-   <h2 id="sclTeachTitle">SCL Teaching Allocation</h2>
-   <button type="button" class="secondary" id="sclTeachClose">Close</button>
-  </div>
-  <p style="font-size:13px;margin:4px 0 10px">Primary / early-years: assign one class teacher for all subjects. Secondary: assign subjects with a maximum of two distinct teachers across all JSS classes and separately across all SSS classes.</p>
-  <div id="sclTeachStatus" class="status" role="status">Checking approved administrator access…</div>
-  <div class="grid">
-   <div><label for="sclTeachClass">Class / section</label><select id="sclTeachClass"></select></div>
-   <div><label for="sclTeachPerson">Approved teaching staff</label><select id="sclTeachPerson"><option value="">Loading teachers…</option></select></div>
-   <div id="sclTeachSubjectWrap"><label for="sclTeachSubject">Subject</label><select id="sclTeachSubject"></select></div>
-  </div>
-  <label for="sclTeachNote">Qualification / allocation note (optional)</label><input id="sclTeachNote" maxlength="500" placeholder="Optional note">
-  <div class="actions"><button class="primary" id="sclTeachSave" type="button">Save assignment</button><button class="secondary" id="sclTeachRefresh" type="button">Refresh assignments</button></div>
-  <h3 style="margin:18px 0 5px;font-size:16px">Current assignments</h3><div id="sclTeachList"></div>
- </section>
-</div>
-<script id="scl-teaching-allocation-integration">
-(function(){
- 'use strict';
- const $=id=>document.getElementById(id), client=window.sclSupabase;
- const classes=['Daycare','Nursery 1','Nursery 2','Reception','Primary 1','Primary 2','Primary 3','Primary 4','Primary 5','JSS 1','JSS 2','JSS 3','SSS 1','SSS 2','SSS 3'];
- const early=new Set(['Daycare','Nursery 1','Nursery 2','Reception']);
- const primary=c=>early.has(c)||c.startsWith('Primary ');
- const subjectsBySection={
-  'Daycare':['Early Learning Activities','Numbers','Language Development','Creative Play'],
-  'Nursery 1':['English','Mathematics','Basic Science','Phonics','Creative Arts','Health Habits'],
-  'Nursery 2':['English','Mathematics','Basic Science','Phonics','Creative Arts','Health Habits'],
-  'Reception':['English','Mathematics','Basic Science','Phonics','Creative Arts','Health Habits','Social Habits'],
-  'Primary':['English Studies','Mathematics','Basic Science','Social Studies','Civic Education','Computer Studies','Agricultural Science','Physical & Health Education','Christian Religious Studies','Creative Arts','Verbal Reasoning','Quantitative Reasoning'],
-  'JSS':['English Studies','Mathematics','Basic Science','Basic Technology','Social Studies','Civic Education','Computer Studies','Agricultural Science','Business Studies','Home Economics','French','Christian Religious Studies','Physical & Health Education'],
-  'SSS':['English Language','Mathematics','Biology','Chemistry','Physics','Economics','Government','Literature in English','Commerce','Accounting','Computer Studies','Agricultural Science','Civic Education','Further Mathematics','Technical Drawing']
- };
- const state={user:null,staff:[],ready:false};
- function status(msg){$('sclTeachStatus').textContent=msg}
- function fillSelect(el,items,placeholder){el.innerHTML='';const p=document.createElement('option');p.value='';p.textContent=placeholder;el.appendChild(p);items.forEach(it=>{const o=document.createElement('option');o.value=it.value;o.textContent=it.label;el.appendChild(o)})}
- function subjectList(c){return subjectsBySection[c]||(c.startsWith('Primary ')?subjectsBySection.Primary:c.startsWith('JSS ')?subjectsBySection.JSS:c.startsWith('SSS ')?subjectsBySection.SSS:[])}
- function classChange(){const c=$('sclTeachClass').value, wrap=$('sclTeachSubjectWrap');wrap.style.display=primary(c)?'none':'block';fillSelect($('sclTeachSubject'),subjectList(c).map(x=>({value:x,label:x})),'Choose subject');}
- async function loadTeachers(){
-  const {data,error}=await client.from('staff').select('id,full_name,role,employment_status,is_teaching').eq('is_teaching',true).eq('employment_status','active').order('full_name');
-  if(error)throw error;state.staff=data||[];fillSelect($('sclTeachPerson'),state.staff.map(x=>({value:x.id,label:x.full_name+' — '+x.role})),'Choose approved teacher');
- }
- async function refreshAssignments(){
-  const {data,error}=await client.from('teacher_teaching_assignments').select('id,teacher_staff_id,class_name,subject,assignment_type,active,qualification_note,starts_on,ends_on').order('class_name').order('subject');
-  if(error)throw error;
-  const staffMap=new Map(state.staff.map(x=>[x.id,x.full_name]));
-  const host=$('sclTeachList');host.innerHTML='';
-  const rows=data||[];
-  if(!rows.length){host.textContent='No teaching assignments have been recorded yet.';return}
-  rows.forEach(row=>{
-   const div=document.createElement('div');div.className='assignment';
-   const name=staffMap.get(row.teacher_staff_id)||'Teacher record '+row.teacher_staff_id;
-   div.textContent=(row.active?'ACTIVE':'INACTIVE')+' · '+row.class_name+' · '+(row.assignment_type==='primary_class_teacher'?'ALL SUBJECTS / CLASS TEACHER':row.subject)+' · '+name;
-   if(row.qualification_note)div.textContent+=' · '+row.qualification_note;
-   host.appendChild(div);
-  });
- }
- async function refresh(){
-  if(!client){status('Supabase client is unavailable.');return}
-  try{status('Loading approved teachers and assignments…');await loadTeachers();await refreshAssignments();status('Connected. Saving is restricted by the database to approved SCL administrators.');}
-  catch(e){status('Could not load assignments: '+(e.message||String(e))+'\\nConfirm admin access and table policies, then retry.');}
- }
- async function authorize(){
-  if(!client)return;
-  try{
-   const {data,error}=await client.auth.getSession();if(error||!data.session)return;
-   const user=data.session.user;if(!user)return;
-   const {data:roles,error:roleError}=await client.from('user_roles').select('role,active').eq('user_id',user.id).eq('active',true);
-   if(roleError||!(roles||[]).some(r=>['developer','technical_admin','management_admin','affairs_admin'].includes(r.role)))return;
-   state.user=user;$('sclTeachAdminLauncher').style.display='block';
-  }catch(_){}
- }
- function open(){ $('sclTeachAdminModal').classList.add('open');$('sclTeachAdminModal').setAttribute('aria-hidden','false');refresh();}
- function close(){ $('sclTeachAdminModal').classList.remove('open');$('sclTeachAdminModal').setAttribute('aria-hidden','true');}
- async function save(){
-  if(!state.user){status('Please sign in with an approved SCL administrator account.');return}
-  const c=$('sclTeachClass').value, teacher=$('sclTeachPerson').value, isPrimary=primary(c), subject=isPrimary?'ALL_SUBJECTS':$('sclTeachSubject').value;
-  if(!c||!teacher||(!isPrimary&&!subject)){status('Choose a class, approved teacher and subject where required.');return}
-  const type=isPrimary?'primary_class_teacher':(c.startsWith('JSS ')||c.startsWith('SSS '))?'secondary_subject':'primary_class_teacher';
-  $('sclTeachSave').disabled=true;
-  try{
-   const {error}=await client.rpc('scl_admin_upsert_teaching_assignment',{p_teacher_staff_id:teacher,p_class_name:c,p_subject:subject,p_assignment_type:type,p_qualification_note:$('sclTeachNote').value||null,p_active:true});
-   if(error)throw error;
-   status('Assignment saved successfully.');$('sclTeachNote').value='';await refresh();
-  }catch(e){status('Assignment was not saved: '+(e.message||String(e)));}
-  finally{$('sclTeachSave').disabled=false}
- }
- function init(){
-  fillSelect($('sclTeachClass'),classes.map(x=>({value:x,label:x})),'Choose class');classChange();
-  $('sclTeachClass').addEventListener('change',classChange);
-  $('sclTeachAdminLauncher').addEventListener('click',open);$('sclTeachClose').addEventListener('click',close);
-  $('sclTeachRefresh').addEventListener('click',refresh);$('sclTeachSave').addEventListener('click',save);
-  $('sclTeachAdminModal').addEventListener('click',e=>{if(e.target===$('sclTeachAdminModal'))close()});
-  authorize();if(client&&client.auth)client.auth.onAuthStateChange(()=>authorize());
- }
- if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
-})();
-</script>
+
 <script id="scl-staff-verification-and-octagon">
 (function(){'use strict';
 if(window.__sclStaffModule)return;window.__sclStaffModule=true;
@@ -12081,5 +11965,41 @@ function mount(){
 var n=0,mi=setInterval(function(){if(mount()||++n>120)clearInterval(mi)},500);
 })();
 
+</script>
+<style id="scl-layer-fix">
+/* Bottom bar always on top of floating widgets; widgets sit above it. */
+:root{--scl-bar-h:64px}
+html body .bottom{z-index:10095!important;pointer-events:auto!important}
+html body #auraFab,html body #sclMultiLogo{z-index:10080!important}
+html body #auraFab{bottom:calc(var(--scl-bar-h) + env(safe-area-inset-bottom,0px) + 16px)!important}
+html body .wa{z-index:10080!important;bottom:calc(var(--scl-bar-h) + env(safe-area-inset-bottom,0px) + 90px)!important}
+html body #sclV212HealthBadge{z-index:10080!important;bottom:calc(var(--scl-bar-h) + env(safe-area-inset-bottom,0px) + 8px)!important}
+html body{padding-bottom:calc(var(--scl-bar-h) + env(safe-area-inset-bottom,0px) + 12px)}
+html body .modal{padding-bottom:calc(var(--scl-bar-h) + env(safe-area-inset-bottom,0px) + 8px)!important}
+.scl-myassign{margin:12px 0;padding:14px;border-radius:16px;background:#fff7e8;color:#2e0610;border:1px solid #e3b23c}
+.scl-myassign h4{margin:0 0 8px}.scl-myassign li{margin:4px 0}.scl-myassign .flag{color:#b3261e;font-weight:700}
+</style>
+<script id="scl-my-assignments">
+(function(){'use strict';
+var D=document,busy=false;
+function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(m){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]})}
+function paint(host,r){
+  var old=host.querySelector('.scl-myassign');if(old)old.remove();
+  if(!r||!r.found)return;
+  var h='<div class="scl-myassign"><h4>My assignments</h4>';
+  if(r.duties&&r.duties.length)h+='<p><b>Duties:</b> '+r.duties.map(esc).join(', ')+(r.department?' · '+esc(r.department):'')+'</p>';
+  var rows=r.assignments||[];
+  if(rows.length){h+='<ul>'+rows.map(function(a){return'<li>'+esc(a.class_name)+' — '+(a.assignment_type==='primary_class_teacher'?'All subjects (class teacher)':esc(a.subject))+'</li>'}).join('')+'</ul>'}
+  else if(!(r.duties&&r.duties.length))h+='<p>No assignments yet.</p>';
+  if(r.flags&&r.flags.length)h+='<p class="flag">Awaiting management: '+r.flags.map(function(f){return esc(f.reason)}).join('; ')+'</p>';
+  if(r.timetable&&r.timetable.length)h+='<p><b>Timetable:</b></p><ul>'+r.timetable.map(function(t){return'<li>'+esc(t.day)+' P'+esc(t.period)+' · '+esc(t.class_name)+' · '+esc(t.subject)+'</li>'}).join('')+'</ul>';
+  h+='</div>';host.insertAdjacentHTML('afterbegin',h)}
+function load(host){
+  if(busy||!window.sclStaffRpc)return;busy=true;
+  window.sclStaffRpc('scl_my_assignments',{}).then(function(r){paint(host,r)},function(){}).then(function(){busy=false})}
+function boot(){var host=D.getElementById('sclModernProfileBody');if(!host)return;
+  var t=null;new MutationObserver(function(){if(host.querySelector('.scl-myassign')||!host.firstChild)return;clearTimeout(t);t=setTimeout(function(){load(host)},250)}).observe(host,{childList:true})}
+if(D.readyState==='loading')D.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
+})();
 </script>
 </body></html>
