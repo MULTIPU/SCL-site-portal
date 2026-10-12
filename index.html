@@ -1417,7 +1417,7 @@ function selectWorkerRole(btn,role){workerRole=role;document.querySelectorAll('.
 window.sclUpdateWorkerTenure=function(){const d=document.getElementById('workerStartDate'),out=document.getElementById('workerTenureDisplay'),hidden=document.getElementById('workerExperienceHidden');if(!d||!out||!hidden)return;if(!d.value){out.textContent='Select employment start date';hidden.value='';return}const start=new Date(d.value+'T00:00:00'),now=new Date();if(start>now){out.textContent='Invalid start date';hidden.value='';return}let y=now.getFullYear()-start.getFullYear(),m=now.getMonth()-start.getMonth(),days=now.getDate()-start.getDate();if(days<0){m--;days+=new Date(now.getFullYear(),now.getMonth(),0).getDate()}if(m<0){y--;m+=12}const label=y+' year'+(y===1?'':'s')+(m?' '+m+' month'+(m===1?'':'s'):'');out.textContent=label;hidden.value=label};
 function renderWorkerForm(){const vacancy=workerMode==='vacancy';document.getElementById('workerFormWrap').innerHTML=`<form class="form" id="workerForm" onsubmit="submitWorker(event)"><div class="grid"><div class="field"><label>Full Name *</label><input name="fullName" required></div><div class="field"><label>Email *</label><input name="email" type="email" required></div><div class="field"><label>Phone Number *</label><input name="phone" required></div><div class="field"><label>Primary Profession *</label><input name="role" value="${workerRole}" readonly required></div><div class="field full scl-profession-picker"><label>Additional Professions <small>(optional — maximum 2 more)</small></label><div class="scl-profession-grid"><select class="scl-profession-select" name="profession2"><option value="">No additional profession</option><option>Teacher</option><option>Cleaner / Janitor</option><option>Driver</option><option>Principal / Director</option><option>Administrative Officer</option><option>Other Staff</option></select><select class="scl-profession-select" name="profession3"><option value="">No additional profession</option><option>Teacher</option><option>Cleaner / Janitor</option><option>Driver</option><option>Principal / Director</option><option>Administrative Officer</option><option>Other Staff</option></select></div><small class="scl-auto-note">Example: a person may be registered as Teacher + Administrative Officer + another approved duty.</small></div>${vacancy?`<div class="field"><label>Years of relevant experience *</label><input name="experience" placeholder="e.g. 3 years" required></div>`:`<div class="field"><label>Employment Start Date *</label><input id="workerStartDate" name="employmentStartDate" type="date" required onchange="sclUpdateWorkerTenure()"><small class="scl-auto-note">The system calculates your length of service automatically.</small></div><div class="field"><label>Length of Service — Automatically Calculated</label><div id="workerTenureDisplay" class="scl-auto-output">Select employment start date</div><input id="workerExperienceHidden" name="experience" type="hidden">`}<div class="field"><label>Qualification / Credentials *</label><input name="credentials" placeholder="Main qualification or credential" required></div><div class="field full"><label>Work Pattern *</label><div class="scl-work-grid"><label><input type="radio" name="workPattern" value="Full-Time" required> Full-Time</label><label><input type="radio" name="workPattern" value="Half-Day Part-Time"> Half-Day Part-Time</label><label><input type="radio" name="workPattern" value="Full-Day Part-Time"> Full-Day Part-Time</label><label><input type="radio" name="workPattern" value="Scheduled Part-Time"> Scheduled Part-Time</label></div></div>${isTeachingRole(workerRole)&&!vacancy?`<div class="field full scl-teacher-timetable-registration"><label>Teaching Subject & Timetable Registration</label><div class="grid"><select name="ttClass"><option value="">Class</option>${SCL_RESULT_CLASSES.map(c=>`<option>${c}</option>`).join('')}</select><select name="ttDay"><option value="">Day</option><option value="mon">Monday</option><option value="tue">Tuesday</option><option value="wed">Wednesday</option><option value="thu">Thursday</option><option value="fri">Friday</option></select><select name="ttVariant"><option value="A">55 min schedule (Mon–Thu)</option><option value="FRI">Friday schedule</option></select><input name="ttStart" type="time"><input name="ttEnd" type="time"><input name="ttSubject" placeholder="Subject to place on timetable"></div><small class="scl-auto-note">Teacher registrations become the live timetable. Administrators can edit a separate draft directly on the timetable.</small></div>`:''}<div class="field full"><label>Important Information</label><textarea name="notes" rows="3" placeholder="Additional information, certificates, proof, or other relevant details"></textarea></div>${vacancy?`<div class="field full"><label>PDF CV *</label><input name="cv" type="file" accept="application/pdf,.pdf" required></div><div class="field full"><label>PDF Application Letter *</label><input name="applicationLetter" type="file" accept="application/pdf,.pdf" required></div>`:`<div class="field full"><label>Proof / Credential Document *</label><input name="proof" type="file" accept="application/pdf,.pdf,image/*" required></div>`}<div class="field full"><label>Take Photo on This Device *</label><input class="camera-field" name="photo" type="file" accept="image/*" capture="user" required><small>Use the device camera at the point of registration. No normal gallery-upload option is presented.</small></div></div><div class="scl-cycle-panel"><h4>FOUR-WEEK TEST AND EXAM CYCLES</h4><div class="scl-cycle-grid"><div><b>Cycle 1</b><br>10 marks<br><small>4 weeks</small></div><div><b>Cycle 2</b><br>10 marks<br><small>4 weeks</small></div><div><b>Cycle 3</b><br>10 marks<br><small>4 weeks</small></div><div><b>Cycle 4</b><br>10 test + 60 exam<br><small>Final cycle. Timing and payment treatment are school-controlled after the normal 12th week.</small></div></div><p><b>Total cycle marks: 90</b></p><p class="scl-small"><b>Cycles 1 to 3:</b> the agreed payment obligation is due when the required test results are uploaded, subject to the employment terms. <b>Cycle 4:</b> includes the 60-mark examination and the school determines the timing and treatment where the term extends beyond the normal 12 weeks.</p></div>${vacancy?'':(isTeachingRole(workerRole)?`<div class="scl-salary-panel"><div class="scl-salary-head"><h4>SALARY PAYMENT VERIFICATION</h4><span id="staffSalaryOverall" class="scl-status-dot red">Pending</span></div><p class="scl-admin-note">Teachers upload each four-week result with the class and subjects covered. The school sees a green or red status before making payment through the school banking system.</p><div id="staffSalaryCycles" class="scl-cycle-status">${[1,2,3,4].map(c=>`<article id="staffCycle${c}" class="scl-red"><b>Cycle ${c}</b><span class="scl-status-dot red">RED - Result not uploaded</span><br><small>${c<4?'10 test marks':'10 test + 60 exam marks'}</small><br><button type="button" class="btn outline" onclick="openTeacherResultUpload(${c})">UPLOAD RESULT</button></article>`).join('')}</div><p class="scl-admin-note"><b>Payment rule:</b> Cycles 1 to 3 require the four-week test result. Cycle 4 requires the test plus the examination result; timing and payment treatment after the normal 12th week remain school-controlled.</p></div>`:`<div class="scl-salary-panel nonteach-panel"><div class="scl-salary-head"><h4>NON-TEACHING STAFF VERIFICATION</h4><span id="nonTeachingOverall" class="scl-status-dot red">PENDING ADMIN REVIEW</span></div><p class="scl-admin-note">Non-teaching staff are verified over <b>4 weeks + 3 days</b>. Attendance, days worked and work quality are checked manually by any authorised school administrator.</p><div class="scl-attendance-summary"><div><b>4 Weeks</b><span>Attendance record</span></div><div><b>+ 3 Days</b><span>Final attendance</span></div><div><b>ADMIN</b><span>Manual approval</span></div></div><button type="button" class="btn gold" onclick="openSalaryAdmin()">OPEN ADMIN VERIFICATION</button><p class="scl-admin-note"><b>Status:</b> Red until an administrator marks attendance and work quality as approved. The website does not pay the worker automatically.</p></div>`)}<div class="worker-form-note"><b>Verification:</b> When you press the button below, the submission is recorded as <b>Verification Submitted</b>. School management must still review and verify it before it is treated as officially verified.</div><p style="text-align:right"><button type="button" class="btn outline" onclick="openWorkers()">BACK</button> <button class="btn gold" type="submit">CLICK FOR VERIFICATION</button></p><div id="workerStatus"></div></form>`}
 function workerReadFile(file){return file?{name:file.name,type:file.type,size:file.size}:null}
-async function submitWorker(e){e.preventDefault();if(!workerRole){toast('Choose a worker role first.');return}const f=e.target;const data={id:'SCL-W-'+Date.now(),mode:workerMode,role:workerRole,fullName:f.fullName.value.trim(),email:f.email.value.trim(),phone:f.phone.value.trim(),experience:f.experience.value.trim(),credentials:f.credentials.value.trim(),employmentStartDate:f.employmentStartDate?.value||'',workPattern:(f.querySelector('input[name=\"workPattern\"]:checked')||{}).value||'',professions:[workerRole,...[...f.querySelectorAll('.scl-profession-select')].map(x=>x.value).filter(Boolean)].filter((x,i,a)=>a.indexOf(x)===i).slice(0,3),notes:f.notes.value.trim(),timetableRegistration:(isTeachingRole(workerRole)&&f.ttClass?.value&&f.ttDay?.value&&f.ttStart?.value&&f.ttEnd?.value&&f.ttSubject?.value?{className:f.ttClass.value,day:f.ttDay.value,variant:f.ttVariant?.value||'A',start:f.ttStart.value,end:f.ttEnd.value,subject:f.ttSubject.value.trim(),teacher:f.fullName.value.trim()}:null),cv:workerReadFile(f.cv?.files?.[0]),applicationLetter:workerReadFile(f.applicationLetter?.files?.[0]),proof:workerReadFile(f.proof?.files?.[0]),photo:workerReadFile(f.photo?.files?.[0]),status:'Verification Submitted',submittedAt:new Date().toISOString()};let list=[];try{list=JSON.parse(localStorage.getItem('sclWorkerRecords')||'[]')}catch(_){}list.unshift(data);localStorage.setItem('sclWorkerRecords',JSON.stringify(list.slice(0,50)));window.dispatchEvent(new Event('scl:timetable-live-update'));const payload={...data,creatorEmail:SCL_WORKER_CONFIG.creatorEmail,schoolEmail:SCL_WORKER_CONFIG.schoolEmail};let sent=false;let backendSaved=false;try{const apiUrl=(window.SCL_SUPABASE_URL||'')+'/functions/v1/scl-worker-api';const key=window.SCL_SUPABASE_PUBLISHABLE_KEY||window.SCL_SUPABASE_ANON_KEY||'';const rr=await fetch(apiUrl,{method:'POST',headers:{'Content-Type':'application/json','apikey':key},body:JSON.stringify(data)});backendSaved=rr.ok;if(backendSaved){const bd=await rr.json().catch(()=>({}));data.backendApplicationId=bd.application?.public_id||'';payload.backendApplicationId=data.backendApplicationId}}catch(_){}try{const upload=new FormData();Object.entries(payload).forEach(([k,v])=>{if(v!==undefined&&v!==null&&typeof v!=='object')upload.append(k,v)});['cv','applicationLetter','proof','photo'].forEach(k=>{const file=f[k]?.files?.[0];if(file)upload.append(k,file,file.name)});const r=await fetch('/api/workers/submit',{method:'POST',body:upload});sent=r.ok}catch(_){}const subject=(workerMode==='staff'?'Staff registration':'Vacancy application')+' - '+workerRole+' - '+data.fullName;const body='Official SCL Website\n\nType: '+(workerMode==='staff'?'Staff Registration':'Vacancy Application')+'\nRole: '+workerRole+'\nName: '+data.fullName+'\nEmail: '+data.email+'\nPhone: '+data.phone+'\nExperience: '+data.experience+'\nCredentials: '+data.credentials+'\nStatus: Verification Submitted\nRecord ID: '+data.id+'\n\nPlease review and contact the person through the Management Administrator WhatsApp numbers.';window.location.href='mailto:'+SCL_WORKER_CONFIG.schoolEmail+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);const waText='Hello Management Administrator, a '+(workerMode==='staff'?'staff registration':'vacancy application')+' has just been submitted through the official SCL website.\n\nName: '+data.fullName+'\nRole: '+workerRole+'\nPhone: '+data.phone+'\nRecord ID: '+data.id+'\nStatus: Verification Submitted. Please review and contact the person.';document.getElementById('workerStatus').innerHTML='<div class="worker-status"><b>Verification Submitted.</b><br>Your record has been saved on this device'+(backendSaved?' and the registration record was also saved to the SCL backend.':(sent?' and the submitted files were sent to the connected SCL backend.':'. The SCL backend could not be reached, so this device copy is retained.'))+'<br><br>School email and Management WhatsApp contact actions are ready below.<br><br><button class="btn red" type="button" onclick="notifyManagementWhatsApp('+JSON.stringify(waText)+')">NOTIFY MANAGEMENT ON WHATSAPP</button></div>';renderWorkerRecords();if(workerMode==='staff'){if(isTeachingRole(workerRole))renderStaffSalaryStatus();else renderNonTeachingStatus()}toast('Worker / vacancy verification submitted.')}
+async function submitWorker(e){e.preventDefault();if(!workerRole){toast('Choose a worker role first.');return}const f=e.target;const data={id:'SCL-W-'+Date.now(),mode:workerMode,role:workerRole,fullName:f.fullName.value.trim(),email:f.email.value.trim(),phone:f.phone.value.trim(),experience:f.experience.value.trim(),credentials:f.credentials.value.trim(),employmentStartDate:f.employmentStartDate?.value||'',workPattern:(f.querySelector('input[name=\"workPattern\"]:checked')||{}).value||'',professions:[workerRole,...[...f.querySelectorAll('.scl-profession-select')].map(x=>x.value).filter(Boolean)].filter((x,i,a)=>a.indexOf(x)===i).slice(0,3),notes:f.notes.value.trim(),timetableRegistration:(isTeachingRole(workerRole)&&f.ttClass?.value&&f.ttDay?.value&&f.ttStart?.value&&f.ttEnd?.value&&f.ttSubject?.value?{className:f.ttClass.value,day:f.ttDay.value,variant:f.ttVariant?.value||'A',start:f.ttStart.value,end:f.ttEnd.value,subject:f.ttSubject.value.trim(),teacher:f.fullName.value.trim()}:null),cv:workerReadFile(f.cv?.files?.[0]),applicationLetter:workerReadFile(f.applicationLetter?.files?.[0]),proof:workerReadFile(f.proof?.files?.[0]),photo:workerReadFile(f.photo?.files?.[0]),status:'Verification Submitted',submittedAt:new Date().toISOString()};let list=[];try{list=JSON.parse(localStorage.getItem('sclWorkerRecords')||'[]')}catch(_){}list.unshift(data);localStorage.setItem('sclWorkerRecords',JSON.stringify(list.slice(0,50)));window.dispatchEvent(new Event('scl:timetable-live-update'));let appRes=null,backendSaved=false;try{appRes=await window.sclSubmitStaffApplication(f,data);backendSaved=!!(appRes&&appRes.ref);data.backendApplicationId=(appRes&&appRes.ref)||''}catch(err){appRes={error:String((err&&err.message)||err)}}const subject=(workerMode==='staff'?'Staff registration':'Vacancy application')+' - '+workerRole+' - '+data.fullName;const body='Official SCL Website\n\nType: '+(workerMode==='staff'?'Staff Registration':'Vacancy Application')+'\nRole: '+workerRole+'\nName: '+data.fullName+'\nEmail: '+data.email+'\nPhone: '+data.phone+'\nExperience: '+data.experience+'\nCredentials: '+data.credentials+'\nStatus: Verification Submitted\nRecord ID: '+data.id+'\n\nPlease review and contact the person through the Management Administrator WhatsApp numbers.';window.location.href='mailto:'+SCL_WORKER_CONFIG.schoolEmail+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);const waText='Hello Management Administrator, a '+(workerMode==='staff'?'staff registration':'vacancy application')+' has just been submitted through the official SCL website.\n\nName: '+data.fullName+'\nRole: '+workerRole+'\nPhone: '+data.phone+'\nRecord ID: '+(data.backendApplicationId||data.id)+'\nStatus: Verification Submitted. Please review and contact the person.';document.getElementById('workerStatus').innerHTML='<div class="worker-status"><b>'+window.sclWorkerHeading(appRes)+'</b><br>'+window.sclWorkerResultText(appRes)+'<br><br>School email and Management WhatsApp contact actions are ready below.<br><br><button class="btn red" type="button" onclick="notifyManagementWhatsApp('+JSON.stringify(waText)+')">NOTIFY MANAGEMENT ON WHATSAPP</button></div>';renderWorkerRecords();if(workerMode==='staff'){if(isTeachingRole(workerRole))renderStaffSalaryStatus();else renderNonTeachingStatus()}toast('Worker / vacancy verification submitted.')}
 
 const SCL_SALARY_CYCLES=[1,2,3,4];
 function getSalaryRecords(){try{return JSON.parse(localStorage.getItem('sclSalaryVerification')||'[]')}catch(e){return []}}
@@ -11348,7 +11348,7 @@ function auth(){try{return JSON.parse(sessionStorage.getItem('sclAuthSession')||
 function live(){var a=auth();return !!(a&&a.accessToken&&a.user)}
 function roles(){var a=auth();return ((a&&a.roles)||[]).map(function(r){return String(r).toLowerCase()})}
 function level(){var r=roles();
-  if(r.some(function(x){return /^(developer|technical_admin|management_admin|affairs_admin)$/.test(x)}))return 'admin';
+  if(r.some(function(x){return /^(developer|technical_admin|management_admin|affairs_admin|staff_management)$/.test(x)}))return 'admin';
   if(r.some(function(x){return /teacher/.test(x)}))return 'teacher';
   if(r.some(function(x){return /staff|worker/.test(x)}))return 'staff';
   if(r.some(function(x){return /parent|guardian/.test(x)}))return 'parent';
@@ -11369,11 +11369,9 @@ function rest(path,opt){opt=opt||{};opt.headers=hdr(opt.headers);var f=window.__
 var KINDS={
   parent:{icon:'👪',label:'Register a Parent / Guardian',sub:'Create a parent or guardian record',fields:[['full_name','Full name','text',1],['phone','Phone (WhatsApp)','tel',1],['email','Email','email',0],['child_name','Child’s name','text',0],['child_class','Child’s class','text',0]]},
   student:{icon:'🎒',label:'Register a Student',sub:'New student with parent contact',fields:[['full_name','Student full name','text',1],['class_name','Class','text',1],['parent_name','Parent / guardian name','text',1],['parent_phone','Parent phone','tel',1],['parent_email','Parent email','email',0]]},
-  teacher:{icon:'👩‍🏫',label:'Register a Teacher',sub:'Teaching staff member',fields:[['full_name','Full name','text',1],['phone','Phone','tel',1],['email','Email (their Google sign-in email)','email',1],['subjects','Subjects / classes','text',0]]},
-  staff:{icon:'🧰',label:'Register Non-teaching Staff',sub:'Admin office, security, kitchen, etc.',fields:[['full_name','Full name','text',1],['phone','Phone','tel',1],['email','Email','email',0],['department','Role / department','text',0]]},
   post:{icon:'📝',label:'New Post / Announcement',sub:'Share news with the school',fields:[['title','Title','text',1],['body','Message','textarea',1]]}
 };
-function menuFor(lv){return lv==='admin'?['parent','student','teacher','staff','post']:['parent','student','post']}
+function menuFor(lv){return ['parent','student','post']}
 
 /* ---------- sheet UI ---------- */
 var sheet=null;
@@ -11396,6 +11394,7 @@ function renderMenu(){
   var h='<p class="scl-add-note">'+(lv==='admin'
     ?'Signed in as <b>Administrator</b>. Everything you add is active immediately.'
     :'Signed in as <b>'+esc(LV_LABEL[lv]||'Staff')+'</b>. What you add is sent to the school by email and goes live once an administrator confirms it.')+'</p>';
+  if(lv==='admin'){['teaching','non_teaching'].forEach(function(k){h+='<button type="button" class="scl-add-item" data-a="verify" data-t="'+k+'"><span class="ic">'+(k==='teaching'?'👩‍🏫':'🧰')+'</span><span><b>'+esc(VK[k])+'</b><small>Review submitted applications</small></span></button>'})}
   menuFor(lv).forEach(function(k){var c=KINDS[k];h+='<button type="button" class="scl-add-item" data-a="kind" data-k="'+k+'"><span class="ic">'+c.icon+'</span><span><b>'+esc(c.label)+'</b><small>'+esc(c.sub)+'</small></span></button>'});
   if(lv==='admin')h+='<button type="button" class="scl-add-item" data-a="approvals"><span class="ic">✅</span><span><b>Pending approvals</b><small>Confirm entries from teachers and staff</small></span></button>';
   b.innerHTML=h}
@@ -11456,6 +11455,60 @@ function decide(id,status,btn){
     if(!rows||!rows.length)throw new Error('Not allowed — only administrators can confirm.');
     renderApprovals()}).catch(function(x){if(btn)btn.disabled=false;if(window.toast)window.toast(x.message)})}
 
+/* ---------- staff verification (real backend: scl_staff_applications) ---------- */
+var VK={teaching:'Verify a Staff Member',non_teaching:'Verify a Non-Teaching Staff Member'};
+var STL={incomplete:'Incomplete',submitted:'Awaiting review',needs_info:'Information requested',approved:'Approved',rejected:'Rejected'};
+function rpc(name,args){return rest('rpc/'+name,{method:'POST',body:JSON.stringify(args||{})})}
+function fdate(s){try{return new Date(s).toLocaleDateString('en-NG',{day:'numeric',month:'short',year:'numeric'})}catch(e){return''}}
+function vBack(a,k){return '<div class="scl-add-actions" style="margin:0 0 12px"><button type="button" class="scl-add-btn" data-a="'+a+'"'+(k?' data-t="'+k+'"':'')+'>Back</button></div>'}
+function renderVerifyList(kind,tab){
+  var b=body();title(VK[kind]);tab=tab||'pending';b.innerHTML=vBack('menu')+'<p class="scl-add-note">Loading applications…</p>';
+  rpc('scl_list_staff_applications',{p_kind:kind,p_status:tab}).then(function(rows){
+    var h=vBack('menu')+'<div class="scl-add-actions" style="margin:0 0 12px"><button type="button" class="scl-add-btn'+(tab==='pending'?' primary':'')+'" data-a="vtab" data-t="'+kind+'" data-s="pending">Pending</button><button type="button" class="scl-add-btn'+(tab==='approved'?' primary':'')+'" data-a="vtab" data-t="'+kind+'" data-s="approved">Approved</button></div>';
+    if(!rows||!rows.length){b.innerHTML=h+'<p class="scl-add-note">No '+(tab==='approved'?'approved':'pending')+' applications.</p>';return}
+    rows.forEach(function(r){
+      h+='<div class="scl-add-card2"><b>'+esc(r.name)+'</b><small>'+esc(r.position)+' · Ref '+esc(r.ref)+' · '+esc(fdate(r.submitted_at))+'</small>'
+       +'<small>Status: <b>'+esc(STL[r.status]||r.status)+'</b>'+(r.attempts>1?' · '+esc(r.attempts)+' attempts':'')+(r.scl_user_id?' · ID '+esc(r.scl_user_id):'')+'</small>'
+       +(r.missing&&r.missing.length?'<small>Missing: '+esc(r.missing.join(', '))+'</small>':'')
+       +(r.review_flag?'<small style="color:#b3261e">⚠ '+esc(r.review_flag)+'</small>':'')
+       +'<div class="scl-add-actions"><button type="button" class="scl-add-btn primary" data-a="vopen" data-id="'+esc(r.id)+'" data-t="'+kind+'">Review</button></div></div>'});
+    b.innerHTML=h}).catch(function(x){b.innerHTML=vBack('menu')+'<p class="scl-add-err">'+esc(x.message)+'</p>'})}
+var PL={credentials:'Qualification / credentials',workPattern:'Work pattern',experience:'Experience',employmentStartDate:'Employment start date',notes:'Notes'};
+function docUrl(path,btn){
+  btn.disabled=true;var f=window.__sclRawFetch||window.fetch;
+  f.call(window,supa()+'/storage/v1/object/sign/staff-documents/'+path.split('/').map(encodeURIComponent).join('/'),{method:'POST',headers:hdr(),body:JSON.stringify({expiresIn:300})})
+   .then(function(r){return r.json()}).then(function(d){btn.disabled=false;if(!d||!d.signedURL)throw new Error('Could not open the document.');window.open(supa()+'/storage/v1'+d.signedURL,'_blank','noopener')})
+   .catch(function(x){btn.disabled=false;if(window.toast)window.toast(x.message)})}
+function renderVerifyDetail(id,kind){
+  var b=body();title('Application');b.innerHTML=vBack('vlist',kind)+'<p class="scl-add-note">Loading…</p>';
+  rpc('scl_get_staff_application',{p_id:id}).then(function(a){
+    var p=a.payload||{},h=vBack('vlist',kind);
+    if(a.photo_path)h+='<img alt="Applicant photograph" src="'+esc(supa()+'/storage/v1/object/public/staff-photos/'+a.photo_path.split('/').map(encodeURIComponent).join('/'))+'" style="width:96px;height:96px;object-fit:cover;border-radius:12px;display:block;margin:0 auto 10px">';
+    h+='<div class="scl-add-card2"><b>'+esc(a.full_name)+'</b><small>'+esc(a.position)+' · Ref '+esc(a.public_ref)+'</small><small>Email: '+esc(a.email)+'</small><small>Phone: '+esc(a.phone||'—')+'</small><small>Status: <b>'+esc(STL[a.status]||a.status)+'</b> · Attempts: '+esc(a.attempt_count)+' · Submitted '+esc(fdate(a.created_at))+'</small>';
+    Object.keys(PL).forEach(function(k){if(p[k])h+='<small>'+esc(PL[k])+': '+esc(p[k])+'</small>'});
+    if(p.professions&&p.professions.length)h+='<small>Professions: '+esc(p.professions.join(', '))+'</small>';
+    var t=p.timetableRegistration;if(t&&t.className)h+='<small>Class / subject: '+esc(t.className)+(t.subject?' — '+esc(t.subject):'')+'</small>';
+    if(a.missing&&a.missing.length)h+='<small style="color:#b3261e">Missing: '+esc(a.missing.join(', '))+'</small>';
+    if(a.review_flag)h+='<small style="color:#b3261e">⚠ '+esc(a.review_flag)+'</small>';
+    if(a.scl_user_id)h+='<small>SCL User ID: <b>'+esc(a.scl_user_id)+'</b></small>';
+    h+='</div>';
+    var docs=a.documents||{},dk=Object.keys(docs);
+    if(dk.length){h+='<div class="scl-add-card2"><b>Documents</b>';dk.forEach(function(k){h+='<div class="scl-add-actions" style="margin:6px 0 0"><button type="button" class="scl-add-btn" data-a="vdoc" data-path="'+esc(docs[k])+'">View '+esc(k==='cv'?'CV':k==='applicationLetter'?'application letter':k)+'</button></div>'});h+='</div>'}
+    else h+='<p class="scl-add-note">No documents attached.</p>';
+    if(a.status!=='approved'&&a.status!=='rejected'){
+      h+='<label for="sclVReason">Reason (required to reject or request information)</label><textarea id="sclVReason" rows="2"></textarea><div class="scl-add-err" id="sclVErr" role="alert"></div>'
+       +'<div class="scl-add-actions"><button type="button" class="scl-add-btn" data-a="vdecide" data-d="reject" data-id="'+esc(a.id)+'" data-t="'+kind+'">Reject</button><button type="button" class="scl-add-btn" data-a="vdecide" data-d="request_info" data-id="'+esc(a.id)+'" data-t="'+kind+'">Request info</button><button type="button" class="scl-add-btn primary" data-a="vdecide" data-d="approve" data-id="'+esc(a.id)+'" data-t="'+kind+'">Approve</button></div>'}
+    if(a.events&&a.events.length){h+='<div class="scl-add-card2"><b>History</b>';a.events.slice(-8).forEach(function(e){h+='<small>'+esc(fdate(e.at))+' · '+esc(e.event)+(e.detail&&e.detail.reason?' — '+esc(e.detail.reason):'')+'</small>'});h+='</div>'}
+    b.innerHTML=h}).catch(function(x){b.innerHTML=vBack('vlist',kind)+'<p class="scl-add-err">'+esc(x.message)+'</p>'})}
+function vDecide(id,d,kind,btn){
+  var r=($('#sclVReason')||{}).value||'',err=$('#sclVErr');
+  if(d!=='approve'&&!r.trim()){if(err)err.textContent='Please give a reason.';return}
+  if(d==='approve'&&!confirm('Approve this application? This activates the role and cannot be undone here.'))return;
+  btn.disabled=true;
+  rpc('scl_decide_staff_application',{p_id:id,p_decision:d,p_reason:r.trim()||null}).then(function(res){
+    if(window.toast)window.toast(d==='approve'?'Approved.'+(res&&res.scl_user_id?' User ID '+res.scl_user_id:'')+(res&&res.role_pending_login?' Role activates when they sign in.':''):d==='reject'?'Rejected.':'Information requested.');
+    renderVerifyList(kind,'pending')}).catch(function(x){btn.disabled=false;if(err)err.textContent=x.message})}
+
 function onClick(e){
   if(e.target===sheet){close();return}
   var t=e.target.closest&&e.target.closest('[data-a]');if(!t)return;
@@ -11464,6 +11517,12 @@ function onClick(e){
   else if(a==='menu')renderMenu();
   else if(a==='kind')renderForm(t.getAttribute('data-k'));
   else if(a==='approvals')renderApprovals();
+  else if(a==='verify')renderVerifyList(t.getAttribute('data-t'),'pending');
+  else if(a==='vlist')renderVerifyList(t.getAttribute('data-t'),'pending');
+  else if(a==='vtab')renderVerifyList(t.getAttribute('data-t'),t.getAttribute('data-s'));
+  else if(a==='vopen')renderVerifyDetail(t.getAttribute('data-id'),t.getAttribute('data-t'));
+  else if(a==='vdoc')docUrl(t.getAttribute('data-path'),t);
+  else if(a==='vdecide')vDecide(t.getAttribute('data-id'),t.getAttribute('data-d'),t.getAttribute('data-t'),t);
   else if(a==='approve')decide(t.getAttribute('data-id'),'active',t);
   else if(a==='reject')decide(t.getAttribute('data-id'),'rejected',t)}
 
@@ -11893,5 +11952,134 @@ window.addEventListener('load',function(){setTimeout(watch,600);setTimeout(watch
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
+</script>
+<script id="scl-staff-verification-and-octagon">
+(function(){'use strict';
+if(window.__sclStaffModule)return;window.__sclStaffModule=true;
+var D=document;
+function URLB(){return String(window.SCL_SUPABASE_URL||'').replace(/\/$/,'')}
+function KEY(){return window.SCL_SUPABASE_PUBLISHABLE_KEY||window.SCL_SUPABASE_ANON_KEY||''}
+function sess(){try{return JSON.parse(sessionStorage.getItem('sclAuthSession')||'null')}catch(e){return null}}
+function headers(extra){var s=sess(),h={apikey:KEY()};if(s&&s.accessToken)h.Authorization='Bearer '+s.accessToken;for(var k in(extra||{}))h[k]=extra[k];return h}
+function rawFetch(u,o){return(window.__sclRawFetch||window.fetch).call(window,u,o)}
+function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(m){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]})}
+function rpc(name,args){return rawFetch(URLB()+'/rest/v1/rpc/'+name,{method:'POST',cache:'no-store',headers:headers({'Content-Type':'application/json'}),body:JSON.stringify(args||{})}).then(function(r){return r.text().then(function(t){var d=null;try{d=t?JSON.parse(t):null}catch(e){}
+  if(!r.ok){var m=(d&&(d.message||d.error))||('Request failed ('+r.status+')');if(/function .* does not exist|schema cache/i.test(m))m='The staff verification backend is not installed yet. Run SCL_identity_verification_migration.sql in Supabase.';throw new Error(m)}return d})})}
+function uuid(){if(window.crypto&&crypto.randomUUID)return crypto.randomUUID();var h='0123456789abcdef',s='';for(var i=0;i<36;i++)s+=(i===8||i===13||i===18||i===23)?'-':h[Math.floor(Math.random()*16)];return s}
+window.sclStaffRpc=rpc;
+
+/* ===== registration: upload files, then save/resume ONE application per person ===== */
+var MAXB=8*1024*1024;
+function upload(bucket,path,file){return rawFetch(URLB()+'/storage/v1/object/'+bucket+'/'+path,{method:'POST',headers:headers({'Content-Type':file.type||'application/octet-stream','x-upsert':'false'}),body:file}).then(function(r){if(!r.ok)return r.text().then(function(t){throw new Error('File upload failed ('+r.status+'). '+t.slice(0,120))});return path})}
+window.sclSubmitStaffApplication=function(f,data){
+  if(f.__sclBusy)return f.__sclBusy;
+  var id=uuid(),token=f.__sclToken||(f.__sclToken=uuid()),docs={},photoPath=null,jobs=[];
+  var pf=f.photo&&f.photo.files&&f.photo.files[0];
+  if(pf){var ext={'image/jpeg':'jpg','image/png':'png','image/webp':'webp'}[pf.type];
+    if(!ext)return Promise.reject(new Error('The photograph must be a JPG, PNG or WebP image.'));
+    if(pf.size>MAXB)return Promise.reject(new Error('The photograph is larger than 8 MB.'));
+    jobs.push(upload('staff-photos','incoming/'+id+'/photo.'+ext,pf).then(function(p){photoPath=p}))}
+  ['cv','applicationLetter','proof'].forEach(function(k){var file=f[k]&&f[k].files&&f[k].files[0];if(!file)return;
+    if(file.size>MAXB)throw new Error('"'+file.name+'" is larger than 8 MB.');
+    var safe=(k+'-'+file.name).replace(/[^A-Za-z0-9_.-]/g,'_').slice(-70);
+    jobs.push(upload('staff-documents','incoming/'+id+'/'+safe,file).then(function(p){docs[k]=p}))});
+  var payload={credentials:data.credentials,workPattern:data.workPattern,experience:data.experience,employmentStartDate:data.employmentStartDate,
+    professions:data.professions,notes:data.notes,mode:data.mode,timetableRegistration:data.timetableRegistration};
+  f.__sclBusy=Promise.all(jobs).then(function(){
+    return rpc('scl_submit_staff_application',{p:{full_name:data.fullName,email:data.email,phone:data.phone,position:data.role,payload:payload,documents:docs,photo_path:photoPath,submit_token:token}})
+  }).then(function(r){f.__sclBusy=null;f.__sclToken=null;try{window.dispatchEvent(new Event('scl:staff-directory-refresh'))}catch(e){}return r},function(e){f.__sclBusy=null;throw e});
+  return f.__sclBusy};
+window.sclWorkerHeading=function(r){if(!r||r.error)return'Could not reach the school records.';if(r.result==='already_verified')return'You are already verified.';
+  if(r.status==='incomplete')return'Account already created, but not complete.';if(r.result==='resumed')return'Your existing application was updated.';return'Verification Submitted.'};
+window.sclWorkerResultText=function(r){if(!r)return'';if(r.error)return' '+esc(r.error)+' Your record is retained on this device.';
+  var t=' '+esc(r.message||'')+' Reference: <b>'+esc(r.ref||'')+'</b>.';
+  if(r.missing&&r.missing.length)t+='<br><br><b>Still required:</b> '+r.missing.map(esc).join(', ')+'. Open this form again with the same email and add only these items; no new record is created.';
+  if(r.attempts>1)t+='<br><small>Attempt '+esc(r.attempts)+'.</small>';return t};
+
+/* ===== sign-in after approval: activate the role granted by the approved application ===== */
+(function(){var tries=0,done=false,iv=setInterval(function(){if(done||++tries>40){clearInterval(iv);return}var s=sess();if(!(s&&s.accessToken&&s.user))return;done=true;clearInterval(iv);
+  rpc('scl_activate_my_approved_role').then(function(r){if(r&&r.activated&&r.role){var s2=sess();if(s2){s2.roles=s2.roles||[];if(s2.roles.indexOf(r.role)<0){s2.roles.push(r.role);try{sessionStorage.setItem('sclAuthSession',JSON.stringify(s2))}catch(e){}}}}}).catch(function(){})},3000)})();
+
+/* ===== homepage: octagonal staff display ===== */
+var css='#sclStaffShow{--oct:#5a0c1a;--gold:#e3b23c}#sclStaffShow .sso-head{text-align:center;margin-bottom:18px}'
++'#sclStaffShow .sso-view{position:relative;overflow:hidden;padding:14px 0 10px}'
++'#sclStaffShow .sso-track{display:flex;gap:18px;will-change:transform;width:max-content}'
++'#sclStaffShow.sso-static .sso-track{width:auto;justify-content:center;flex-wrap:wrap}'
++'#sclStaffShow.sso-scroll .sso-view{overflow-x:auto;-webkit-overflow-scrolling:touch}'
++'#sclStaffShow .sso-card{flex:0 0 auto;width:150px;text-align:center;background:none;border:0;padding:0;font:inherit;color:inherit;cursor:default}'
++'#sclStaffShow .sso-card.ver{cursor:pointer}#sclStaffShow .sso-card.ver:focus-visible{outline:3px solid #fff;outline-offset:4px;border-radius:12px}'
++'#sclStaffShow .sso-oct{position:relative;width:140px;height:140px;margin:0 auto 8px}'
++'#sclStaffShow .sso-frame,#sclStaffShow .sso-photo{position:absolute;clip-path:polygon(29.3% 0,70.7% 0,100% 29.3%,100% 70.7%,70.7% 100%,29.3% 100%,0 70.7%,0 29.3%)}'
++'#sclStaffShow .sso-frame{inset:0;background:linear-gradient(135deg,var(--gold),#a8741a)}#sclStaffShow .sso-card.pend .sso-frame{background:#9a8f80}'
++'#sclStaffShow .sso-photo{inset:5px;background:#f3e7cf;overflow:hidden}#sclStaffShow .sso-photo img,#sclStaffShow .sso-photo svg{width:100%;height:100%;object-fit:cover;display:block}'
++'#sclStaffShow .sso-card.pend .sso-photo img,#sclStaffShow .sso-card.pend .sso-photo svg{filter:blur(9px);transform:scale(1.15)}'
++'#sclStaffShow .sso-pend{white-space:nowrap;position:absolute;left:50%;top:0;transform:translate(-50%,-10%);z-index:2;background:#b3261e;color:#fff;font-weight:900;font-size:12px;letter-spacing:.12em;padding:4px 12px;border-radius:99px;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.35)}'
++'#sclStaffShow .sso-name{font-weight:800;font-size:14px;line-height:1.2;color:inherit;overflow-wrap:anywhere}#sclStaffShow .sso-pos{font-size:12px;opacity:.85}'
++'#sclStaffShow .sso-ctl{display:flex;justify-content:center;gap:10px;margin-top:10px}'
++'#sclStaffShow .sso-btn{border:1px solid var(--gold);background:transparent;color:inherit;border-radius:99px;padding:6px 14px;font-weight:700;cursor:pointer}'
++'#sclStaffShow .sso-msg{text-align:center;opacity:.85;padding:18px}'
++'#sclStaffDlg{position:fixed;inset:0;z-index:100000;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.55);padding:16px}#sclStaffDlg.open{display:flex}'
++'#sclStaffDlg .box{background:#fff7e8;color:#2e0610;border-radius:16px;max-width:360px;width:100%;padding:20px;text-align:center}'
++'#sclStaffDlg .box img{width:110px;height:110px;object-fit:cover;clip-path:polygon(29.3% 0,70.7% 0,100% 29.3%,100% 70.7%,70.7% 100%,29.3% 100%,0 70.7%,0 29.3%)}'
++'#sclStaffDlg .box p{margin:8px 0;overflow-wrap:anywhere}#sclStaffDlg .box button{margin-top:10px;padding:8px 18px;border-radius:99px;border:1px solid #5a0c1a;background:#5a0c1a;color:#fff;font-weight:700;cursor:pointer}';
+var st=D.createElement('style');st.id='scl-staff-octagon-css';st.textContent=css;D.head.appendChild(st);
+
+var SIL='<svg viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" fill="#d9c8a3"/><circle cx="50" cy="38" r="17" fill="#8a7a58"/><path d="M14 100c2-26 20-38 36-38s34 12 36 38z" fill="#8a7a58"/></svg>';
+var root=null,view=null,track=null,timer=null,paused=false,reduce=false,sig='',data=[],stepping=false,mq=null;
+try{mq=matchMedia('(prefers-reduced-motion: reduce)');reduce=mq.matches}catch(e){}
+function photoUrl(p){return URLB()+'/storage/v1/object/public/staff-photos/'+String(p).split('/').map(encodeURIComponent).join('/')}
+function card(p){var b=D.createElement(p.verified?'button':'div');b.className='sso-card '+(p.verified?'ver':'pend');b.setAttribute('data-ref',p.ref);
+  if(p.verified){b.type='button';b.setAttribute('aria-label',(p.name||'Staff member')+', '+(p.position||'staff')+'. Open contact details')}else b.setAttribute('aria-label','Pending staff application, '+(p.position||'staff'));
+  var img=p.verified&&p.photo?'<img alt="'+esc(p.name||'')+'" loading="lazy" decoding="async" width="130" height="130" src="'+esc(photoUrl(p.photo))+'">':SIL;
+  b.innerHTML='<div class="sso-oct">'+(p.verified?'':'<span class="sso-pend">PENDING</span>')+'<div class="sso-frame"></div><div class="sso-photo">'+img+'</div></div>'
+   +'<div class="sso-name">'+esc(p.verified?(p.name||''):'New applicant')+'</div><div class="sso-pos">'+esc(p.position||'')+'</div>';
+  var im=b.querySelector('img');if(im)im.onerror=function(){im.replaceWith(Object.assign(D.createElement('span'),{innerHTML:SIL}).firstChild)};
+  return b}
+function stop(){if(timer){clearInterval(timer);timer=null}}
+function start(){stop();if(reduce||paused||!track||root.classList.contains('sso-static'))return;timer=setInterval(step,2000)}
+/* left-to-right: the last card moves to the front, then the track glides from -1 card to 0 (no clones, no duplicates) */
+function step(){if(stepping||D.hidden||!track.lastElementChild)return;stepping=true;
+  var last=track.lastElementChild,w=last.getBoundingClientRect().width+18;
+  track.style.transition='none';track.insertBefore(last,track.firstElementChild);track.style.transform='translateX('+(-w)+'px)';
+  void track.offsetWidth;track.style.transition='transform .6s ease';track.style.transform='translateX(0)';
+  setTimeout(function(){stepping=false},650)}
+function render(list){
+  var s=list.map(function(p){return p.ref+':'+(p.verified?1:0)}).join('|');if(s===sig&&track)return;sig=s;stop();
+  if(!list.length){view.innerHTML='<div class="sso-msg">Staff profiles will appear here once applications are submitted.</div>';track=null;return}
+  view.innerHTML='<div class="sso-track" role="list"></div>';track=view.firstChild;
+  list.forEach(function(p){var c=card(p);c.setAttribute('role','listitem');track.appendChild(c)});
+  var fits=track.scrollWidth<=view.clientWidth+4;root.classList.toggle('sso-static',fits);
+  root.classList.toggle('sso-scroll',reduce&&!fits);start()}
+function load(){return rawFetch(URLB()+'/rest/v1/rpc/scl_public_staff_directory',{method:'POST',cache:'no-store',headers:{apikey:KEY(),'Content-Type':'application/json'},body:'{}'})
+  .then(function(r){if(!r.ok)throw new Error('x');return r.json()}).then(function(l){data=Array.isArray(l)?l:[];render(data)})
+  .catch(function(){if(!track)view.innerHTML='<div class="sso-msg">Staff display is temporarily unavailable.</div>'})}
+function dlg(){var d=D.getElementById('sclStaffDlg');if(d)return d;d=D.createElement('div');d.id='sclStaffDlg';d.setAttribute('role','dialog');d.setAttribute('aria-modal','true');D.body.appendChild(d);
+  d.addEventListener('click',function(e){if(e.target===d||e.target.hasAttribute('data-close'))d.classList.remove('open')});
+  D.addEventListener('keydown',function(e){if(e.key==='Escape')d.classList.remove('open')});return d}
+function openStaff(ref){var p=data.filter(function(x){return x.ref===ref&&x.verified})[0];if(!p)return;var d=dlg();
+  function paint(extra){d.innerHTML='<div class="box">'+(p.photo?'<img alt="" src="'+esc(photoUrl(p.photo))+'">':'')+'<h3>'+esc(p.name)+'</h3><p>'+esc(p.position||'')+'</p>'+extra+'<button type="button" data-close>Close</button></div>';d.classList.add('open')}
+  var s=sess();if(!(s&&s.accessToken)){paint('<p>Sign in to view contact details.</p>');return}
+  paint('<p>Loading…</p>');
+  rpc('scl_get_staff_contact',{p_ref:ref}).then(function(c){paint('<p><a href="mailto:'+esc(c.email)+'">'+esc(c.email)+'</a></p><p>'+(c.phone?'<a href="tel:'+esc(c.phone)+'">'+esc(c.phone)+'</a>':'No phone on record')+'</p>')},function(e){paint('<p>'+esc(e.message)+'</p>')})}
+function mount(){
+  if(D.getElementById('sclStaffShow'))return true;var host=D.getElementById('hv2');if(!host)return false;
+  var sec=D.createElement('section');sec.id='sclStaffShow';sec.className='hv2-sec';sec.setAttribute('aria-label','Our staff');
+  sec.innerHTML='<div class="hv2-in"><div class="sso-head"><h2>Our staff</h2><p class="hv2-lead">Meet the people who teach and support our pupils.</p></div><div class="sso-view"></div><div class="sso-ctl"><button type="button" class="sso-btn" id="ssoToggle" aria-pressed="false">Pause</button></div></div>';
+  var foot=host.querySelector('.scl-footer'),contact=host.querySelector('#contact');
+  if(foot)host.insertBefore(sec,foot);else if(contact&&contact.parentNode===host)contact.insertAdjacentElement('afterend',sec);else host.appendChild(sec);
+  root=sec;view=sec.querySelector('.sso-view');
+  sec.addEventListener('click',function(e){var c=e.target.closest('.sso-card.ver');if(c)openStaff(c.getAttribute('data-ref'))});
+  sec.querySelector('#ssoToggle').addEventListener('click',function(){paused=!paused;this.textContent=paused?'Play':'Pause';this.setAttribute('aria-pressed',String(paused));paused?stop():start()});
+  ['mouseenter','focusin','touchstart'].forEach(function(ev){view.addEventListener(ev,stop,{passive:true})});
+  ['mouseleave','focusout','touchend'].forEach(function(ev){view.addEventListener(ev,function(){if(!paused)start()},{passive:true})});
+  if(mq&&mq.addEventListener)mq.addEventListener('change',function(){reduce=mq.matches;sig='';render(data)});
+  if('IntersectionObserver' in window)new IntersectionObserver(function(en){en[0].isIntersecting?(paused||start()):stop()},{threshold:.05}).observe(sec);
+  /* lazy: nothing is fetched until the section is near the viewport */
+  var go=function(){load();setInterval(load,60000);D.addEventListener('visibilitychange',function(){if(!D.hidden)load()});window.addEventListener('scl:staff-directory-refresh',load)};
+  if('IntersectionObserver' in window){var io=new IntersectionObserver(function(en){if(en[0].isIntersecting){io.disconnect();go()}},{rootMargin:'400px'});io.observe(sec)}else go();
+  return true}
+var n=0,mi=setInterval(function(){if(mount()||++n>120)clearInterval(mi)},500);
+})();
+
 </script>
 </body></html>
