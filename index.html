@@ -1686,7 +1686,7 @@ window.sclAskAI=async function(){
  const stop=new Set(["what","is","are","the","a","an","of","to","for","and","in","on","me","tell","about","please","explain","define","meaning","does","do","how","why","can","you","my","this","that"]);
  const queryTerms=normalized.filter(x=>x.length>1&&!stop.has(x));
  const curriculumContext=curriculum.map(x=>{const hay=(String(x.class||"")+" "+String(x.subject||"")+" "+String(x.term||"")+" "+String(x.text||"")).toLowerCase();let score=0;for(const t of queryTerms){if(hay.includes(t))score+=hay.split(t).length-1;}return {x,score}}).filter(o=>o.score>0).sort((a,b)=>b.score-a.score).slice(0,40).map(o=>o.x);
- try{const r=await fetch(window.SCL_EDU_AI_API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({question:q,context:curriculumContext})});if(r.ok){const d=await r.json();if(d.answer){out.textContent=d.answer;return;}}}catch(e){console.warn("SCL Educational Intelligence backend unavailable; using local internet dictionary fallback.",e)}
+ try{const r=await fetch(window.SCL_EDU_AI_API,{method:"POST",signal:(typeof AbortSignal!=="undefined"&&AbortSignal.timeout?AbortSignal.timeout(11000):undefined),headers:{"Content-Type":"application/json","apikey":window.SCL_SUPABASE_PUBLISHABLE_KEY||""},body:JSON.stringify({question:q,context:curriculumContext})});if(r.ok){const d=await r.json();if(d.answer){out.textContent=d.answer;return;}}else{console.warn("SCL Educational Intelligence backend returned HTTP "+r.status)}}catch(e){console.warn("SCL Educational Intelligence backend unavailable; using local internet dictionary fallback.",e)}
  const oneWord=/^[A-Za-z][A-Za-z'-]{0,79}$/.test(q.trim());
  const term=q.trim().replace(/^(what is|what does|define|meaning of|definition of|explain|the meaning of|tell me about)\s+/i,"").replace(/[?!.]+$/g,"").trim();
  if(oneWord || term!==q.trim()){
@@ -2070,7 +2070,7 @@ window.sclAskAI=async function(){
  const q=(by("sclAiInput")?.value||"").trim(); if(!q)return;
  const out=by("sclAiResponse"); out.textContent="Thinking…";
  const curriculum=(typeof sclPages!=="undefined"?sclPages:[]);
- try{const r=await fetch(window.SCL_EDU_AI_API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({question:q,context:curriculum.slice(0,12)})});if(r.ok){const d=await r.json();if(d.answer){out.textContent=d.answer;return;}}}catch(e){console.warn("SCL Educational Intelligence backend unavailable; using local internet dictionary fallback.",e)}
+ try{const r=await fetch(window.SCL_EDU_AI_API,{method:"POST",signal:(typeof AbortSignal!=="undefined"&&AbortSignal.timeout?AbortSignal.timeout(11000):undefined),headers:{"Content-Type":"application/json","apikey":window.SCL_SUPABASE_PUBLISHABLE_KEY||""},body:JSON.stringify({question:q,context:curriculum.slice(0,12)})});if(r.ok){const d=await r.json();if(d.answer){out.textContent=d.answer;return;}}else{console.warn("SCL Educational Intelligence backend returned HTTP "+r.status)}}catch(e){console.warn("SCL Educational Intelligence backend unavailable; using local internet dictionary fallback.",e)}
  const oneWord=/^[A-Za-z][A-Za-z'-]{0,79}$/.test(q.trim());
  const term=q.trim().replace(/^(what is|what does|define|meaning of|definition of|explain|the meaning of|tell me about)\s+/i,"").replace(/[?!.]+$/g,"").trim();
  if(oneWord || term!==q.trim()){
@@ -11492,14 +11492,32 @@ function renderVerifyDetail(id,kind){
     if(a.review_flag)h+='<small style="color:#b3261e">⚠ '+esc(a.review_flag)+'</small>';
     if(a.scl_user_id)h+='<small>SCL User ID: <b>'+esc(a.scl_user_id)+'</b></small>';
     h+='</div>';
-    var docs=a.documents||{},dk=Object.keys(docs);
-    if(dk.length){h+='<div class="scl-add-card2"><b>Documents</b>';dk.forEach(function(k){h+='<div class="scl-add-actions" style="margin:6px 0 0"><button type="button" class="scl-add-btn" data-a="vdoc" data-path="'+esc(docs[k])+'">View '+esc(k==='cv'?'CV':k==='applicationLetter'?'application letter':k)+'</button></div>'});h+='</div>'}
-    else h+='<p class="scl-add-note">No documents attached.</p>';
+    var docs=a.documents||{},miss=(a.missing||[]).join(' ').toLowerCase(),
+    EXP=[['cv','CV'],['applicationLetter','Application letter']];
+    Object.keys(docs).forEach(function(k){if(!EXP.some(function(e){return e[0]===k}))EXP.push([k,k])});
+    h+='<div class="scl-add-card2"><b>Documents</b>';
+    EXP.forEach(function(e){var p=docs[e[0]];
+      if(p){var fn='';try{fn=decodeURIComponent(String(p).split('/').pop())}catch(_){fn=String(p).split('/').pop()}
+        h+='<small>✔ '+esc(e[1])+' — '+esc(fn)+'</small><div class="scl-add-actions" style="margin:4px 0 8px"><button type="button" class="scl-add-btn" data-a="vdoc" data-path="'+esc(p)+'">Open '+esc(e[1])+'</button></div>'}
+      else{var bad=miss.indexOf(e[0].toLowerCase())>-1||miss.indexOf(e[1].toLowerCase())>-1;
+        h+='<small'+(bad?' style="color:#b3261e"':'')+'>'+(bad?'✖ ':'– ')+esc(e[1])+' — not on file</small>'}});
+    h+=a.photo_path?'<small>✔ Passport photo — '+esc(String(a.photo_path).split('/').pop())+'</small>':'<small>– Passport photo — not on file</small>';
+    h+='<small>Documents are shown only when linked to this exact application. Nothing is matched by name; conflicting records need manual review.</small></div>';
     if(a.status!=='approved'&&a.status!=='rejected'){
       h+='<label for="sclVReason">Reason (required to reject or request information)</label><textarea id="sclVReason" rows="2"></textarea><div class="scl-add-err" id="sclVErr" role="alert"></div>'
        +'<div class="scl-add-actions"><button type="button" class="scl-add-btn" data-a="vdecide" data-d="reject" data-id="'+esc(a.id)+'" data-t="'+kind+'">Reject</button><button type="button" class="scl-add-btn" data-a="vdecide" data-d="request_info" data-id="'+esc(a.id)+'" data-t="'+kind+'">Request info</button><button type="button" class="scl-add-btn primary" data-a="vdecide" data-d="approve" data-id="'+esc(a.id)+'" data-t="'+kind+'">Approve</button></div>'}
     if(a.events&&a.events.length){h+='<div class="scl-add-card2"><b>History</b>';a.events.slice(-8).forEach(function(e){h+='<small>'+esc(fdate(e.at))+' · '+esc(e.event)+(e.detail&&e.detail.reason?' — '+esc(e.detail.reason):'')+'</small>'});h+='</div>'}
-    b.innerHTML=h}).catch(function(x){b.innerHTML=vBack('vlist',kind)+'<p class="scl-add-err">'+esc(x.message)+'</p>'})}
+    b.innerHTML=h;if(a.status==='approved')vOutcome(id,b)}).catch(function(x){b.innerHTML=vBack('vlist',kind)+'<p class="scl-add-err">'+esc(x.message)+'</p>'})}
+var OUT={complete:['✔ Allocation complete','#1b7a3d'],deferred:['⏳ Allocation deferred','#b26a00'],blocked:['⛔ Allocation blocked','#b3261e']};
+function vOutcome(id,b){
+  var box=document.createElement('div');box.className='scl-add-card2';box.innerHTML='<small>Checking allocation…</small>';b.appendChild(box);
+  rpc('scl_application_allocation_outcome',{p_id:id}).then(function(o){
+    var m=OUT[o&&o.state]||OUT.deferred,h='<b style="color:'+m[1]+'">'+m[0]+'</b>';
+    (o.assigned||[]).forEach(function(x){h+='<small>'+esc(x.class_name)+' — '+esc(x.subject==='ALL_SUBJECTS'?'all subjects':x.subject)+'</small>'});
+    (o.duties||[]).forEach(function(d){h+='<small>Duty: '+esc(d)+'</small>'});
+    (o.flags||[]).forEach(function(f){h+='<small style="color:#b3261e">⚠ '+esc(f.reason)+(f.subject?' ('+esc(f.subject)+')':'')+'</small>'});
+    if(o.state!=='complete')h+='<small>Management must resolve the items above in staff management.</small>';
+    box.innerHTML=h}).catch(function(){box.innerHTML='<small>Allocation status is unavailable (the allocation migration may not be applied yet).</small>'})}
 function vDecide(id,d,kind,btn){
   var r=($('#sclVReason')||{}).value||'',err=$('#sclVErr');
   if(d!=='approve'&&!r.trim()){if(err)err.textContent='Please give a reason.';return}
@@ -11507,7 +11525,7 @@ function vDecide(id,d,kind,btn){
   btn.disabled=true;
   rpc('scl_decide_staff_application',{p_id:id,p_decision:d,p_reason:r.trim()||null}).then(function(res){
     if(window.toast)window.toast(d==='approve'?'Approved.'+(res&&res.scl_user_id?' User ID '+res.scl_user_id:'')+(res&&res.role_pending_login?' Role activates when they sign in.':''):d==='reject'?'Rejected.':'Information requested.');
-    renderVerifyList(kind,'pending')}).catch(function(x){btn.disabled=false;if(err)err.textContent=x.message})}
+    if(d==='approve')renderVerifyDetail(id,kind);else renderVerifyList(kind,'pending')}).catch(function(x){btn.disabled=false;if(err)err.textContent=x.message})}
 
 function onClick(e){
   if(e.target===sheet){close();return}
