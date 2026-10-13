@@ -884,18 +884,17 @@ html body:not(.scl-night) #sclModernProfileModal .scl-modern-profile-body{backgr
  <div class="ag-card">
   <div class="ag-view ag-on" id="v-home">
    <h2>Welcome back</h2><p class="ag-sub">Choose how you want to enter the school portal.</p>
-   <button class="ag-btn ag-g" data-access-action="login"><svg width="22" height="22" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.5l6.7-6.7C35.7 2.4 30.2 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.8 6C12.3 13.4 17.6 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.500-4.800 7.200l7.500 5.800c4.400-4.100 7.100-10.100 7.100-17.500z"/><path fill="#FBBC05" d="M10.400 28.800A14.500 14.500 0 0 1 9.500 24c0-1.700.3-3.300.9-4.800l-7.800-6A24 24 0 0 0 0 24c0 3.900.9 7.500 2.600 10.800l7.800-6z"/><path fill="#34A853" d="M24 48c6.200 0 11.400-2 15.200-5.600l-7.500-5.800c-2 1.400-4.700 2.300-7.700 2.300-6.400 0-11.700-3.900-13.600-9.300l-7.800 6C6.500 42.600 14.600 48 24 48z"/></svg>Continue with Google</button>
+   <button class="ag-btn ag-g" data-access-action="login"><svg width="22" height="22" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.5l6.7-6.7C35.7 2.4 30.2 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.8 6C12.3 13.4 17.6 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.500-4.800 7.200l7.500 5.800c4.400-4.100 7.100-10.100 7.100-17.500z"/><path fill="#FBBC05" d="M10.400 28.800A14.500 14.500 0 0 1 9.500 24c0-1.700.3-3.300.9-4.800l-7.800-6A24 24 0 0 0 0 24c0 3.900.9 7.500 2.600 10.800l7.800-6z"/><path fill="#34A853" d="M24 48c6.200 0 11.400-2 15.200-5.600l-7.500-5.800c-2 1.400-4.700 2.300-7.700 2.300-6.400 0-11.700-3.900-13.600-9.300l-7.800 6C6.500 42.600 14.600 48 24 48z"/></svg><span style="display:flex;flex-direction:column;align-items:flex-start;line-height:1.25;text-align:left"><span>Continue with Google</span><small style="font-weight:600;font-size:.72em;opacity:.7">Browse as a visitor, or sign in</small></span></button>
    <div class="ag-or">or</div>
    <button class="ag-btn ag-s" data-access-action="signin">Sign in with email or user ID</button>
    <button class="ag-btn ag-r" data-access-action="register">Register a new account</button>
-   <button class="ag-lnk" id="vis" type="button">Browse as a visitor</button>
    <p class="ag-foot" id="gateFooter">Students, parents and guardians welcome.</p>
   </div>
 
   <form class="ag-view" id="v-signin" novalidate>
    <button type="button" class="ag-back" data-go="home">&larr; Back</button>
    <h2>Sign in</h2><p class="ag-sub">Use your email address or school user ID.</p>
-   <label for="si-id">Email or user ID</label><input id="si-id" autocomplete="username" placeholder="e.g. SCL/2026/014 or name@mail.com" required>
+   <label for="si-id">Email or user ID</label><input id="si-id" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" inputmode="email" placeholder="e.g. SCL/2026/014 or name@mail.com" required>
    <label for="si-pw">Password</label><div class="ag-pw"><input id="si-pw" type="password" autocomplete="current-password" required><button type="button" class="ag-eye">Show</button></div>
    <div class="ag-opt"><label class="ag-ck"><input type="checkbox" id="si-rm"> Remember me</label><a href="#" id="fg">Forgot password?</a></div>
    <button class="ag-btn ag-s" type="submit">Sign in</button>
@@ -9305,7 +9304,7 @@ gate.querySelector('[data-access-action="register"]').onclick=function(){go("reg
 gate.querySelector('[data-access-action="login"]').onclick=function(){emit("login",{})};
 
 /* sign in */
-$("v-signin").onsubmit=function(e){e.preventDefault();var id=$("si-id").value.trim(),pw=$("si-pw").value,m=$("m-si");
+$("v-signin").onsubmit=function(e){e.preventDefault();var id=$("si-id").value.trim().replace(/\s+/g,""),pw=$("si-pw").value,m=$("m-si");if(id.indexOf("@")>-1)id=id.toLowerCase();
  if(!id||!pw){m.className="ag-msg";m.textContent="Enter your email or user ID and your password.";return}
  m.className="ag-msg ag-ok";m.textContent="Checking your details...";emit("signin",{id:id,password:pw})};
 
@@ -9343,7 +9342,6 @@ $("v-register").onsubmit=function(e){e.preventDefault();if(!photo||!$("r-tc").ch
  var d={role:role,photo:photo};document.querySelectorAll("#v-register input,#v-register select").forEach(function(i){if(i.id&&i.type!=="file"&&i.type!=="checkbox")d[i.id.replace("r-","")]=i.value.trim()});
  var m=$("m-r");m.className="ag-msg ag-ok";m.textContent="Creating your account...";emit("register",d)};
 $("fg").onclick=function(e){e.preventDefault();var id=$("si-id").value.trim(),m=$("m-si");if(!id){m.className="ag-msg";m.textContent="Type your email or user ID above first.";return}m.className="ag-msg ag-ok";m.textContent="Reset link requested for "+id+".";emit("forgot",{id:id})};
-$("vis").onclick=function(){emit("visitor");AccessGate.hide()};
 
 /* occasions: [month, day, name, effect, countries] */
 var O=[]; /* generic holidays removed: notices come from the website itself */
@@ -9487,8 +9485,6 @@ function enter(openProfile){
   if(openProfile&&typeof window.sclOpenModernProfile==="function"){try{window.sclOpenModernProfile()}catch(e){}}
 }
 
-/* visitor */
-document.addEventListener("accessgate:visitor",function(){window.__agVisitor=true});
 
 /* Google */
 AG.onLogin(function(){
@@ -9519,7 +9515,7 @@ AG.onSignIn(function(d){
     say("m-si","Signed in. Opening the school portal…",true);
     setTimeout(function(){enter(true)},350);
   }).catch(function(e){
-    say("m-si",(e&&e.message)||"Sign-in failed. Try again.");
+    say("m-si",/invalid login credentials/i.test((e&&e.message)||"")?"That email/user ID and password do not match. If you created your account with Google, use Continue with Google. Otherwise tap Forgot password to set a new one.":((e&&e.message)||"Sign-in failed. Try again."));
   }).then(done);
 });
 
@@ -9908,7 +9904,7 @@ window.sclOpenSchemeOfWork=openScheme;
 /* ---------- AURA ---------- */
 var KB=[
  {k:['register','registration','admission','enrol','enroll','new student','join'],a:'To register a child, tap **Register your child**, pick the class (Day Care to SSS 3), choose New student or Returning student / promotion, fill the form and add a clear photo. Parents, guardians and students can all create an account at the access gate.',b:[['Register now','reg']]},
- {k:['sign in','login','log in','password','account','google','gate','visitor'],a:'At the access gate: **Continue with Google** to enter, **Sign in** with your email or school ID and password if you already have an account, **Register** to create one, or **Browse as a visitor** to look around.'},
+ {k:['sign in','login','log in','password','account','google','gate','visitor'],a:'At the access gate: **Continue with Google** to enter, **Sign in** with your email or school ID and password if you already have an account, **Register** to create one, and everyone, visitors included, enters through Google or an account so the school can tell who is using the site.'},
  {k:['fee','fees','pay','payment','receipt','transfer','bank','bulk','already paid'],a:'Open **Fees and payments**, choose the class and term, pay by bank transfer, then enter your reference and upload the receipt. If one transfer covered several items use **Already paid / bulk payment**. The school confirms it and marks items Paid.',b:[['Open fees','fees']]},
  {k:['result','pin','report card','certificate','graduat'],a:'**Results:** enter your Student ID, session and term. The system checks payment clearance, gives a Result PIN, then you use the PIN to view and print the result. **Certificates** (Basic 5, JSS 3, SS 3) are paid for separately and issued with a QR credential after management confirms payment. QR regeneration costs ₦5,000.',b:[['Open results','results'],['Certificates','cert']]},
  {k:['material','book','textbook','stationery'],a:'**School materials** is the official catalogue of books and items, each with a purchase link set by the school.',b:[['Open materials','mat']]},
@@ -10299,7 +10295,8 @@ window.sclBioEnable=async function(){if(!bioOK()){fb('Biometrics need a secure (
 window.sclRegisterPhonePasskey=window.sclBioEnable;
 window.sclBioLogin=async function(){const rec=(()=>{try{return JSON.parse(localStorage.getItem('sclBio')||'null')}catch(_){return null}})();if(!bioOK()){fb('Biometrics are not available here (needs https + fingerprint/face unlock).','err');return}
  if(!rec){fb('No biometric set up on this device yet. Sign in once with your password, then tap the 🧬 button in your profile.','warn');return}
- try{await navigator.credentials.get({publicKey:{challenge:rnd(32),allowCredentials:[{type:'public-key',id:unb64(rec.id),transports:['internal']}],userVerification:'required',timeout:60000}})}catch(e){fb('Biometric check failed or was cancelled.','err');return}
+ try{await navigator.credentials.get({publicKey:{challenge:rnd(32),allowCredentials:[{type:'public-key',id:unb64(rec.id)}],userVerification:'required',timeout:60000}})}catch(e){const n=e&&e.name;console.warn('SCL biometric sign-in failed:',n,e&&e.message);
+  fb(n==='NotAllowedError'?'Fingerprint/face check was cancelled, timed out, or this phone no longer has the saved fingerprint. Try again. If it keeps failing, sign in with your password, then tap the 🧬 button in your profile to set it up again.':n==='SecurityError'?'Biometrics are blocked on this web address. Open the official SCL site link directly in your browser.':n==='NotSupportedError'?'This phone or browser does not support fingerprint/face sign-in. Use your password.':'Biometric check failed ('+(n||'unknown error')+'). Sign in with your password, then set biometrics up again in your profile.','err');return}
  try{const r=await sb().auth.refreshSession({refresh_token:rec.refresh});if(r.error||!r.data||!r.data.session)throw new Error('expired');window.__sclGateEntryRequested=true;window.AccessGate&&AccessGate.hide();document.body.classList.remove('scl-public-locked');fb('Welcome back! Signed in with biometrics ✔','ok');setTimeout(()=>{try{window.sclOpenModernProfile&&sclOpenModernProfile()}catch(_){}},400)}catch(e){fb('Your saved biometric session expired — sign in with your password once to renew it.','err')}};
 (function keepBioFresh(){const t=setInterval(()=>{const c=sb();if(!c||!c.auth||!c.auth.onAuthStateChange)return;clearInterval(t);c.auth.onAuthStateChange((ev,ses)=>{try{const r=JSON.parse(localStorage.getItem('sclBio')||'null');if(r&&ses&&ses.user&&ses.user.id===r.uid){r.refresh=ses.refresh_token;localStorage.setItem('sclBio',JSON.stringify(r))}}catch(_){}})},800)})();
 function bioButtons(){const f=$('v-signin');if(f&&!$('sclBioBtn')){const b=document.createElement('button');b.type='button';b.id='sclBioBtn';b.className='ag-btn ag-g';b.style.marginTop='8px';b.innerHTML='🧬 Sign in with fingerprint / face';b.onclick=window.sclBioLogin;const sub=Q('button[type=submit]',f);sub&&sub.insertAdjacentElement('afterend',b)}
@@ -12018,4 +12015,22 @@ if(D.readyState==='loading')D.addEventListener('DOMContentLoaded',boot,{once:tru
 .sso-photo{inset:4px!important}.sso-pend{font-size:9px!important;padding:3px 8px!important;letter-spacing:.08em!important}
 .sso-name{font-size:12px!important}.sso-pos{font-size:10.5px!important}
 </style>
+<script id="scl-bio-offer">
+(function(){'use strict';
+var done=false;
+function ok(){return !!(window.PublicKeyCredential&&navigator.credentials&&window.isSecureContext&&typeof window.sclBioEnable==='function')}
+function skip(){try{return localStorage.getItem('sclBio')||localStorage.getItem('sclBioDeclined')}catch(_){return true}}
+function offer(){
+  if(done||!ok()||skip())return;done=true;
+  var b=document.createElement('div');b.setAttribute('role','dialog');
+  b.style.cssText='position:fixed;left:12px;right:12px;bottom:calc(76px + env(safe-area-inset-bottom,0px));z-index:10100;background:#2e0610;color:#fff;border:1px solid #e3b23c;border-radius:16px;padding:14px;box-shadow:0 8px 30px rgba(0,0,0,.5);font:600 14px system-ui,sans-serif';
+  b.innerHTML='<div style="margin-bottom:10px">🧬 Sign in faster next time with your fingerprint or face on this phone?</div><div style="display:flex;gap:8px"><button type="button" data-y style="flex:1;padding:10px;border:0;border-radius:10px;background:#e3b23c;color:#2e0610;font-weight:800">Enable</button><button type="button" data-n style="flex:1;padding:10px;border:1px solid #e3b23c;border-radius:10px;background:transparent;color:#fff;font-weight:700">Not now</button></div>';
+  b.querySelector('[data-y]').onclick=function(){b.remove();window.sclBioEnable()};
+  b.querySelector('[data-n]').onclick=function(){b.remove();try{localStorage.setItem('sclBioDeclined','1')}catch(_){}};
+  document.body.appendChild(b)}
+var t=setInterval(function(){var c=window.sclSupabase;if(!c||!c.auth||!c.auth.onAuthStateChange)return;clearInterval(t);
+  c.auth.onAuthStateChange(function(ev,ses){if(ev==='SIGNED_IN'&&ses&&ses.user)setTimeout(offer,2500)});
+  c.auth.getSession().then(function(r){if(r&&r.data&&r.data.session)setTimeout(offer,4000)}).catch(function(){})},700);
+})();
+</script>
 </body></html>
