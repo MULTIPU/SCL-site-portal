@@ -1957,7 +1957,7 @@ window.sclYouTube=function(){const q=(by("sclAiInput")?.value||"").trim();if(q){
 
     /* 1. Identity: who am I, and what can I do here */
     let hero='<section class="scl-profile-hero-card"><div class="scl-profile-cover"><div class="scl-profile-cover-glow"></div><div class="scl-profile-avatar">'+avatar+'<span class="scl-profile-avatar-fallback" style="display:'+(photo?'none':'grid')+'">'+esc(initials)+'</span></div><div class="scl-profile-identity"><div class="scl-profile-kicker">'+kicker+'</div><h2>'+esc(name)+'</h2><p>'+esc(email)+'</p><div class="scl-profile-badges"><span>✓ AUTHENTICATED</span><span>'+esc(roleLabel)+'</span></div></div><button class="scl-profile-search-top" type="button" onclick="sclOpenProfileSearch()" title="Search my SCL profile" aria-label="Search my SCL profile">🔎</button><div class="scl-profile-menu"><button type="button" onclick="sclLogout();closeM(\'sclModernProfileModal\')" title="Log out" aria-label="Log out">↪</button></div></div>';
-    if(hasWork)hero+='<div class="scl-profile-meta-grid"><div><span>JOB ROLE</span><b>'+esc(jobRole)+'</b></div><div><span>ACCESS LEVEL</span><b>'+(admin?'Full administrative access':'Role-based access')+'</b></div><div><span>WORKING WEEK</span><b>Monday – Friday</b></div><div><span>ATTENDANCE TARGET</span><b>90% every 4 weeks</b></div></div>';
+    if(false)hero+='<div class="scl-profile-meta-grid"><div><span>JOB ROLE</span><b>'+esc(jobRole)+'</b></div><div><span>ACCESS LEVEL</span><b>'+(admin?'Full administrative access':'Role-based access')+'</b></div><div><span>WORKING WEEK</span><b>Monday – Friday</b></div><div><span>ATTENDANCE TARGET</span><b>90% every 4 weeks</b></div></div>';
     hero+='</section>';
 
     let p='';
@@ -1970,8 +1970,9 @@ window.sclYouTube=function(){const q=(by("sclAiInput")?.value||"").trim();if(q){
       p+='<div id="sclProfileServiceRank" class="scl-rank-card" style="grid-column:1/-1"><div class="scl-rank-top"><div><div class="scl-rank-label">ATTENDANCE-BASED SERVICE RANK</div><div class="scl-rank-number scl-rank-pulse">—</div></div><div><b>A cycle counts only when attendance is verified and you accept the monthly approval.</b></div></div><div id="sclProfileServiceRankContent" class="scl-rank-pending">Loading your service-rank status…</div><details class="scl-pf-how"><summary>How rank is calculated</summary><p>Working week is Monday–Friday. Full-time staff default to 5 working days a week and part-time staff to 2, unless the school records another schedule. A valid present day earns attendance credit; missed scheduled days reduce it, and each absence of a part-time member carries a 2-working-day deduction. Every completed 30-day cycle needs your acceptance before it counts.</p></details></div>';
     }
 
+    const statusP=p;p='';
     /* 3. My tools: only what this role actually uses */
-    if(isTeacher&&!admin){
+    if(isTeacher){
       const CY=[[1,'2026-09-14'],[2,'2026-10-12'],[3,'2026-11-09'],[4,'2026-12-07']],today=new Date().toISOString().slice(0,10);
       const cyc=CY.filter(c=>c[1]<=today).pop()?.[0]||1;
       p+=sec('TEACHER WORKSPACE','Your teaching tools, in one place.','<div class="scl-role-actions">'
@@ -1987,6 +1988,7 @@ window.sclYouTube=function(){const q=(by("sclAiInput")?.value||"").trim();if(q){
         '<div class="scl-role-actions"><button type="button" class="scl-role-action" onclick="window.sclOpenStaffManagement&&sclOpenStaffManagement()">🧑‍💼 My Staff Details &amp; Assignments<small>Open my account details, profile completion, approved classes and timetable in a dedicated view.</small></button>'+act('🗓️','Timetable','Periods and school schedule.',"sclSuiteTab('timetable');openM('sclSuiteModal')")+'</div>',true);
     }
 
+    const toolsP=p;p='';
     /* 4. Administrators: one grouped workspace (no repeated buttons) + their real controls */
     if(admin){
       const tech=rl.includes('technical_admin')||rl.includes('developer'),mgmt=rl.includes('management_admin'),aff=rl.includes('affairs_admin');
@@ -2025,8 +2027,10 @@ window.sclYouTube=function(){const q=(by("sclAiInput")?.value||"").trim();if(q){
       p+='<details class="scl-role-panel scl-audit-panel scl-pf-sec" id="sclProfileAuditPanel" style="grid-column:1/-1"><summary><b>🧾 LIVE ACTIVITY &amp; TRANSACTION LOG</b></summary><p class="scl-pf-intro">Payments, attendance, registrations, results, announcements and sign-ins, as they happen.</p><button class="btn gold" type="button" onclick="sclLoadActivityLog(true)">↻ REFRESH</button><div class="scl-audit-status" id="sclAuditStatus">Connecting to the SCL activity log…</div><div class="scl-att-table-wrap"><table class="scl-att-table scl-audit-table"><thead><tr><th>Time</th><th>Person / Account</th><th>Role</th><th>Activity</th><th>Entity</th><th>Status</th><th>Details</th></tr></thead><tbody id="sclActivityLogBody"><tr><td colspan="7" style="text-align:center;padding:22px">No activity recorded yet.</td></tr></tbody></table></div></details>';
     }
 
+    const adminP=p;p='';
     /* 5. Parents and students (unchanged behaviour) */
     if(d.children?.length){p+='<div class="scl-role-panel" style="grid-column:1/-1"><h4>MY CHILDREN</h4><p class="scl-pf-intro">Monitor each linked child from one secure place.</p><div class="scl-att-actions"><button class="btn red" onclick="openMyChildren()" type="button">👨‍👩‍👧 OPEN MY CHILDREN</button></div><div class="scl-att-table-wrap"><table class="scl-att-table"><thead><tr><th>Child</th><th>Class</th><th>Session</th><th>Status</th></tr></thead><tbody>'+d.children.map(c=>'<tr><td>'+esc(c.child_name)+'</td><td>'+esc(c.class_name)+'</td><td>'+esc(c.session)+'</td><td>'+esc(c.status)+'</td></tr>').join('')+'</tbody></table></div></div>'}
+    const childP=p;p='';
     if(d.student){p+=sec('STUDENT WORKSPACE',esc(d.student.child_name)+' • '+esc(d.student.class_name),'<div class="scl-role-actions">'
       +act('📊','Results','View academic results and reports.','openResults()')
       +act('📚','Learning','Assignments and timetable.',"openM('sclSuiteModal');sclSuiteTab('assignments')")
@@ -2035,6 +2039,7 @@ window.sclYouTube=function(){const q=(by("sclAiInput")?.value||"").trim();if(q){
       +act('🏅','Medals &amp; records','Competition medals, Record Makers and Breakers.',"showCommunityTab('medals')")
       +act('👨‍👩‍👧','Parent care','Complaints, recommendations and child history.','openMyChildren()')
       +'</div>',true)}
+    const studentP=p;p='';
     if(!hasWork&&!d.children?.length&&!d.student){p+=sec('ROLE DASHBOARD','Your account is signed in. The school can link it to a parent, student or staff profile to switch on the right workspace.','',true)}
 
     /* 6. Account & security: the one place for these (everyone) */
@@ -2045,9 +2050,26 @@ window.sclYouTube=function(){const q=(by("sclAiInput")?.value||"").trim();if(q){
       +act('✉️','Email the school','Write to the school office.','openSchoolEmail()')
       +'</div>',true);
 
-    document.getElementById('sclModernProfileBody').innerHTML='<div class="scl-profile-shell">'+hero+'<div class="scl-profile-section-grid">'+p+'</div></div>';
-    if(admin)setTimeout(()=>window.sclRefreshAdminAlertControls?.(),0);
-    if(hasWork)setTimeout(()=>window.sclLoadServiceRankIntoProfile?.(),0);
+    const st=d.staff||{},pick=(...k)=>{for(const x of k)if(st[x])return st[x];return ''};
+    const appt=staff?'<div class="scl-role-panel scl-pf-sec" style="grid-column:1/-1"><h4>APPOINTMENT</h4><div class="scl-profile-meta-grid"><div><span>JOB ROLE</span><b>'+esc(jobRole)+'</b></div><div><span>STATUS</span><b>Verified</b></div><div><span>WORKING WEEK</span><b>Monday – Friday</b></div><div><span>ATTENDANCE TARGET</span><b>90% every 4 weeks</b></div>'+(pick('employment_start_date','start_date')?'<div><span>STARTED</span><b>'+esc(pick('employment_start_date','start_date'))+'</b></div>':'')+'</div></div>':'';
+    const tabs=[];
+    if(admin)tabs.push(['admin','🛡️','Administrator',statusP+adminP]);
+    if(isTeacher)tabs.push(['teacher','🧑‍🏫','Teacher',appt+statusP+toolsP+'<div id="sclRoleAssign" style="grid-column:1/-1"></div>']);
+    else if(staff&&!admin)tabs.push(['staff','💼',jobRole,appt+statusP+toolsP+'<div id="sclRoleAssign" style="grid-column:1/-1"></div>']);
+    if(d.children?.length)tabs.push(['parent','👨‍👩‍👧','Parent',childP]);
+    if(d.student)tabs.push(['student','🎓','Student',studentP]);
+    const rest=p;
+    const cur=tabs.find(t=>t[0]===window.sclProfileTab)||tabs[0];
+    const bar=tabs.length?'<div class="scl-role-tabs" role="tablist">'+tabs.map(t=>'<button type="button" role="tab" class="scl-role-tab'+(cur&&t[0]===cur[0]?' on':'')+'" aria-selected="'+(cur&&t[0]===cur[0])+'" onclick="sclProfileRole(\''+t[0]+'\')"><span>'+t[1]+'</span>'+esc(t[2])+'</button>').join('')+'</div>':'';
+    const paint=()=>{const k=window.sclProfileTab,t=tabs.find(x=>x[0]===k)||tabs[0];const box=document.getElementById('sclRolePanel');if(!box)return;box.innerHTML=t?t[3]:'';
+      document.querySelectorAll('.scl-role-tab').forEach(b=>{const on=t&&b.getAttribute('onclick').includes("'"+t[0]+"'");b.classList.toggle('on',!!on);b.setAttribute('aria-selected',!!on)});
+      if(t&&(t[0]==='admin'))window.sclRefreshAdminAlertControls?.();
+      if(t&&(t[0]==='admin'||t[0]==='teacher'||t[0]==='staff'))window.sclLoadServiceRankIntoProfile?.();
+      const h=document.getElementById('sclRoleAssign');if(h&&window.sclLoadMyAssignments)window.sclLoadMyAssignments(h)};
+    window.sclProfileTab=cur?cur[0]:null;
+    window.sclProfileRole=k=>{window.sclProfileTab=k;paint()};
+    document.getElementById('sclModernProfileBody').innerHTML='<div class="scl-profile-shell">'+hero+bar+'<div class="scl-profile-section-grid" id="sclRolePanel"></div><div class="scl-profile-section-grid">'+rest+'</div></div>';
+    paint();
   }
   const SERVICE_RANK=window.SCL_SUPABASE_URL+'/functions/v1/scl-service-rank-api';
   async function serviceRankFetch(action='current',method='GET',body=null){const a=auth();if(!a?.accessToken)throw new Error('Please sign in to view your service rank.');const h={'apikey':window.SCL_SUPABASE_PUBLISHABLE_KEY,'Authorization':'Bearer '+a.accessToken,'Content-Type':'application/json'};const r=await fetch(SERVICE_RANK+'?action='+encodeURIComponent(action),{method,headers:h,body:body?JSON.stringify(body):undefined});let d={};try{d=await r.json()}catch(_){}if(!r.ok)throw new Error(d.error||'Service rank request failed.');return d}
@@ -10373,6 +10395,8 @@ html body .scl-footer nav button{border:2px solid var(--scl-gold-b)!important;bo
 html body.scl-profile-open #sclMultiLogo,html body:has(#sclModernProfileModal.open) #sclMultiLogo,html body:has(#sclV211AdminPanel.open) #sclMultiLogo{display:none!important;visibility:hidden!important;pointer-events:none!important}/* Profile layout */
 #sclModernProfileBody .scl-profile-section-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 @media(max-width:700px){#sclModernProfileBody .scl-profile-section-grid{grid-template-columns:1fr}}#sclModernProfileBody .scl-pf-intro{margin:4px 0 10px;font-size:13.5px;line-height:1.5;opacity:.85}#sclModernProfileBody .scl-pf-sec>h4,#sclModernProfileBody .scl-v91-admin-map>h4{margin:0 0 4px}#sclModernProfileBody .scl-role-actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:10px}#sclModernProfileBody .scl-role-action{text-align:left;min-height:64px}.scl-pf-grp{margin:10px 0;border:2px solid #e0a919;border-radius:14px;overflow:hidden;background:rgba(255,251,240,.9)}.scl-pf-grp>summary{cursor:pointer;padding:12px 14px;font-weight:800;list-style:none;display:flex;justify-content:space-between;align-items:center;color:#4a0a6e}.scl-pf-grp>summary::-webkit-details-marker{display:none}.scl-pf-grp>summary::after{content:"+";font-size:20px;line-height:1}.scl-pf-grp[open]>summary::after{content:"–"}.scl-pf-grp>.scl-role-actions{padding:0 12px 12px}.scl-pf-how{margin-top:10px;font-size:13px}.scl-pf-how>summary{cursor:pointer;font-weight:700}.scl-audit-panel>summary{cursor:pointer;list-style:none}.scl-audit-panel>summary::-webkit-details-marker{display:none}body.scl-night .scl-pf-grp{background:rgba(24,36,54,.92)}body.scl-night .scl-pf-grp>summary{color:#ffe9a8}
+
+.scl-role-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 12px}.scl-role-tab{display:inline-flex;align-items:center;gap:7px;padding:10px 16px;border-radius:999px;border:1.5px solid #cda342;background:#fffaf0;color:#4b0b0b;font-weight:800;font-size:.9rem;cursor:pointer}.scl-role-tab span{font-size:1.05rem}.scl-role-tab.on{background:#4b0b0b;color:#ffe08a;box-shadow:0 4px 14px rgba(60,0,0,.22)}body.scl-night .scl-role-tab{background:#18243a;color:#ffe9a8}body.scl-night .scl-role-tab.on{background:#e3b23c;color:#2e0610}
 </style>
 <script id="scl-v1202-profile-open-flag">
 (function(){'use strict';
@@ -10708,9 +10732,7 @@ function paint(host,r){
 function load(host){
   if(busy||!window.sclStaffRpc)return;busy=true;
   window.sclStaffRpc('scl_my_assignments',{}).then(function(r){paint(host,r)},function(){}).then(function(){busy=false})}
-function boot(){var host=D.getElementById('sclModernProfileBody');if(!host)return;
-  var t=null;new MutationObserver(function(){if(host.querySelector('.scl-myassign')||!host.firstChild)return;clearTimeout(t);t=setTimeout(function(){load(host)},250)}).observe(host,{childList:true})}
-if(D.readyState==='loading')D.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
+window.sclLoadMyAssignments=function(host){load(host)};
 })();
 </script>
 <script id="scl-staff-edit-v7">
