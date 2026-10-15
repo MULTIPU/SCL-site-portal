@@ -1004,6 +1004,12 @@ html body .role-btn.selected{background:var(--d-brand);color:#fff;border-color:v
 html body .bottom{background:var(--d-brand-d);border-top:1px solid var(--d-gold);box-shadow:none}
 /* night */
 html body.scl-night{--d-bg:#0f1826;--d-card:#18243a;--d-ink:#f1e8d2;--d-mute:#b9ad98;--d-line:#2e3a4e;background:var(--d-bg)}
+/* profile readability fixes */
+html body .scl-role-tab{flex:1 1 auto;white-space:nowrap;font-size:.85rem;padding:10px 14px;justify-content:center}
+html body #sclModernProfileModal .scl-profile-modal-card,html body #sclModernProfileBody{background:#faf6ec!important;background-image:none!important}
+html body.scl-night #sclModernProfileModal .scl-profile-modal-card,html body.scl-night #sclModernProfileBody{background:#0f1826!important}
+html body #sclModernProfileBody .scl-profile-cover{background-image:none!important;background-color:#4b0b0b!important}
+html body #sclModernProfileBody .scl-profile-hero-card{background:#fff!important;background-image:none!important}
 html body.scl-night .hv2-hero{background:#1a2438}
 html body.scl-night .hv2-sec h2,html body.scl-night .stat b{color:var(--d-gold)}
 html body.scl-night .btn.outline,html body.scl-night .hv2-btn.s,html body.scl-night .scl-add-btn,html body.scl-night .role-btn{background:var(--d-card);color:var(--d-gold);border-color:var(--d-gold)}
@@ -11006,7 +11012,7 @@ window.sclOpenAlertSettings=function(){render()};
 /* ---- entry buttons: profile and timetable ---- */
 function entries(){
  var host=D.getElementById('sclModernProfileBody');
- if(host&&host.firstChild&&!host.querySelector('.scl-alert-entry')){var d=D.createElement('div');d.className='scl-alert-entry';d.innerHTML='<button type="button" class="btn outline" onclick="sclOpenAlertSettings()">🔔 Alerts &amp; ringtone</button>';host.insertBefore(d,host.firstChild)}
+ if(host&&host.firstChild&&!host.querySelector('.scl-alert-entry')){var d=D.createElement('div');d.className='scl-alert-entry';d.innerHTML='<button type="button" class="btn outline" onclick="sclOpenAlertSettings()">🔔 Alerts &amp; ringtone</button>';(function(){var sh=host.querySelector('.scl-profile-shell'),hero=sh&&sh.querySelector('.scl-profile-hero-card');if(hero)hero.insertAdjacentElement('afterend',d);else host.insertBefore(d,host.firstChild)})()}
  var c=D.querySelector('#sclSmartTimetable .controls');
  if(c&&!c.querySelector('.scl-alert-entry')){var b=D.createElement('button');b.type='button';b.className='notify-btn scl-alert-entry';b.textContent='🎵 Ringtone';b.onclick=function(ev){ev.preventDefault();window.sclOpenAlertSettings()};c.appendChild(b)}}
 setInterval(entries,1500);
