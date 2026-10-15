@@ -10196,13 +10196,20 @@ function renderDone(k,data,res){
   if(!adm)mailLine=mail==='auto'?'The school email service confirmed delivery.':'Saved as pending approval. Automatic email delivery is not currently connected; use Gmail below to notify the school now.';
   var text='A registration is awaiting review.\n\nType: '+(c.label||k)+'\nName: '+n+'\nEmail: '+(data.email||data.parent_email||((auth()||{}).user||{}).email||'')+'\nDetails: '+summarize(data)+'\n\nPlease review it in the SCL portal Pending approvals section.';
   var gmail='https://mail.google.com/mail/?view=cm&fs=1&to='+encodeURIComponent(SCHOOL)+'&su='+encodeURIComponent('SCL registration awaiting approval: '+n)+'&body='+encodeURIComponent(text);
-  b.innerHTML='<div class="scl-add-done"><div class="big">'+(adm?'✅':'📨')+'</div><p><b>'+esc(n)+'</b><br>'+(adm?'is now active.':'is saved and waiting for confirmation.')+'</p>'+(mailLine?'<p class="scl-add-note">'+esc(mailLine)+'</p>':'')+'</div>'+(adm?'':'<div class="scl-add-actions"><a class="scl-add-btn primary" style="display:inline-flex;align-items:center;text-decoration:none" href="'+gmail+'" target="_blank" rel="noopener">📧 Open Gmail to notify the school</a></div>')+'<div class="scl-add-actions"><button type="button" class="scl-add-btn" data-a="menu">Done</button><button type="button" class="scl-add-btn primary" data-a="kind" data-k="'+k+'">Add another</button></div>'
+  b.innerHTML='<div class="scl-add-done"><div class="big">'+(adm?'✅':'📨')+'</div><p><b>'+esc(n)+'</b><br>'+(k==='post'?'is published on the school announcements feed.':(adm?'is now active.':'is saved and waiting for confirmation.'))+'</p>'+(mailLine?'<p class="scl-add-note">'+esc(mailLine)+'</p>':'')+'</div>'+(adm?'':'<div class="scl-add-actions"><a class="scl-add-btn primary" style="display:inline-flex;align-items:center;text-decoration:none" href="'+gmail+'" target="_blank" rel="noopener">📧 Open Gmail to notify the school</a></div>')+'<div class="scl-add-actions"><button type="button" class="scl-add-btn" data-a="menu">Done</button><button type="button" class="scl-add-btn primary" data-a="kind" data-k="'+k+'">Add another</button></div>'
 }
 
 function summarize(d){var parts=[];for(var k in d){if(d[k]&&k!=='body')parts.push(k.replace(/_/g,' ')+': '+d[k])}return parts.join(' · ')}
 function save(k,data){
   if(!live())return Promise.reject(new Error('Please sign in first.'));
   var lv=level(),adm=lv==='admin',a=auth()||{},uid=a.user&&a.user.id,who=(a.user&&(a.user.email||a.user.name))||'';
+  if(k==='post'){
+    if(!adm)return Promise.reject(new Error('Only an administrator can publish a school announcement.'));
+    return rest('rpc/scl_admin_publish_school_notification',{method:'POST',body:JSON.stringify({p_title:data.title,p_body:data.body,p_type:'Announcement',p_link_url:null})}).then(function(row){
+      if(!row)throw new Error('The announcement was not confirmed by the school database.');
+      return {row:row,mail:'none',published:true};
+    });
+  }
   var row={kind:k,status:adm?'active':'pending',full_name:data.full_name||data.title||'',email:data.email||data.parent_email||(a.user&&a.user.email)||'',phone:data.phone||data.parent_phone||'',details:data,submitted_by:uid||null,submitted_by_name:who,submitted_by_role:lv};
   var existing=Promise.resolve([]);
   if(!adm&&uid)existing=rest('scl_registrations?submitted_by=eq.'+encodeURIComponent(uid)+'&kind=eq.account&status=eq.pending&select=id&limit=1').catch(function(){return []});
@@ -11217,3 +11224,40 @@ document.addEventListener('change',function(e){var t=e.target;if(!t.classList||!
 
 </script>
 </body></html>
+
+<style id="scl-v311-rank-medal-effects">
+/* Distinct, light-weight rank and medal micro-animations */
+.hub-medal,.hub-cell,[class*="rank-badge"],[class*="medal"],.scl-mgr-rank-explorer [class*="rank"],.scl-rank-card,.scl-rank-shape{transform-origin:center;will-change:transform,filter;}
+.hub-medal{animation:sclMedalFloat 4.6s ease-in-out infinite;transition:filter .25s,transform .25s}
+.hub-medal:nth-child(2n){animation-name:sclMedalGlint;animation-duration:5.4s}
+.hub-medal:nth-child(3n){animation-name:sclMedalPulse;animation-duration:3.8s}
+.hub-cell{animation:sclRankBreath 5.7s ease-in-out infinite;transition:transform .22s,filter .22s}
+.hub-cell:nth-child(3n){animation-delay:-1.3s}.hub-cell:nth-child(4n){animation-delay:-2.2s}
+.hub-medal:hover,.hub-cell:hover{transform:translateY(-4px) scale(1.045);filter:drop-shadow(0 0 9px rgba(255,205,64,.75))}
+@keyframes sclMedalFloat{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-4px) rotate(1deg)}}
+@keyframes sclMedalGlint{0%,100%{filter:drop-shadow(0 0 0 rgba(255,255,255,0))}50%{filter:drop-shadow(0 0 7px rgba(255,255,255,.55))}}
+@keyframes sclMedalPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}
+@keyframes sclRankBreath{0%,100%{filter:drop-shadow(0 0 0 rgba(255,211,77,0))}50%{filter:drop-shadow(0 0 5px rgba(255,211,77,.35))}}
+@media(prefers-reduced-motion:reduce){.hub-medal,.hub-cell,[class*="rank-badge"],[class*="medal"],.scl-mgr-rank-explorer [class*="rank"],.scl-rank-card,.scl-rank-shape{animation:none!important;transition:none!important}}
+</style>
+<script id="scl-v311-admin-termination-and-addon-actions">
+(function(){'use strict';if(window.__sclV311)return;window.__sclV311=true;
+const $=(s,r=document)=>r.querySelector(s), esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function session(){try{return JSON.parse(sessionStorage.getItem('sclAuthSession')||'null')}catch(_){return null}}
+function roles(){return (session()?.roles||[]).map(x=>String(x).toLowerCase())}
+function isAdmin(){return roles().some(x=>/^(developer|technical_admin|management_admin|affairs_admin|staff_management)$/.test(x))}
+function url(){return (window.SCL_SUPABASE_URL||'').replace(/\/$/,'')}
+function headers(){let a=session()||{};return {apikey:window.SCL_SUPABASE_PUBLISHABLE_KEY,Authorization:'Bearer '+(a.accessToken||''),'Content-Type':'application/json',Prefer:'return=representation'}}
+async function req(path,opts={}){let r=await fetch(url()+'/rest/v1/'+path,{...opts,headers:{...headers(),...(opts.headers||{})}});let t=await r.text(),d;try{d=t?JSON.parse(t):null}catch(_){d=t}if(!r.ok)throw Error(d?.message||d?.details||('Request failed ('+r.status+')'));return d}
+function addMenuButton(){const b=$('#sclAddBody');if(!b||!isAdmin()||!$('#sclAddTitle')||$('#sclTerminateEntry'))return;const box=document.createElement('div');box.className='scl-add-card2';box.innerHTML='<b>🛑 Employment actions</b><small>End an employment contract while preserving the staff identity for future rehire checks.</small><div class="scl-add-actions"><button id="sclTerminateEntry" class="scl-add-btn" type="button">Terminate / archive staff</button></div>';b.appendChild(box);$('#sclTerminateEntry').onclick=renderTermination;}
+const mo=new MutationObserver(addMenuButton);mo.observe(document.documentElement,{subtree:true,childList:true});document.addEventListener('DOMContentLoaded',addMenuButton);
+function modal(){let el=$('#sclTerminationModal');if(el)return el;el=document.createElement('div');el.id='sclTerminationModal';el.style.cssText='position:fixed;inset:0;z-index:1000000;background:#100714eF;display:none;overflow:auto;padding:5vh 14px;color:#fff';el.innerHTML='<section style="max-width:680px;margin:auto;background:#21132b;border:2px solid #d7ad42;border-radius:18px;padding:18px;box-shadow:0 15px 50px #000"><header style="display:flex;justify-content:space-between;gap:12px;align-items:center"><h2 style="margin:0">Terminate / archive staff</h2><button type="button" id="sclTermClose" class="scl-add-btn">Close ✕</button></header><p>Termination removes work assignments and schedule from active staff operations. Name and contact details are retained for identity matching and possible rehire.</p><input id="sclTermSearch" placeholder="Search name, email or phone" style="width:100%;box-sizing:border-box;padding:12px;border-radius:9px;margin:8px 0"><div id="sclTermResults">Loading staff…</div><div id="sclTermMessage" role="status" style="margin-top:10px"></div></section>';document.body.appendChild(el);$('#sclTermClose',el).onclick=()=>el.style.display='none';$('#sclTermSearch',el).addEventListener('input',filter);return el}
+let staffRows=[];
+async function renderTermination(){if(!isAdmin()){alert('Administrator access is required.');return}const m=modal();m.style.display='block';$('#sclTermResults',m).textContent='Loading active staff…';$('#sclTermMessage',m).textContent='';try{staffRows=await req('staff?select=id,full_name,email,phone,role,employment_status,is_teaching,created_at&employment_status=eq.active&order=full_name.asc');draw(staffRows)}catch(e){$('#sclTermResults',m).innerHTML='<p>Could not load active staff. '+esc(e.message)+'</p><p>Use the existing staff-management page if your account lacks staff-table access.</p>'}}
+function draw(rows){const box=$('#sclTermResults');if(!box)return;if(!rows.length){box.innerHTML='<p>No matching active staff found.</p>';return}box.innerHTML=rows.map(r=>'<article style="border:1px solid #80678d;border-radius:12px;padding:12px;margin:9px 0"><b>'+esc(r.full_name)+'</b><div>'+esc(r.role)+' · '+(r.is_teaching?'Teaching':'Non-teaching')+'</div><small>'+esc(r.email||'No email stored')+'</small><div style="margin-top:8px"><button type="button" class="scl-add-btn primary" data-scl-terminate="'+esc(r.id)+'">Terminate / archive</button></div></article>').join('');box.querySelectorAll('[data-scl-terminate]').forEach(b=>b.onclick=()=>confirmTerminate(b.dataset.sclTerminate,b))}
+function filter(){const q=($('#sclTermSearch')?.value||'').trim().toLowerCase();draw(staffRows.filter(r=>[r.full_name,r.email,r.role].some(x=>String(x||'').toLowerCase().includes(q))))}
+async function confirmTerminate(id,btn){const r=staffRows.find(x=>x.id===id);if(!r)return;const reason=prompt('Termination reason for '+r.full_name+' (required):');if(reason===null)return;if(!reason.trim()){alert('A termination reason is required.');return}if(!confirm('Confirm termination of '+r.full_name+'? Their active assignments and schedule will be cleared; name and email identity will be retained.'))return;btn.disabled=true;try{const result=await fetch(url()+'/rest/v1/rpc/scl_admin_terminate_staff',{method:'POST',headers:headers(),body:JSON.stringify({p_staff_id:id,p_reason:reason.trim()})});const text=await result.text();let data;try{data=JSON.parse(text)}catch(_){data=text}if(!result.ok)throw Error(data?.message||data?.details||('Termination failed ('+result.status+').'));$('#sclTermMessage').textContent='Terminated and archived: '+r.full_name+'. Name/email preserved. Check the Former Staff Records page for history.';staffRows=staffRows.filter(x=>x.id!==id);draw(staffRows)}catch(e){btn.disabled=false;$('#sclTermMessage').textContent='Could not terminate staff: '+e.message}}
+// Rehire matching helper: exposed for the existing registration workflow to call before creating a new staff identity.
+window.sclFindFormerStaffForRehire=async function(name,email,phone){if(!isAdmin())throw Error('Administrator access required');const q=new URLSearchParams({p_name:name||'',p_email:email||'',p_phone:phone||''});const r=await fetch(url()+'/rest/v1/rpc/scl_admin_find_former_staff',{method:'POST',headers:headers(),body:JSON.stringify({p_name:name||null,p_email:email||null,p_phone:phone||null})});const t=await r.text();let d;try{d=JSON.parse(t)}catch(_){d=t}if(!r.ok)throw Error(d?.message||'Former staff lookup failed');return d};
+})();
+</script>
