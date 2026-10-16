@@ -11305,16 +11305,17 @@ document.addEventListener('change',function(e){var t=e.target;if(!t.classList||!
 
 <script id="scl-termination-appeal-admin-ui-v1">
 (function(){'use strict';var D=document,API='/functions/v1/scl-termination-appeals',busy=false;
-var css='#sclAppealAdminLauncher{position:fixed;left:12px;bottom:92px;z-index:999990;border:2px solid #d7ad42;border-radius:12px;background:#650007;color:#fff;padding:10px 13px;font-weight:900;box-shadow:0 5px 18px #0004;display:none}#sclAppealAdminModal{position:fixed;inset:0;z-index:1000000;background:#100714ed;display:none;align-items:center;justify-content:center;padding:12px;color:#24101a}#sclAppealAdminModal.open{display:flex}#sclAppealAdminModal .sam-card{width:min(850px,100%);max-height:92dvh;overflow:auto;background:#fffdf8;border:2px solid #d7ad42;border-radius:16px;padding:16px;box-shadow:0 15px 50px #0008}#sclAppealAdminModal h2{margin:0 0 8px;color:#650007}#sclAppealAdminModal .sam-row{border:1px solid #dfcfb3;border-radius:12px;padding:12px;margin:10px 0;background:#fff}#sclAppealAdminModal .sam-row p{white-space:pre-wrap;overflow-wrap:anywhere;margin:7px 0}#sclAppealAdminModal .sam-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}#sclAppealAdminModal button{border:0;border-radius:8px;padding:10px 13px;font-weight:800;background:#650007;color:#fff}#sclAppealAdminModal button.sam-accept{background:#176b43}#sclAppealAdminModal button.sam-reject{background:#9c2f2f}#sclAppealAdminModal textarea{width:100%;box-sizing:border-box;min-height:60px;padding:9px;border:1px solid #d9c5aa;border-radius:8px}#sclAppealAdminModal .sam-close{background:#333}';var st=D.createElement('style');st.textContent=css;D.head.appendChild(st);
+var L=null,adminOk=false;var css='#sclAppealAdminLauncher{position:static;display:none;width:100%;margin:10px 0;border:2px solid #d7ad42;border-radius:12px;background:#650007;color:#fff;padding:12px 14px;font-weight:900;text-align:center;cursor:pointer}#sclAppealAdminModal{position:fixed;inset:0;z-index:1000000;background:#100714ed;display:none;align-items:center;justify-content:center;padding:12px;color:#24101a}#sclAppealAdminModal.open{display:flex}#sclAppealAdminModal .sam-card{width:min(850px,100%);max-height:92dvh;overflow:auto;background:#fffdf8;border:2px solid #d7ad42;border-radius:16px;padding:16px;box-shadow:0 15px 50px #0008}#sclAppealAdminModal h2{margin:0 0 8px;color:#650007}#sclAppealAdminModal .sam-row{border:1px solid #dfcfb3;border-radius:12px;padding:12px;margin:10px 0;background:#fff}#sclAppealAdminModal .sam-row p{white-space:pre-wrap;overflow-wrap:anywhere;margin:7px 0}#sclAppealAdminModal .sam-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}#sclAppealAdminModal button{border:0;border-radius:8px;padding:10px 13px;font-weight:800;background:#650007;color:#fff}#sclAppealAdminModal button.sam-accept{background:#176b43}#sclAppealAdminModal button.sam-reject{background:#9c2f2f}#sclAppealAdminModal textarea{width:100%;box-sizing:border-box;min-height:60px;padding:9px;border:1px solid #d9c5aa;border-radius:8px}#sclAppealAdminModal .sam-close{background:#333}';var st=D.createElement('style');st.textContent=css;D.head.appendChild(st);
 function esc(x){return String(x==null?'':x).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function conf(){var base=String(window.SCL_SUPABASE_URL||'').replace(/\/$/,'');var key=window.SCL_SUPABASE_PUBLISHABLE_KEY||window.SCL_SUPABASE_ANON_KEY||'';return{base:base,key:key}}
 async function call(action,more){var sb=window.sclSupabase;if(!sb||!sb.auth)throw Error('SCL sign-in service is unavailable.');var ss=await sb.auth.getSession(),ses=ss&&ss.data&&ss.data.session;if(!ses||!ses.access_token)throw Error('Sign in with an authorised administrator account.');var c=conf();if(!c.base||!c.key)throw Error('SCL backend configuration is missing.');var r=await fetch(c.base+API,{method:'POST',headers:{apikey:c.key,Authorization:'Bearer '+ses.access_token,'Content-Type':'application/json'},body:JSON.stringify(Object.assign({action:action},more||{}))});var d=await r.json().catch(function(){return{}});if(!r.ok||d.ok===false||d.error)throw Error(d.error||('Request failed ('+r.status+')'));return d}
-function mount(){if(D.getElementById('sclAppealAdminModal'))return;var b=D.createElement('button');b.id='sclAppealAdminLauncher';b.type='button';b.textContent='⚖️ STAFF APPEALS';b.onclick=open;b.title='Review submitted staff termination appeals';D.body.appendChild(b);var m=D.createElement('div');m.id='sclAppealAdminModal';m.setAttribute('role','dialog');m.setAttribute('aria-modal','true');m.innerHTML='<section class="sam-card"><h2>Staff termination appeals</h2><p>Only authorised SCL administrators can review these appeals. Decisions are recorded in the backend and the staff member is notified when email delivery is configured.</p><div id="samStatus" role="status" aria-live="polite">Loading…</div><div id="samList"></div><div class="sam-actions"><button type="button" class="sam-close" id="samClose">Close</button><button type="button" id="samRefresh">Refresh</button></div></section>';D.body.appendChild(m);m.addEventListener('click',function(e){if(e.target===m)m.classList.remove('open')});D.getElementById('samClose').onclick=function(){m.classList.remove('open')};D.getElementById('samRefresh').onclick=load;}
+function mount(){if(D.getElementById('sclAppealAdminModal'))return;var b=D.createElement('button');b.id='sclAppealAdminLauncher';b.type='button';b.textContent='⚖️ STAFF APPEALS';b.onclick=open;b.title='Review submitted staff termination appeals';L=b;var m=D.createElement('div');m.id='sclAppealAdminModal';m.setAttribute('role','dialog');m.setAttribute('aria-modal','true');m.innerHTML='<section class="sam-card"><h2>Staff termination appeals</h2><p>Only authorised SCL administrators can review these appeals. Decisions are recorded in the backend and the staff member is notified when email delivery is configured.</p><div id="samStatus" role="status" aria-live="polite">Loading…</div><div id="samList"></div><div class="sam-actions"><button type="button" class="sam-close" id="samClose">Close</button><button type="button" id="samRefresh">Refresh</button></div></section>';D.body.appendChild(m);m.addEventListener('click',function(e){if(e.target===m)m.classList.remove('open')});D.getElementById('samClose').onclick=function(){m.classList.remove('open')};D.getElementById('samRefresh').onclick=load;}
 async function load(){if(busy)return;busy=true;var status=D.getElementById('samStatus'),list=D.getElementById('samList');if(status)status.textContent='Loading appeals…';if(list)list.innerHTML='';try{var d=await call('admin_list');var rows=d.appeals||[];if(status)status.textContent=rows.length+' appeal record(s).';if(!rows.length){list.innerHTML='<p>No appeal records have been submitted.</p>';return}list.innerHTML=rows.map(function(a){var st=String(a.status||'submitted').toLowerCase(),open=['submitted','pending','under_review'].includes(st);return '<article class="sam-row"><h3>'+esc(a.full_name||'Staff member')+' — '+esc(st.toUpperCase())+'</h3><p><b>Email:</b> '+esc(a.email)+' &nbsp; <b>Phone:</b> '+esc(a.phone||'Not provided')+'</p><p><b>Submitted:</b> '+esc(a.submitted_at?new Date(a.submitted_at).toLocaleString():'Unknown')+' &nbsp; <b>Appeal ID:</b> '+esc(a.id)+'</p><p><b>Reason:</b><br>'+esc(a.appeal_reason)+'</p><p><b>Full details:</b><br>'+esc(a.complete_details)+'</p>'+(a.decision_note||a.admin_note?'<p><b>Previous management note:</b><br>'+esc(a.decision_note||a.admin_note)+'</p>':'')+(open?'<label for="sam-note-'+esc(a.id)+'"><b>Decision note (optional)</b></label><textarea id="sam-note-'+esc(a.id)+'" placeholder="Reason for accepting or rejecting"></textarea><div class="sam-actions"><button class="sam-accept" type="button" data-id="'+esc(a.id)+'" data-decision="accepted">ACCEPT & REINSTATE</button><button class="sam-reject" type="button" data-id="'+esc(a.id)+'" data-decision="rejected">REJECT APPEAL</button></div>':'<p><b>Decision:</b> '+esc(a.decision||st)+' — '+esc(a.decision_at?new Date(a.decision_at).toLocaleString():'')+'</p>')+'</article>'}).join('');Array.from(list.querySelectorAll('button[data-decision]')).forEach(function(btn){btn.onclick=decide})}catch(e){if(status)status.textContent='Could not load appeals: '+e.message;if(list)list.innerHTML='<p>Access is restricted to authorised administrators. If you are an admin, verify that your active role is technical_admin, management_admin, affairs_admin, or admin.</p>'}finally{busy=false}}
 async function decide(e){var b=e.currentTarget,id=b.getAttribute('data-id'),decision=b.getAttribute('data-decision'),note=D.getElementById('sam-note-'+id);if(!confirm('Confirm '+decision.toUpperCase()+' for this staff termination appeal? '+(decision==='accepted'?'The staff record will be reactivated.':'The staff record will remain terminated.')))return;b.disabled=true;var status=D.getElementById('samStatus');try{var d=await call('admin_decide',{appeal_id:id,decision:decision,note:note?note.value:''});if(status)status.textContent='Decision recorded: '+decision+'. Staff notification email '+(d.email_sent?'sent.':'could not be confirmed; check email-provider configuration.');await load()}catch(err){if(status)status.textContent='Decision failed: '+err.message;b.disabled=false}}
 function open(){mount();var m=D.getElementById('sclAppealAdminModal');m.classList.add('open');load()}
-async function detect(){try{await call('admin_list');mount();var b=D.getElementById('sclAppealAdminLauncher');if(b)b.style.display='block'}catch(_){var b=D.getElementById('sclAppealAdminLauncher');if(b)b.style.display='none'}}
-function start(){detect();window.addEventListener('scl:profile-updated',detect);window.addEventListener('scl:auth-changed',detect);setInterval(detect,30000)}if(D.readyState==='loading')D.addEventListener('DOMContentLoaded',start,{once:true});else start();
+function place(){if(!L)return;if(!adminOk){if(L.parentNode)L.parentNode.removeChild(L);return}var host=D.getElementById('sclProfileAdminPanel')||D.querySelector('.scl-role-actions')||D.querySelector('#sclModernProfileModal .form');if(host){if(L.parentNode!==host)host.appendChild(L);L.style.display='block'}else if(L.parentNode){L.parentNode.removeChild(L)}}
+async function detect(){try{await call('admin_list');adminOk=true;mount();place()}catch(_){adminOk=false;place()}}
+function start(){detect();setInterval(place,1200);window.addEventListener('scl:profile-updated',function(){detect();place()});window.addEventListener('scl:auth-changed',detect);setInterval(detect,30000)}if(D.readyState==='loading')D.addEventListener('DOMContentLoaded',start,{once:true});else start();
 })();
 </script>
 
@@ -11335,11 +11336,10 @@ html body #sclTabs button[data-k]{
  -webkit-backdrop-filter:blur(10px) saturate(1.4);backdrop-filter:blur(10px) saturate(1.4);
  box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 4px 12px hsl(var(--h) 85% 40%/.35)!important;
  transition:transform .15s,box-shadow .15s,background .15s}
+html body #sclTabs button[data-k]{-webkit-text-fill-color:#fff!important}
 html body #sclTabs button[data-k][aria-selected=true]{
- background:linear-gradient(160deg,hsl(var(--h) 90% 62%/.95),hsl(var(--h) 85% 38%/.88)),var(--scl-noguard)!important;
- border:2px solid #fff!important;
- box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 0 0 2px hsl(var(--h) 90% 60%/.55),0 6px 16px hsl(var(--h) 85% 40%/.6)!important}
-html body #sclTabs button[data-k],html body #sclTabs button[data-k][aria-selected=true]{-webkit-text-fill-color:#fff!important}
+ background:linear-gradient(180deg,#f0c24f,#c8932a),var(--scl-noguard)!important;border:1px solid #f0c24f!important;
+ box-shadow:none!important;color:#3b0610!important;-webkit-text-fill-color:#3b0610!important;text-shadow:none!important;-webkit-backdrop-filter:none;backdrop-filter:none}
 html body #sclTabs button[data-k]:hover{transform:translateY(-1px)}
 html body #sclTabs button[data-k]:focus-visible{outline:3px solid #fff;outline-offset:2px}
 
@@ -11365,13 +11365,12 @@ html body .hv2-grp.g2 .hv2-tile:nth-child(n){--o:7}
 html body .hv2-grp.g3 .hv2-tile:nth-child(n){--o:12}
 html body .hv2-grp .hv2-tile{--o:0;--h:calc((var(--i) + var(--o))*140 + 345)}
 
-/* Shared glass look for cards/tiles (dark page => tinted, translucent, readable cream text) */
-html body #ngPrime .ng-card,html body .hv2-grp .hv2-tile{
- background:linear-gradient(145deg,hsl(var(--h) 85% 58%/.40),hsl(var(--h) 80% 22%/.46)),var(--scl-noguard)!important;
- border:1.5px solid hsl(var(--h) 90% 66%/.85)!important;
+/* Two-colour glass for home cards and service tiles */
+html body #ngPrime .ng-card,html body .hv2-grp .hv2-tile{--h2:calc(var(--h) + 60);
+ background:linear-gradient(140deg,hsl(var(--h) 85% 56%/.46),hsl(var(--h2) 85% 40%/.40)),var(--scl-noguard)!important;
+ border:1.5px solid hsl(var(--h) 90% 68%/.80)!important;
  -webkit-backdrop-filter:blur(12px) saturate(1.5);backdrop-filter:blur(12px) saturate(1.5);
- box-shadow:inset 0 1px 0 rgba(255,255,255,.38),inset 0 0 0 1px hsl(var(--h) 90% 70%/.18),0 8px 22px hsl(var(--h) 80% 30%/.40)!important;
- color:#fff!important}
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.38),0 8px 20px rgba(0,0,0,.30)!important;color:#fff!important}
 html body #ngPrime .ng-card *,html body .hv2-grp .hv2-tile *{color:#fff!important;text-shadow:0 1px 2px rgba(0,0,0,.5)}
 html body #ngPrime .ng-card small,html body .hv2-grp .hv2-tile small{color:rgba(255,255,255,.92)!important}
 
@@ -11405,7 +11404,55 @@ html body .community-tab.active,html body .alerts-tab.active,html body .scl-reg-
  color:#fff!important;border-color:hsl(var(--h) 85% 28%)!important;
  box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 4px 12px hsl(var(--h) 80% 35%/.45)!important}
 @supports not (color:hsl(0 0% 0%/.5)){html body #sclTabs button[data-k]{background:rgba(120,40,160,.6)!important}}
+
+/* Calm the page: drop the multi-colour blobs/rainbow, purple rings and glows. Photos (url() images) are untouched. */
+html:root:root{background-image:linear-gradient(170deg,#1a0a1f,#2a0b1c 55%,#12060f)!important}
+html:root:root::before{background:linear-gradient(170deg,#2a0b14,#1a0710 60%,#10050b)!important}
+html body::before{background-image:none!important;display:none!important}
+html body.scl-night{background-image:linear-gradient(170deg,#140b1d,#0d0712 60%,#09040d)!important;animation:none!important}
+html body .hv2-top{box-shadow:0 8px 20px rgba(0,0,0,.25)!important}
+html body .hv2-grp,html body .hv2-steps li,html body .hv2-contact{box-shadow:0 8px 22px rgba(0,0,0,.30)!important}
+html body .hv2-grp{border-width:1.5px!important;background:linear-gradient(145deg,rgba(255,255,255,.07),rgba(255,255,255,.02)),var(--scl-noguard)!important}
+html body .hv2-grp{--gh:345}html body .hv2-grp.g2{--gh:45}html body .hv2-grp.g3{--gh:215}
+html body .hv2-grp>h3{background:linear-gradient(90deg,hsl(var(--gh) 70% 38%/.55),rgba(255,255,255,.04)),var(--scl-noguard)!important;border-left:4px solid hsl(var(--gh) 85% 60%)!important;color:#fff!important;-webkit-text-fill-color:#fff!important}
 </style>
+<script id="scl-auto-theme">
+/* SCL auto day/night: Day 07:00-18:59, Night 19:00-06:59 (device local time).
+   Follows the site's existing theme state (localStorage sclThemeMode + body.scl-night) so the existing toggle and theme guard keep working.
+   A manual tap on the toggle is respected until the next 07:00/19:00 boundary, then the schedule takes over again. */
+(function(){
+ if(window.__sclAutoTheme)return;window.__sclAutoTheme=1;
+ var DAY_START=7,NIGHT_START=19,OV='sclThemeOverridePeriod';
+ function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}}
+ function pad(n){return(n<10?'0':'')+n}
+ function ymd(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())}
+ function period(now){var h=now.getHours(),d=new Date(now);
+  if(h>=NIGHT_START)return{mode:'night',id:ymd(d)+'-night'};
+  if(h<DAY_START){d.setDate(d.getDate()-1);return{mode:'night',id:ymd(d)+'-night'}}
+  return{mode:'day',id:ymd(d)+'-day'}}
+ function show(mode){var night=mode==='night',body=document.body;if(!body)return;
+  ls('sclThemeMode',night?'night':'day');
+  body.classList.toggle('scl-night',night);
+  var b=document.getElementById('sclThemeToggle');
+  if(b){b.textContent=night?'🌙':'☀️';b.title=night?'Night mode — tap for Day mode':'Day mode — tap for Night mode';b.setAttribute('aria-label',night?'Switch to Day mode':'Switch to Night mode')}}
+ function sync(){var p=period(new Date());
+  if(ls(OV)===p.id)return;               /* user chose manually during this period */
+  if(ls(OV))ls(OV,'');                     /* override expired at a boundary */
+  var cur=document.body&&document.body.classList.contains('scl-night')?'night':'day';
+  if(cur!==p.mode||ls('sclThemeMode')!==p.mode)show(p.mode)}
+ document.addEventListener('click',function(e){var t=e.target&&e.target.closest&&e.target.closest('#sclThemeToggle');if(t)ls(OV,period(new Date()).id)},true);
+ function nextBoundary(){var n=new Date(),t=new Date(n);var h=n.getHours();
+  if(h<DAY_START)t.setHours(DAY_START,0,0,0);else if(h<NIGHT_START)t.setHours(NIGHT_START,0,0,0);else{t.setDate(t.getDate()+1);t.setHours(DAY_START,0,0,0)}
+  return t-n}
+ var tm;function arm(){clearTimeout(tm);tm=setTimeout(function(){sync();arm()},Math.min(nextBoundary()+250,2147483000))}
+ function start(){sync();arm()}
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
+ window.addEventListener('load',function(){setTimeout(sync,400);setTimeout(sync,1500)});
+ document.addEventListener('visibilitychange',function(){if(!document.hidden){sync();arm()}});
+ window.addEventListener('focus',function(){sync();arm()});
+ setInterval(sync,60000);
+})();
+</script>
 </body></html>
 
 <style id="scl-v311-rank-medal-effects">
