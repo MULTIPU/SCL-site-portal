@@ -1080,6 +1080,7 @@ body.scl-night nav a:not(.active), body.scl-night .bottom button {
   nav a,.bottom button,.scl-home-action-clean>button {animation:none!important;transition:none!important;}
 }
 </style>
+<style id="scl-stable-nav-text">nav a,.scl-profile-toolbar button,#sclTabs button,.scl-bottom-bar button{color:#fff!important;font-weight:800!important;text-shadow:none!important;animation:none!important;transition:none!important}nav a.active,#sclTabs button[aria-selected="true"]{color:#3b0610!important}#sclStaffShow .sso-oct,#sclStaffShow .sso-card,#sclStaffShow .sso-track{animation:none!important;transition:none!important;transform:none!important}</style>
 </head>
 <body><a class="scl-skip" href="#hv2">Skip to main content</a>
 <!-- ACCESS GATE (merged from the access-gate page) -->
@@ -10790,9 +10791,9 @@ window.sclWorkerResultText=function(r){if(!r)return'';if(r.error)return' '+esc(r
 
 /* ===== homepage: octagonal staff display ===== */
 var css='#sclStaffShow{--oct:#5a0c1a;--gold:#e3b23c}#sclStaffShow .sso-head{text-align:center;margin-bottom:18px}'
-+'#sclStaffShow .sso-view{position:relative;overflow:hidden;padding:14px 0 10px}'
-+'#sclStaffShow .sso-track{display:flex;gap:18px;will-change:transform;width:max-content}'
-+'#sclStaffShow.sso-static .sso-track{width:auto;justify-content:center;flex-wrap:wrap}'
++'#sclStaffShow .sso-view{position:relative;overflow-x:auto;overflow-y:hidden;padding:14px 0 10px;-webkit-overflow-scrolling:touch;touch-action:pan-x;scrollbar-width:thin;scrollbar-color:#e3b23c transparent}'
++'#sclStaffShow .sso-track{display:flex;gap:18px;width:max-content;min-width:100%;transform:none!important;transition:none!important;animation:none!important}'
++'#sclStaffShow.sso-static .sso-track{width:max-content;justify-content:flex-start;flex-wrap:nowrap}'
 +'#sclStaffShow.sso-scroll .sso-view{overflow-x:auto;-webkit-overflow-scrolling:touch}'
 +'#sclStaffShow .sso-card{flex:0 0 auto;width:150px;text-align:center;background:none;border:0;padding:0;font:inherit;color:inherit;cursor:default}'
 +'#sclStaffShow .sso-card.ver{cursor:pointer}#sclStaffShow .sso-card.ver:focus-visible{outline:3px solid #fff;outline-offset:4px;border-radius:12px}'
@@ -10803,8 +10804,8 @@ var css='#sclStaffShow{--oct:#5a0c1a;--gold:#e3b23c}#sclStaffShow .sso-head{text
 +'#sclStaffShow .sso-card.pend .sso-photo img,#sclStaffShow .sso-card.pend .sso-photo svg{filter:blur(9px);transform:scale(1.15)}'
 +'#sclStaffShow .sso-pend{white-space:nowrap;position:absolute;left:50%;top:0;transform:translate(-50%,-10%);z-index:2;background:#b3261e;color:#fff;font-weight:900;font-size:12px;letter-spacing:.12em;padding:4px 12px;border-radius:99px;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.35)}'
 +'#sclStaffShow .sso-name{font-weight:800;font-size:14px;line-height:1.2;color:inherit;overflow-wrap:anywhere}#sclStaffShow .sso-pos{font-size:12px;opacity:.85}'
-+'#sclStaffShow .sso-ctl{display:flex;justify-content:center;gap:10px;margin-top:10px}'
-+'#sclStaffShow .sso-btn{border:1.5px solid #e3b23c;background:linear-gradient(145deg,rgba(122,43,196,.34),rgba(34,10,58,.46));box-shadow:inset 0 0 0 1.5px rgba(160,84,230,.85);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);color:#fff2c4;border-radius:99px;padding:7px 18px;font-weight:700;cursor:pointer}'
++'#sclStaffShow .sso-ctl{display:none!important}'
++'#sclStaffShow .sso-btn{display:none!important}'
 +'#sclStaffShow .sso-msg{margin:0 auto;max-width:420px;padding:14px 16px;text-align:center;border-radius:16px;border:1.5px solid #e3b23c;background:rgba(60,20,100,.4);color:#fbeec6;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}'
 +'#sclStaffShow .sso-msg{text-align:center;opacity:.85;padding:18px}'
 +'#sclStaffDlg{position:fixed;inset:0;z-index:100000;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.55);padding:16px}#sclStaffDlg.open{display:flex}'
@@ -10814,8 +10815,7 @@ var css='#sclStaffShow{--oct:#5a0c1a;--gold:#e3b23c}#sclStaffShow .sso-head{text
 var st=D.createElement('style');st.id='scl-staff-octagon-css';st.textContent=css;D.head.appendChild(st);
 
 var SIL='<svg viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" fill="#d9c8a3"/><circle cx="50" cy="38" r="17" fill="#8a7a58"/><path d="M14 100c2-26 20-38 36-38s34 12 36 38z" fill="#8a7a58"/></svg>';
-var root=null,view=null,track=null,timer=null,paused=false,reduce=false,sig='',data=[],stepping=false,mq=null;
-try{mq=matchMedia('(prefers-reduced-motion: reduce)');reduce=mq.matches}catch(e){}
+var root=null,view=null,track=null,sig='',data=[],mq=null;
 function photoUrl(p){return URLB()+'/storage/v1/object/public/staff-photos/'+String(p).split('/').map(encodeURIComponent).join('/')}
 function card(p){var b=D.createElement(p.verified?'button':'div');b.className='sso-card '+(p.verified?'ver':'pend');b.setAttribute('data-ref',p.ref);
   if(p.verified){b.type='button';b.setAttribute('aria-label',(p.name||'Staff member')+', '+(p.position||'staff')+'. Open contact details')}else b.setAttribute('aria-label','Pending staff application, '+(p.position||'staff'));
@@ -10824,21 +10824,16 @@ function card(p){var b=D.createElement(p.verified?'button':'div');b.className='s
    +'<div class="sso-name">'+esc(p.verified?(p.name||''):'New applicant')+'</div><div class="sso-pos">'+esc(p.position||'')+'</div>';
   var im=b.querySelector('img');if(im)im.onerror=function(){im.replaceWith(Object.assign(D.createElement('span'),{innerHTML:SIL}).firstChild)};
   return b}
-function stop(){if(timer){clearInterval(timer);timer=null}}
-function start(){stop();if(reduce||paused||!track||root.classList.contains('sso-static'))return;timer=setInterval(step,2000)}
-/* left-to-right: the last card moves to the front, then the track glides from -1 card to 0 (no clones, no duplicates) */
-function step(){if(stepping||D.hidden||!track.lastElementChild)return;stepping=true;
-  var last=track.lastElementChild,w=last.getBoundingClientRect().width+18;
-  track.style.transition='none';track.insertBefore(last,track.firstElementChild);track.style.transform='translateX('+(-w)+'px)';
-  void track.offsetWidth;track.style.transition='transform .6s ease';track.style.transform='translateX(0)';
-  setTimeout(function(){stepping=false},650)}
+function stop(){}
+function start(){}
+/* Intentionally static: users swipe/scroll manually; no timer, transform, animation, or autoplay. */
 function render(list){
-  var s=list.map(function(p){return p.ref+':'+(p.verified?1:0)}).join('|');if(s===sig&&track)return;sig=s;stop();
+  list=(Array.isArray(list)?list.slice():[]);var s=list.map(function(p){return p.ref+':'+(p.verified?1:0)}).join('|');if(s===sig&&track)return;sig=s;
   if(!list.length){view.innerHTML='<div class="sso-msg">Staff profiles will appear here once applications are submitted.</div>';track=null;return}
   view.innerHTML='<div class="sso-track" role="list"></div>';track=view.firstChild;
   list.forEach(function(p){var c=card(p);c.setAttribute('role','listitem');track.appendChild(c)});
-  var fits=track.scrollWidth<=view.clientWidth+4;root.classList.toggle('sso-static',fits);
-  root.classList.toggle('sso-scroll',reduce&&!fits);start()}
+  root.classList.remove('sso-static');root.classList.add('sso-scroll');view.scrollLeft=0;
+}
 function load(){return rawFetch(URLB()+'/rest/v1/rpc/scl_public_staff_directory',{method:'POST',cache:'no-store',headers:{apikey:KEY(),'Content-Type':'application/json'},body:'{}'})
   .then(function(r){if(!r.ok)throw new Error('x');return r.json()}).then(function(l){data=Array.isArray(l)?l:[];render(data)})
   .catch(function(){if(!track)view.innerHTML='<div class="sso-msg">Staff display is temporarily unavailable.</div>'})}
@@ -10853,18 +10848,14 @@ function openStaff(ref){var p=data.filter(function(x){return x.ref===ref&&x.veri
 function mount(){
   if(D.getElementById('sclStaffShow'))return true;var host=D.getElementById('hv2');if(!host)return false;
   var sec=D.createElement('section');sec.id='sclStaffShow';sec.className='hv2-sec';sec.setAttribute('aria-label','Our staff');
-  sec.innerHTML='<div class="hv2-in"><div class="sso-head"><h2>Our staff</h2><p class="hv2-lead">Meet the people who teach and support our pupils.</p></div><div class="sso-view"></div><div class="sso-ctl"><button type="button" class="sso-btn" id="ssoToggle" aria-pressed="false">Pause</button></div></div>';
+  sec.innerHTML='<div class="hv2-in"><div class="sso-head"><h2>Our staff</h2><p class="hv2-lead">Meet the people who teach and support our pupils.</p></div><div class="sso-view" aria-label="Staff profiles. Swipe horizontally to browse"></div></div>';
   var foot=host.querySelector('.scl-footer'),contact=host.querySelector('#contact');
   if(foot)host.insertBefore(sec,foot);else if(contact&&contact.parentNode===host)contact.insertAdjacentElement('afterend',sec);else host.appendChild(sec);
   root=sec;view=sec.querySelector('.sso-view');
   sec.addEventListener('click',function(e){var c=e.target.closest('.sso-card.ver');if(c)openStaff(c.getAttribute('data-ref'))});
-  sec.querySelector('#ssoToggle').addEventListener('click',function(){paused=!paused;this.textContent=paused?'Play':'Pause';this.setAttribute('aria-pressed',String(paused));paused?stop():start()});
-  ['mouseenter','focusin','touchstart'].forEach(function(ev){view.addEventListener(ev,stop,{passive:true})});
-  ['mouseleave','focusout','touchend'].forEach(function(ev){view.addEventListener(ev,function(){if(!paused)start()},{passive:true})});
-  if(mq&&mq.addEventListener)mq.addEventListener('change',function(){reduce=mq.matches;sig='';render(data)});
-  if('IntersectionObserver' in window)new IntersectionObserver(function(en){en[0].isIntersecting?(paused||start()):stop()},{threshold:.05}).observe(sec);
+  /* No Pause/Play control and no automatic movement. */
   /* lazy: nothing is fetched until the section is near the viewport */
-  var go=function(){load();setInterval(load,60000);D.addEventListener('visibilitychange',function(){if(!D.hidden)load()});window.addEventListener('scl:staff-directory-refresh',load)};
+  var go=function(){load();setInterval(load,8000);D.addEventListener('visibilitychange',function(){if(!D.hidden)load()});window.addEventListener('scl:staff-directory-refresh',load)};
   if('IntersectionObserver' in window){var io=new IntersectionObserver(function(en){if(en[0].isIntersecting){io.disconnect();go()}},{rootMargin:'400px'});io.observe(sec)}else go();
   return true}
 var n=0,mi=setInterval(function(){if(mount()||++n>120)clearInterval(mi)},500);
@@ -10872,6 +10863,23 @@ var n=0,mi=setInterval(function(){if(mount()||++n>120)clearInterval(mi)},500);
 
 </script>
 
+<script id="scl-terminated-profile-banner">
+(function(){'use strict';var running=false,last='';function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+async function check(){if(running||!window.sclSupabase||!window.sclSupabase.auth)return;running=true;try{var a=await window.sclSupabase.auth.getSession(),ses=a&&a.data&&a.data.session;if(!ses||!ses.user){last='';return}var r=await window.sclSupabase.rpc('scl_my_staff_termination_status');if(r.error||!r.data||!r.data.terminated)return;var d=r.data,key=ses.user.id+':'+(d.terminated_at||'');if(last===key)return;last=key;var host=document.querySelector('#profileModal .card,#sclModernProfileBody,#profileModal');if(!host)host=document.body;var old=document.getElementById('sclTerminatedProfileBanner');if(old)old.remove();var box=document.createElement('section');box.id='sclTerminatedProfileBanner';box.setAttribute('role','alert');box.style.cssText='margin:12px 0;padding:16px;border:2px solid #b3261e;border-radius:14px;background:#fff0f0;color:#6f0010;font-weight:700';box.innerHTML='<h3 style="margin:0 0 8px;color:#8c0012">ACCOUNT TERMINATED</h3><p style="margin:6px 0">Your SCL staff account is marked as terminated. Website access is restricted while this status remains in effect.</p>'+(d.terminated_at?'<p style="margin:6px 0">Effective: '+esc(new Date(d.terminated_at).toLocaleString())+'</p>':'')+(d.reason?'<p style="margin:6px 0">Reason recorded: '+esc(d.reason)+'</p>':'')+'<p style="margin:6px 0">You may submit a complete appeal for administrator review. Access is restored only after authorised approval.</p><button type="button" id="sclTerminatedAppealOpen" style="padding:10px 14px;border-radius:9px;border:1px solid #8c0012;background:#8c0012;color:white;font-weight:800">Submit termination appeal</button>';host.prepend(box);document.getElementById('sclTerminatedAppealOpen').onclick=function(){var b=document.getElementById('sclTermAppealLaunch');if(b)b.click();else{var m=document.getElementById('sclTermAppeal');if(m)m.classList.add('open')}}}catch(e){}finally{running=false}}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){check();setInterval(check,8000)},{once:true});else{check();setInterval(check,8000)}window.addEventListener('scl:profile-updated',check);})();
+</script>
+
+<script id="scl-termination-appeal-ui">
+(function(){'use strict';var D=document;
+var css='#sclTermAppealLaunch{position:fixed;left:10px;bottom:calc(76px + env(safe-area-inset-bottom,0px));z-index:99990;border:1px solid #e3b23c;border-radius:999px;padding:9px 13px;background:#2a0710;color:#fff;font-weight:800;font-size:12px;box-shadow:0 5px 18px #0005}#sclTermAppeal{position:fixed;inset:0;z-index:1000001;display:none;align-items:center;justify-content:center;padding:16px;background:#100714eF;color:#fff}#sclTermAppeal.open{display:flex}#sclTermAppeal .sta-card{width:min(620px,100%);max-height:92dvh;overflow:auto;background:#21132b;border:2px solid #d7ad42;border-radius:18px;padding:18px;box-shadow:0 15px 50px #000}#sclTermAppeal h2{margin:0 0 8px}#sclTermAppeal p{line-height:1.45}#sclTermAppeal label{display:block;font-weight:800;margin:10px 0 4px}#sclTermAppeal input,#sclTermAppeal textarea{width:100%;box-sizing:border-box;padding:11px;border-radius:9px;border:1px solid #d7ad42;background:#fff;color:#24101a}#sclTermAppeal textarea{min-height:88px}#sclTermAppeal .sta-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}#sclTermAppeal button{border:1px solid #d7ad42;border-radius:10px;padding:10px 14px;background:#f5c542;color:#310710;font-weight:900}#sclTermAppeal .sta-close{background:transparent;color:#fff}#sclTermAppeal [role=status]{margin-top:10px;font-weight:700}';
+var st=D.createElement('style');st.textContent=css;D.head.appendChild(st);
+function mount(){if(D.getElementById('sclTermAppealLaunch'))return;var b=D.createElement('button');b.id='sclTermAppealLaunch';b.type='button';b.textContent='Staff account appeal';b.addEventListener('click',open);D.body.appendChild(b);
+var m=D.createElement('div');m.id='sclTermAppeal';m.setAttribute('role','dialog');m.setAttribute('aria-modal','true');m.setAttribute('aria-labelledby','staTitle');m.innerHTML='<section class="sta-card"><h2 id="staTitle">Staff account termination appeal</h2><p><b>ACCOUNT TERMINATED?</b> Use this form to appeal and submit your complete details for school management review. Submitting an appeal does not automatically restore access; an authorised administrator must review and approve it.</p><form id="staForm"><label for="staName">Full name</label><input id="staName" name="full_name" autocomplete="name" required minlength="3"><label for="staEmail">Email used for your SCL staff account</label><input id="staEmail" name="email" type="email" autocomplete="email" required><label for="staPhone">Phone number</label><input id="staPhone" name="phone" type="tel" autocomplete="tel"><label for="staReason">Reason for appeal</label><textarea id="staReason" name="appeal_reason" required minlength="10" placeholder="Explain why you are appealing the termination."></textarea><label for="staDetails">Complete details and supporting explanation</label><textarea id="staDetails" name="complete_details" required minlength="30" placeholder="Include the relevant dates, context, corrections, and any information management should consider."></textarea><div class="sta-actions"><button type="submit" id="staSubmit">Submit appeal</button><button type="button" class="sta-close" id="staClose">Close</button></div><div id="staStatus" role="status" aria-live="polite"></div></form></section>';D.body.appendChild(m);m.addEventListener('click',function(e){if(e.target===m)m.classList.remove('open')});D.getElementById('staClose').onclick=function(){m.classList.remove('open')};D.getElementById('staForm').addEventListener('submit',submit)}
+function open(){var m=D.getElementById('sclTermAppeal');m.classList.add('open');D.getElementById('staStatus').textContent='';}
+async function submit(e){e.preventDefault();var f=e.currentTarget,b=D.getElementById('staSubmit'),st=D.getElementById('staStatus');b.disabled=true;st.textContent='Submitting securely…';var v=Object.fromEntries(new FormData(f).entries());try{var base=String(window.SCL_SUPABASE_URL||'').replace(/\/$/,'');var key=window.SCL_SUPABASE_PUBLISHABLE_KEY||window.SCL_SUPABASE_ANON_KEY||'';if(!base||!key)throw new Error('The school appeal service is unavailable. Please contact the school.');var r=await fetch(base+'/rest/v1/rpc/scl_submit_termination_appeal',{method:'POST',headers:{apikey:key,'Content-Type':'application/json'},body:JSON.stringify({p_full_name:v.full_name,p_email:v.email,p_phone:v.phone,p_appeal_reason:v.appeal_reason,p_complete_details:v.complete_details})});var data=await r.json().catch(function(){return{}});if(!r.ok)throw new Error(data.message||data.error||'The appeal could not be submitted. Check the account email and try again.');st.textContent='Appeal submitted successfully. Reference: '+(data.appeal_id||'received')+'. Management must review it before access can be restored.';f.reset()}catch(err){st.textContent=err.message||'Appeal submission failed.'}finally{b.disabled=false}}
+if(D.readyState==='loading')D.addEventListener('DOMContentLoaded',mount,{once:true});else mount();
+})();
+</script>
 
 <script id="scl-my-assignments">
 (function(){'use strict';
