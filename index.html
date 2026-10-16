@@ -1050,7 +1050,37 @@ html body.scl-night .field input,html body.scl-night .field select,html body.scl
 .t-heartbeat{animation:sclMgrHeartbeat 1.8s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
 .t-sway{animation:sclMgrSway 5s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
 .t-ember{animation:sclMgrEmber 2.4s ease-in-out infinite}
-</style></head>
+</style>
+<style id="scl-stable-home-text-fix">
+/* Stable navigation contrast: no inherited/animated black-white text flicker. */
+nav, nav a, nav a:visited, nav a:link, .bottom, .bottom button,
+.scl-notice-banner, .scl-notice-banner b {
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+  font-weight:800!important;
+  text-shadow:0 1px 2px rgba(0,0,0,.38);
+  transition:none!important;
+  animation:none!important;
+}
+nav a.active, nav a[aria-current="page"] {
+  color:#3b0610!important;
+  -webkit-text-fill-color:#3b0610!important;
+  background:#f2ae00!important;
+  font-weight:900!important;
+  text-shadow:none!important;
+}
+.bottom button, nav a { opacity:1!important; filter:none!important; }
+.scl-home-action-clean>button b {font-weight:900!important;}
+.scl-home-action-clean>button small {font-weight:700!important;}
+/* Preserve readable colors even while the theme class is being applied. */
+body.scl-night nav a:not(.active), body.scl-night .bottom button {
+  color:#fff!important;-webkit-text-fill-color:#fff!important;
+}
+@media(prefers-reduced-motion:reduce) {
+  nav a,.bottom button,.scl-home-action-clean>button {animation:none!important;transition:none!important;}
+}
+</style>
+</head>
 <body><a class="scl-skip" href="#hv2">Skip to main content</a>
 <!-- ACCESS GATE (merged from the access-gate page) -->
 
@@ -9363,11 +9393,11 @@ async function renderComplete(){const host=Q('.scl-profile-identity');if(!host)r
 function openComplete(u){const v=getVals(u),r=pct(v);const rows=FIELDS.filter(f=>f[3]!=='photo'&&f[0]!=='email').map(f=>{const val=esc(v[f[0]]||''),t=f[3];let inp;if(t==='textarea')inp='<textarea data-k="'+f[0]+'" rows="2">'+val+'</textarea>';else if(t.indexOf('select')===0)inp='<select data-k="'+f[0]+'"><option value="">Select</option>'+t.split(':')[1].split(',').map(o=>'<option'+(v[f[0]]===o?' selected':'')+'>'+o+'</option>').join('')+'</select>';else inp='<input data-k="'+f[0]+'" type="'+t+'" value="'+val+'">';return '<div><label>'+f[1]+' <span style="opacity:.6">(+'+f[2]+'%)</span></label>'+inp+'</div>'}).join('');
  const m=modal300('sclCompleteModal','<h3>✍️ Complete my profile</h3><div class="scl300-note">Currently <b>'+r.p+'%</b>. Only name, email and phone are needed to keep your account — fill the rest whenever you are ready.</div><div class="scl300-row">'+rows+'</div><button class="scl300-cta" id="sclCompleteSave" type="button">💾 Save details</button>');
  $('sclCompleteSave').onclick=async()=>{const ex={};QA('[data-k]',m).forEach(i=>{if(i.value.trim())ex[i.dataset.k]=i.value.trim()});const md=(u.user_metadata||{}),merged=Object.assign({},md.profile_extra||{},ex);try{localStorage.setItem('sclProfileExtra:'+u.id,JSON.stringify(merged))}catch(_){}
-  const upd={profile_extra:merged};if(ex.phone)upd.phone=ex.phone;if(ex.full_name)upd.full_name=ex.full_name;try{const r2=await sb().auth.updateUser({data:upd});if(r2.error)throw r2.error;fb('Profile saved successfully.','ok')}catch(e){fb('Saved on this device only — online save failed: '+(e&&e.message||'offline'),'warn')}
+  const upd={profile_extra:merged};if(ex.phone)upd.phone=ex.phone;if(ex.full_name)upd.full_name=ex.full_name;try{const r2=await sb().auth.updateUser({data:upd});if(r2.error)throw r2.error;try{const dbp=await sb().from('user_profiles').upsert({user_id:u.id,email:u.email||null,full_name:ex.full_name||u.user_metadata?.full_name||u.user_metadata?.name||null,phone:ex.phone||u.user_metadata?.phone||null,profile_data:merged,profile_updated_at:new Date().toISOString(),updated_at:new Date().toISOString()},{onConflict:'user_id'});if(dbp.error)console.warn('SCL profile mirror update:',dbp.error.message)}catch(dbErr){console.warn('SCL profile mirror update failed',dbErr)}fb('Profile saved successfully.','ok')}catch(e){fb('Saved on this device only — online save failed: '+(e&&e.message||'offline'),'warn')}
   m.classList.remove('open');renderComplete()}}
 function enhanceProfile(){QA('.scl-profile-avatar').forEach(av=>{if(av.querySelector('.scl-av-edit'))return;const l=document.createElement('label');l.className='scl-av-edit';l.title='Change photo';l.setAttribute('data-scl-ic','');l.innerHTML='📷<input type="file" accept="image/*" hidden>';av.appendChild(l);
  l.querySelector('input').onchange=async function(){const f=this.files[0];if(!f)return;fb('Compressing your photo…','info',1200);try{const d=await compress(f,256);let img=Q('img',av);if(!img){img=document.createElement('img');img.style.cssText='width:100%;height:100%;object-fit:cover;border-radius:50%';av.insertBefore(img,av.firstChild)}img.src=d;img.style.display='';const fbk=Q('.scl-profile-avatar-fallback',av);if(fbk)fbk.style.display='none';
-  const u=await curUser();if(u){try{localStorage.setItem('sclProfilePhoto:'+u.id,d)}catch(_){}try{const r=await sb().auth.updateUser({data:{photo_data_url:d}});if(r.error)throw r.error;fb('Profile photo updated (compressed to '+Math.round(d.length*.75/1024)+' KB).','ok')}catch(e){fb('Photo shown here, but online save failed: '+(e&&e.message||'offline'),'warn')}}else fb('Photo set.','ok');renderComplete()}catch(e){fb(e.message||'Photo failed.','err')}}});
+  const u=await curUser();if(u){try{localStorage.setItem('sclProfilePhoto:'+u.id,d)}catch(_){}try{const r=await sb().auth.updateUser({data:{photo_data_url:d}});if(r.error)throw r.error;try{const dbp=await sb().from('user_profiles').upsert({user_id:u.id,email:u.email||null,full_name:u.user_metadata?.full_name||u.user_metadata?.name||null,phone:u.user_metadata?.phone||u.phone||null,avatar_url:d,profile_updated_at:new Date().toISOString(),updated_at:new Date().toISOString()},{onConflict:'user_id'});if(dbp.error)console.warn('SCL avatar mirror update:',dbp.error.message)}catch(dbErr){console.warn('SCL avatar mirror update failed',dbErr)}QA('.scl-profile-avatar img').forEach(im=>im.src=d);fb('Profile photo updated and saved.','ok')}catch(e){fb('Photo shown here, but online save failed: '+(e&&e.message||'offline'),'warn')}}else fb('Photo set.','ok');renderComplete()}catch(e){fb(e.message||'Photo failed.','err')}}});
  if(!$('sclComplete'))renderComplete()}
 /* ---------- registration: only name + email + phone required ---------- */
 function bootReg(){const gate=$('accessGate'),nx=$('nx'),form=$('v-register');if(!gate||!nx||!form||gate.dataset.v300)return;gate.dataset.v300='1';const orig=form.onsubmit,tc=$('r-tc'),sub=$('sub'),m=$('m-r');
@@ -11297,7 +11327,7 @@ let staffRows=[];
 async function renderTermination(){if(!isAdmin()){alert('Administrator access is required.');return}const m=modal();m.style.display='block';$('#sclTermResults',m).textContent='Loading active staff…';$('#sclTermMessage',m).textContent='';try{staffRows=await req('staff?select=id,full_name,email,phone,role,employment_status,is_teaching,created_at&employment_status=eq.active&order=full_name.asc');draw(staffRows)}catch(e){$('#sclTermResults',m).innerHTML='<p>Could not load active staff. '+esc(e.message)+'</p><p>Use the existing staff-management page if your account lacks staff-table access.</p>'}}
 function draw(rows){const box=$('#sclTermResults');if(!box)return;if(!rows.length){box.innerHTML='<p>No matching active staff found.</p>';return}box.innerHTML=rows.map(r=>'<article style="border:1px solid #80678d;border-radius:12px;padding:12px;margin:9px 0"><b>'+esc(r.full_name)+'</b><div>'+esc(r.role)+' · '+(r.is_teaching?'Teaching':'Non-teaching')+'</div><small>'+esc(r.email||'No email stored')+'</small><div style="margin-top:8px"><button type="button" class="scl-add-btn primary" data-scl-terminate="'+esc(r.id)+'">Terminate / archive</button></div></article>').join('');box.querySelectorAll('[data-scl-terminate]').forEach(b=>b.onclick=()=>confirmTerminate(b.dataset.sclTerminate,b))}
 function filter(){const q=($('#sclTermSearch')?.value||'').trim().toLowerCase();draw(staffRows.filter(r=>[r.full_name,r.email,r.role].some(x=>String(x||'').toLowerCase().includes(q))))}
-async function confirmTerminate(id,btn){const r=staffRows.find(x=>x.id===id);if(!r)return;const reason=prompt('Termination reason for '+r.full_name+' (required):');if(reason===null)return;if(!reason.trim()){alert('A termination reason is required.');return}if(!confirm('Confirm termination of '+r.full_name+'? Their active assignments and schedule will be cleared; name and email identity will be retained.'))return;btn.disabled=true;try{const result=await fetch(url()+'/rest/v1/rpc/scl_admin_terminate_staff',{method:'POST',headers:headers(),body:JSON.stringify({p_staff_id:id,p_reason:reason.trim()})});const text=await result.text();let data;try{data=JSON.parse(text)}catch(_){data=text}if(!result.ok)throw Error(data?.message||data?.details||('Termination failed ('+result.status+').'));$('#sclTermMessage').textContent='Terminated and archived: '+r.full_name+'. Name/email preserved. Check the Former Staff Records page for history.';staffRows=staffRows.filter(x=>x.id!==id);draw(staffRows)}catch(e){btn.disabled=false;$('#sclTermMessage').textContent='Could not terminate staff: '+e.message}}
+async function confirmTerminate(id,btn){const r=staffRows.find(x=>x.id===id);if(!r)return;const reason=prompt('Termination reason for '+r.full_name+' (required):');if(reason===null)return;if(!reason.trim()){alert('A termination reason is required.');return}if(!confirm('Confirm termination of '+r.full_name+'? Their active assignments and schedule will be cleared; name and email identity will be retained.'))return;btn.disabled=true;try{const result=await fetch(url()+'/rest/v1/rpc/scl_admin_terminate_staff',{method:'POST',headers:headers(),body:JSON.stringify({p_staff_id:id,p_reason:reason.trim()})});const text=await result.text();let data;try{data=JSON.parse(text)}catch(_){data=text}if(!result.ok)throw Error(data?.message||data?.details||('Termination failed ('+result.status+').'));if(data&&data.ok===false)throw Error(data.message||'The backend did not confirm termination.');$('#sclTermMessage').textContent='Terminated and archived: '+r.full_name+'. '+(data&&data.access_revoked?'Account access revoked and active sessions invalidated.':'Employment status saved; no linked login account was found to revoke. Check the staff email/user link.');staffRows=staffRows.filter(x=>x.id!==id);draw(staffRows);try{const cu=await window.sclSupabase.auth.getUser();if(cu?.data?.user&&(cu.data.user.id===data?.user_id||String(cu.data.user.email||'').toLowerCase()===String(r.email||'').toLowerCase())){await window.sclSupabase.auth.signOut();sessionStorage.clear();location.reload()}}catch(_){} }catch(e){btn.disabled=false;$('#sclTermMessage').textContent='Could not terminate staff: '+e.message}}
 // Rehire matching helper: exposed for the existing registration workflow to call before creating a new staff identity.
 window.sclFindFormerStaffForRehire=async function(name,email,phone){if(!isAdmin())throw Error('Administrator access required');const q=new URLSearchParams({p_name:name||'',p_email:email||'',p_phone:phone||''});const r=await fetch(url()+'/rest/v1/rpc/scl_admin_find_former_staff',{method:'POST',headers:headers(),body:JSON.stringify({p_name:name||null,p_email:email||null,p_phone:phone||null})});const t=await r.text();let d;try{d=JSON.parse(t)}catch(_){d=t}if(!r.ok)throw Error(d?.message||'Former staff lookup failed');return d};
 })();
