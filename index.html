@@ -11154,9 +11154,7 @@ const dayNames=[['mon','Monday'],['tue','Tuesday'],['wed','Wednesday'],['thu','T
 const cleanFile=n=>String(n||'document').normalize('NFKD').replace(/[^A-Za-z0-9_.-]+/g,'_').slice(-100)||'document';
 const toast=m=>{try{window.toast?.(m)}catch(_){alert(m)}};
 
-// Keep the site's explicit Day/Night button as the only source of theme changes.
-function stabilizeTheme(){const body=document.body;if(!body||body.dataset.sclThemeGuard)return;body.dataset.sclThemeGuard='1';const applySaved=()=>{const night=localStorage.getItem('sclThemeMode')==='night';body.classList.toggle('scl-night',night)};applySaved();const mo=new MutationObserver(()=>{const night=localStorage.getItem('sclThemeMode')==='night';if(body.classList.contains('scl-night')!==night)requestAnimationFrame(applySaved)});mo.observe(body,{attributes:true,attributeFilter:['class']});}
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',stabilizeTheme,{once:true});else stabilizeTheme();
+// Removed the competing body-class MutationObserver. The original explicit theme toggle owns theme changes.
 
 async function currentSession(){const c=S();if(!c?.auth)throw new Error('SCL sign-in session is not ready. Please sign in again.');const {data,error}=await c.auth.getSession();if(error)throw error;if(!data?.session?.user)throw new Error('Please sign in first.');return data.session}
 async function getStaffProfile(){const c=S();const {data,error}=await c.rpc('scl_get_my_staff_profile');if(error)throw error;return data||{found:false};}
@@ -11480,41 +11478,8 @@ html body .scl-v98-feedback[data-ok="0"]{background:linear-gradient(135deg,rgba(
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',tag);else tag();setInterval(tag,3000)})();
 </script>
 <script id="scl-auto-theme">
-/* SCL auto day/night: Day 07:00-18:59, Night 19:00-06:59 (device local time).
-   Follows the site's existing theme state (localStorage sclThemeMode + body.scl-night) so the existing toggle and theme guard keep working.
-   A manual tap on the toggle is respected until the next 07:00/19:00 boundary, then the schedule takes over again. */
-(function(){
- if(window.__sclAutoTheme)return;window.__sclAutoTheme=1;
- var DAY_START=7,NIGHT_START=19,OV='sclThemeOverridePeriod';
- function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}}
- function pad(n){return(n<10?'0':'')+n}
- function ymd(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())}
- function period(now){var h=now.getHours(),d=new Date(now);
-  if(h>=NIGHT_START)return{mode:'night',id:ymd(d)+'-night'};
-  if(h<DAY_START){d.setDate(d.getDate()-1);return{mode:'night',id:ymd(d)+'-night'}}
-  return{mode:'day',id:ymd(d)+'-day'}}
- function show(mode){var night=mode==='night',body=document.body;if(!body)return;
-  ls('sclThemeMode',night?'night':'day');
-  body.classList.toggle('scl-night',night);
-  var b=document.getElementById('sclThemeToggle');
-  if(b){b.textContent=night?'🌙':'☀️';b.title=night?'Night mode — tap for Day mode':'Day mode — tap for Night mode';b.setAttribute('aria-label',night?'Switch to Day mode':'Switch to Night mode')}}
- function sync(){var p=period(new Date());
-  if(ls(OV)===p.id)return;               /* user chose manually during this period */
-  if(ls(OV))ls(OV,'');                     /* override expired at a boundary */
-  var cur=document.body&&document.body.classList.contains('scl-night')?'night':'day';
-  if(cur!==p.mode||ls('sclThemeMode')!==p.mode)show(p.mode)}
- document.addEventListener('click',function(e){var t=e.target&&e.target.closest&&e.target.closest('#sclThemeToggle');if(t)ls(OV,period(new Date()).id)},true);
- function nextBoundary(){var n=new Date(),t=new Date(n);var h=n.getHours();
-  if(h<DAY_START)t.setHours(DAY_START,0,0,0);else if(h<NIGHT_START)t.setHours(NIGHT_START,0,0,0);else{t.setDate(t.getDate()+1);t.setHours(DAY_START,0,0,0)}
-  return t-n}
- var tm;function arm(){clearTimeout(tm);tm=setTimeout(function(){sync();arm()},Math.min(nextBoundary()+250,2147483000))}
- function start(){sync();arm()}
- if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
- window.addEventListener('load',function(){setTimeout(sync,400);setTimeout(sync,1500)});
- document.addEventListener('visibilitychange',function(){if(!document.hidden){sync();arm()}});
- window.addEventListener('focus',function(){sync();arm()});
- setInterval(sync,60000);
-})();
+/* Automatic time-based theme switching removed. Navigation, buttons, and page changes must never change the theme.
+   The existing explicit Day/Night control is the only remaining theme controller. */
 </script>
 <style id="scl-bottom-modern-v1">
 .scl-source-details{margin:8px 0;padding:8px 10px;border:1px solid rgba(160,130,180,.35);border-radius:10px;background:rgba(120,80,140,.06)}.scl-source-details summary{cursor:pointer;font-weight:700}.scl-source-details pre{white-space:pre-wrap;overflow-wrap:anywhere;max-height:220px;overflow:auto;font-size:11px}
