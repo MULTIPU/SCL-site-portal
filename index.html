@@ -1081,6 +1081,31 @@ body.scl-night nav a:not(.active), body.scl-night .bottom button {
 }
 </style>
 <style id="scl-stable-nav-text">nav a,.scl-profile-toolbar button,#sclTabs button,.scl-bottom-bar button{color:#fff!important;font-weight:800!important;text-shadow:none!important;animation:none!important;transition:none!important}nav a.active,#sclTabs button[aria-selected="true"]{color:#3b0610!important}#sclStaffShow .sso-oct,#sclStaffShow .sso-card,#sclStaffShow .sso-track{animation:none!important;transition:none!important;transform:none!important}</style>
+<style id="scl-root-cause-theme-and-active-tab-fix">
+/* ROOT-CAUSE FIX: keep the actual school wallpaper/background stable when sections or controls are clicked.
+   Older versions injected a global animated dark gradient whenever body.scl-night was present. */
+html, html body, html body.scl-night {
+  background-color:#fbf6e8 !important;
+  background-attachment:scroll !important;
+}
+/* Use the site's existing background variable where defined; otherwise retain the warm cream background. */
+html body, html body.scl-night { background-image: var(--scl-bg-img, none), radial-gradient(900px 500px at 8% -5%,rgba(227,178,60,.18),transparent 60%), linear-gradient(180deg,#fbf1dc,#fffaf0) !important; background-size:100% auto,auto,auto !important; background-repeat:repeat-y,no-repeat,no-repeat !important; }
+/* A tab's selected state is identified by shape, underline, and a restrained breathing gold glow—not color alone. */
+nav a.active, nav a[aria-current="page"], nav a[aria-selected="true"] {
+  position:relative !important; isolation:isolate; color:#450000 !important;
+  background:linear-gradient(110deg,#ffe78a 0%,#f2ae00 42%,#ffe78a 65%,#d99700 100%) !important;
+  background-size:220% 100% !important; border-radius:10px 10px 4px 4px !important;
+  box-shadow:0 0 0 2px rgba(255,231,138,.55),0 0 16px rgba(242,174,0,.62),inset 0 1px 0 rgba(255,255,255,.85) !important;
+  animation:sclActiveTabBreathe 2.8s ease-in-out infinite, sclActiveTabShine 2.1s ease-in-out 1 !important;
+}
+nav a.active::after, nav a[aria-current="page"]::after, nav a[aria-selected="true"]::after {
+  content:""; position:absolute; left:12%; right:12%; bottom:3px; height:3px; border-radius:999px;
+  background:#650007; box-shadow:0 0 8px rgba(101,0,7,.45); pointer-events:none;
+}
+@keyframes sclActiveTabBreathe {0%,100%{box-shadow:0 0 0 1px rgba(255,231,138,.4),0 0 8px rgba(242,174,0,.38),inset 0 1px 0 rgba(255,255,255,.7)}50%{box-shadow:0 0 0 2px rgba(255,231,138,.8),0 0 18px rgba(242,174,0,.75),inset 0 1px 0 rgba(255,255,255,.95)}}
+@keyframes sclActiveTabShine {0%{background-position:100% 0;filter:brightness(1)}45%{background-position:0 0;filter:brightness(1.16)}100%{background-position:0 0;filter:brightness(1)}}
+@media(prefers-reduced-motion:reduce){nav a.active,nav a[aria-current="page"],nav a[aria-selected="true"]{animation:none!important}}
+</style>
 </head>
 <body><a class="scl-skip" href="#hv2">Skip to main content</a>
 <!-- ACCESS GATE (merged from the access-gate page) -->
@@ -9324,7 +9349,7 @@ const sb=()=>window.sclSupabase;
 const call=(n,...a)=>{try{if(typeof window[n]==='function')return window[n](...a);fb('This feature ('+n+') is not connected yet.','warn')}catch(e){fb('Could not open: '+(e&&e.message||e),'err')}};
 /* ---------- fonts ---------- */
 (function(){if(Q('link[data-scl300-font]'))return;const l=document.createElement('link');l.rel='stylesheet';l.setAttribute('data-scl300-font','1');l.href='https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:wght@500;700&family=Poppins:wght@400;500;600;700&display=swap';document.head.appendChild(l)})();
-const nightCss=document.createElement('style');nightCss.textContent='html body.scl-night{background:linear-gradient(125deg,#1a0b33,#2b0a3d,#0b2a4a,#3a1030,#10321f)!important;background-size:420% 420%!important}html body.scl-night .about>div,html body.scl-night .panel,html body.scl-night .stats .stat,html body.scl-night .announcement{background:linear-gradient(145deg,rgba(40,20,70,.85),rgba(20,10,45,.7))!important}';document.head.appendChild(nightCss);
+/* Removed conflicting late-injected global night gradient; the school background must remain stable during navigation. */
 /* ---------- feedback system ---------- */
 let fbBox=null,lastMsg='',lastT=0;
 function fb(msg,type,ms){msg=String(msg==null?'':msg).trim();if(!msg)return;if(/^(opening|opened|closed|closing|loading|switch|going to|showing|back to|welcome back)\b/i.test(msg))return;const now=Date.now();if(msg===lastMsg&&now-lastT<4000)return;lastMsg=msg;lastT=now;
