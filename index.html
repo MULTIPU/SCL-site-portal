@@ -10597,6 +10597,57 @@ if('serviceWorker' in navigator&&location.protocol.indexOf('http')===0){window.a
 
 </script>
 
+<style id="scl-swipe-tabs-css">
+@keyframes sclSlideInNext{from{opacity:0;transform:translate3d(34px,0,0)}to{opacity:1;transform:none}}
+@keyframes sclSlideInPrev{from{opacity:0;transform:translate3d(-34px,0,0)}to{opacity:1;transform:none}}
+.hv2[data-scl-dir=next] :is(#home,#academics,#about,.hv2-statwrap,#life,#admissions,#faq,#contact){animation:sclSlideInNext .3s cubic-bezier(.2,.7,.2,1) both}
+.hv2[data-scl-dir=prev] :is(#home,#academics,#about,.hv2-statwrap,#life,#admissions,#faq,#contact){animation:sclSlideInPrev .3s cubic-bezier(.2,.7,.2,1) both}
+#hv2{touch-action:pan-y pinch-zoom}
+@media(prefers-reduced-motion:reduce){.hv2[data-scl-dir] :is(#home,#academics,#about,.hv2-statwrap,#life,#admissions,#faq,#contact){animation:none!important}}
+</style>
+<script id="scl-swipe-tabs-js">
+/* Swipe between Home, Services, School, Admission and Contact. Presentation only: it just presses the same gold tab buttons. */
+(function(){'use strict';
+var sx=0,sy=0,st=0,live=false,lastIdx=-1;
+function tabs(){return [].slice.call(document.querySelectorAll('#sclTabs button'))}
+function cur(){var b=tabs();for(var i=0;i<b.length;i++)if(b[i].getAttribute('aria-selected')==='true')return i;return 0}
+function blocked(t){
+  var d=document,b=d.body;
+  if(!d.getElementById('hv2')||!d.getElementById('sclTabs'))return true;
+  if(b.classList.contains('scl-public-locked')||b.classList.contains('scl-cur-on')||b.classList.contains('scl-profile-open'))return true;
+  if(d.querySelector('.modal.open,.modal.show,[aria-modal="true"].on,#sclWaChoice.on,#sclUniformZoom.on,#sclFirstAccessNotify.open'))return true;
+  if(!t||!t.closest)return true;
+  if(t.closest('[aria-modal="true"],[role="dialog"],input,textarea,select,canvas,iframe,video,[contenteditable="true"],#sclTabs,#sclShortcutPanel,#sclAura,[id*="aura" i]'))return true;
+  /* never steal a swipe from something that scrolls sideways (carousels, tables, chip rows) */
+  for(var e=t;e&&e!==d.body&&e.nodeType===1;e=e.parentElement){
+    if(e.scrollWidth>e.clientWidth+6){var o=getComputedStyle(e).overflowX;if(o==='auto'||o==='scroll')return true}
+  }
+  return false}
+document.addEventListener('touchstart',function(e){
+  live=false;if(e.touches.length!==1)return;
+  var p=e.touches[0];
+  if(p.clientX<20||p.clientX>window.innerWidth-20)return; /* leave the phone's own back-swipe alone */
+  if(blocked(e.target))return;
+  sx=p.clientX;sy=p.clientY;st=Date.now();live=true},{passive:true});
+document.addEventListener('touchcancel',function(){live=false},{passive:true});
+document.addEventListener('touchend',function(e){
+  if(!live)return;live=false;
+  var p=e.changedTouches[0],dx=p.clientX-sx,dy=p.clientY-sy;
+  if(Date.now()-st>900||Math.abs(dx)<60||Math.abs(dx)<Math.abs(dy)*1.6)return;
+  var sel=window.getSelection&&String(window.getSelection());if(sel)return;
+  var b=tabs(),i=cur(),n=dx<0?i+1:i-1; /* swipe left: next tab; swipe right: previous tab */
+  if(n<0||n>=b.length)return;
+  b[n].click()},{passive:true});
+/* remember which way we moved so the new page slides in from that side (also for taps on the gold tabs) */
+function watch(){
+  var r=document.getElementById('hv2');if(!r||r.__sclSw)return false;r.__sclSw=1;
+  lastIdx=cur();
+  new MutationObserver(function(){var i=cur();if(i===lastIdx)return;r.setAttribute('data-scl-dir',i>lastIdx?'next':'prev');lastIdx=i}).observe(r,{attributes:true,attributeFilter:['data-scl-tab']});
+  return true}
+var n=0,t=setInterval(function(){if(watch()||++n>80)clearInterval(t)},300);
+})();
+</script>
+
 <!-- SCL routing fix: modals that existing sign-in / attendance code opens but were missing from the page -->
 <div class="modal" id="sclSignInChoiceModal" aria-hidden="true"><div class="card" style="width:min(460px,100%)"><div class="mh"><h3>SCL Attendance Sign In</h3><button type="button" onclick="closeM('sclSignInChoiceModal')">X</button></div><div class="form">
 <p style="margin:0 0 12px">Choose who is signing in. Attendance is open 7:30 AM to 4:00 PM (Africa/Lagos).</p>
