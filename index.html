@@ -744,7 +744,7 @@ html{scroll-behavior:smooth;scroll-snap-type:y proximity;scroll-padding-bottom:6
 main{background:transparent}button,a,[role="button"]{-webkit-tap-highlight-color:transparent;touch-action:manipulation}button{transition:transform .16s ease,box-shadow .16s ease}button:active{transform:scale(.985)}input,select,textarea{max-width:100%;min-height:42px}:focus-visible{outline:3px solid #e3b23c!important;outline-offset:2px}.community-card-item,.scl-reg-section{border-radius:16px}
 @media(max-width:650px){body{background-attachment:scroll!important}button,.scl-btn{min-height:42px}h1{line-height:1.15}h2{line-height:1.2}}
 /* ---- smooth scrolling: no fixed-attachment backgrounds,no backdrop blur,no endless decorative animation ---- */
-html body,html body[class],html body.sclcc-hide{background-attachment:scroll!important;background-image:none!important;background-color:#2e0610!important}html::before{content:"";position:fixed;inset:0;z-index:-3;pointer-events:none;transform:translateZ(0);
+html body,html body[class],html body.sclcc-hide{background-attachment:scroll!important}html::before{content:"";position:fixed;inset:0;z-index:-3;pointer-events:none;transform:translateZ(0);
  background:radial-gradient(900px 500px at 15% 10%,rgba(227,178,60,.22),transparent 60%),radial-gradient(800px 600px at 90% 90%,rgba(31,79,216,.28),transparent 60%),linear-gradient(160deg,#5a0c1a,#2e0610 60%,#0f1233)}body>:not(#accessGate),body>:not(#accessGate) *{}
 @keyframes sclAurora{from{opacity:1}to{opacity:1}}@keyframes sclBlobs{from{opacity:1}to{opacity:1}}@keyframes sclNb{from{opacity:1}to{opacity:1}}
 @keyframes sclCoinFlip{from{opacity:1}to{opacity:1}}@keyframes sclSpinRing{from{opacity:1}to{opacity:1}}.hv2-wm{display:none!important}/* curriculum opens as one full sheet */
@@ -1082,29 +1082,39 @@ body.scl-night nav a:not(.active), body.scl-night .bottom button {
 </style>
 <style id="scl-stable-nav-text">nav a,.scl-profile-toolbar button,#sclTabs button,.scl-bottom-bar button{color:#fff!important;font-weight:800!important;text-shadow:none!important;animation:none!important;transition:none!important}nav a.active,#sclTabs button[aria-selected="true"]{color:#3b0610!important}#sclStaffShow .sso-oct,#sclStaffShow .sso-card,#sclStaffShow .sso-track{animation:none!important;transition:none!important;transform:none!important}</style>
 <style id="scl-root-cause-theme-and-active-tab-fix">
-/* ROOT-CAUSE FIX: keep the actual school wallpaper/background stable when sections or controls are clicked.
-   Older versions injected a global animated dark gradient whenever body.scl-night was present. */
+/* Root fix: the site wallpaper is invariant across navigation and theme class changes.
+   Night mode may darken cards and text, but must not replace the page-wide school wallpaper. */
 html, html body, html body.scl-night {
   background-color:#fbf6e8 !important;
+  background-image:var(--scl-bg-img) !important;
+  background-position:center top !important;
+  background-size:100% auto !important;
+  background-repeat:repeat-y !important;
   background-attachment:scroll !important;
 }
-/* Use the site's existing background variable where defined; otherwise retain the warm cream background. */
-html body, html body.scl-night { background-image: var(--scl-bg-img, none), radial-gradient(900px 500px at 8% -5%,rgba(227,178,60,.18),transparent 60%), linear-gradient(180deg,#fbf1dc,#fffaf0) !important; background-size:100% auto,auto,auto !important; background-repeat:repeat-y,no-repeat,no-repeat !important; }
-/* A tab's selected state is identified by shape, underline, and a restrained breathing gold glow—not color alone. */
-nav a.active, nav a[aria-current="page"], nav a[aria-selected="true"] {
-  position:relative !important; isolation:isolate; color:#450000 !important;
-  background:linear-gradient(110deg,#ffe78a 0%,#f2ae00 42%,#ffe78a 65%,#d99700 100%) !important;
-  background-size:220% 100% !important; border-radius:10px 10px 4px 4px !important;
-  box-shadow:0 0 0 2px rgba(255,231,138,.55),0 0 16px rgba(242,174,0,.62),inset 0 1px 0 rgba(255,255,255,.85) !important;
-  animation:sclActiveTabBreathe 2.8s ease-in-out infinite, sclActiveTabShine 2.1s ease-in-out 1 !important;
+/* The real top-navigation controls are .hv2-nav; use their actual selected class. */
+.hv2-nav a.scl-location-active,.hv2-nav button.scl-location-active {
+  position:relative!important; isolation:isolate!important;
+  background:linear-gradient(110deg,#fff0a8 0%,#f2ae00 38%,#ffe88b 58%,#d99700 100%)!important;
+  background-size:220% 100%!important;
+  color:#3b0610!important; -webkit-text-fill-color:#3b0610!important;
+  border:2px solid #fff0a8!important; border-radius:10px!important;
+  font-weight:900!important;
+  box-shadow:0 0 0 2px rgba(106,31,176,.25),0 0 15px rgba(242,174,0,.65)!important;
+  animation:sclActiveGoldBreath 2.8s ease-in-out infinite!important;
 }
-nav a.active::after, nav a[aria-current="page"]::after, nav a[aria-selected="true"]::after {
-  content:""; position:absolute; left:12%; right:12%; bottom:3px; height:3px; border-radius:999px;
-  background:#650007; box-shadow:0 0 8px rgba(101,0,7,.45); pointer-events:none;
+.hv2-nav a.scl-location-active:after,.hv2-nav button.scl-location-active:after {
+  content:""!important;position:absolute!important;left:12%!important;right:12%!important;bottom:2px!important;height:3px!important;
+  border-radius:999px!important;background:#650007!important;box-shadow:0 0 10px rgba(101,0,7,.65)!important;
 }
-@keyframes sclActiveTabBreathe {0%,100%{box-shadow:0 0 0 1px rgba(255,231,138,.4),0 0 8px rgba(242,174,0,.38),inset 0 1px 0 rgba(255,255,255,.7)}50%{box-shadow:0 0 0 2px rgba(255,231,138,.8),0 0 18px rgba(242,174,0,.75),inset 0 1px 0 rgba(255,255,255,.95)}}
-@keyframes sclActiveTabShine {0%{background-position:100% 0;filter:brightness(1)}45%{background-position:0 0;filter:brightness(1.16)}100%{background-position:0 0;filter:brightness(1)}}
-@media(prefers-reduced-motion:reduce){nav a.active,nav a[aria-current="page"],nav a[aria-selected="true"]{animation:none!important}}
+.hv2-nav a.scl-location-active:before,.hv2-nav button.scl-location-active:before {
+  content:"●"!important;display:inline-block!important;margin-right:5px!important;color:#650007!important;font-size:8px!important;
+}
+@keyframes sclActiveGoldBreath {
+  0%,100% { background-position:0% 50%; box-shadow:0 0 0 2px rgba(106,31,176,.20),0 0 8px rgba(242,174,0,.42); transform:translateY(0) }
+  50% { background-position:100% 50%; box-shadow:0 0 0 3px rgba(106,31,176,.32),0 0 18px rgba(242,174,0,.82); transform:translateY(-1px) }
+}
+@media(prefers-reduced-motion:reduce){.hv2-nav a.scl-location-active,.hv2-nav button.scl-location-active{animation:none!important;background-position:50% 50%!important}}
 </style>
 </head>
 <body><a class="scl-skip" href="#hv2">Skip to main content</a>
@@ -11593,7 +11603,7 @@ body.scl-night #sclV211AdminPanel label,body.scl-night #sclV211AdminPanel small{
 .scl-role-panel,.scl-role-action,.scl-add-card2,.scl-admin-badge,.scl-admin-role,.scl-role-chip{background-color:rgba(255,250,240,.97)!important}
 body.scl-night .scl-role-panel,body.scl-night .scl-role-action,body.scl-night .scl-add-card2,body.scl-night .scl-admin-badge,body.scl-night .scl-admin-role,body.scl-night .scl-role-chip{background-color:rgba(17,24,39,.98)!important}
 /* Active top destination has an unmistakable gold marker, not color alone */
-.hv2-nav a.scl-location-active,.hv2-nav button.scl-location-active{position:relative!important;background:linear-gradient(135deg,#5b167e,#35104e)!important;color:#fff!important;border:1.5px solid #f5ca48!important;box-shadow:0 0 0 2px rgba(106,31,176,.22),0 5px 14px rgba(55,12,76,.25)!important;font-weight:900!important}
+.hv2-nav a.scl-location-active,.hv2-nav button.scl-location-active{position:relative!important;background:linear-gradient(135deg,#5b167e,#35104e)!important;color:#fff!important;border:1.5px solid #f5ca48!important;box-shadow:0 0 0 2px rgba(106,31,176,.22),0 5px 14px rgba(55,12,76,.25)!important;font-weight:900!important;animation:sclActiveGoldBreath 2.8s ease-in-out infinite!important}
 .hv2-nav a.scl-location-active:after,.hv2-nav button.scl-location-active:after{content:"";position:absolute;left:16%;right:16%;bottom:2px;height:3px;border-radius:9px;background:#ffd34e;box-shadow:0 0 8px rgba(255,211,78,.85)}
 .hv2-nav a.scl-location-active:before,.hv2-nav button.scl-location-active:before{content:"●";font-size:7px;margin-right:5px;color:#ffd34e;vertical-align:middle}
 #sclWaChoice{z-index:2147483100!important}
