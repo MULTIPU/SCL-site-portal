@@ -878,7 +878,7 @@ if(jobs.length)Promise.all(jobs).then(function(){if(!sessionStorage.getItem("scl
 </script>
 <meta content="#650007" name="theme-color"/><meta name="description" content="Shining Child Leaders School — quality education, experienced teachers and strong moral discipline."/>
 <meta charset="utf-8"/><meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
-<meta content="SCL Official Website V1025" name="scl-version"/>
+<meta content="SCL Official Website V1026 Registration Safety Fix" name="scl-version"/>
 <meta content="mdmasterdan@gmail.com" name="creator-automation-email"/>
 <title>Shining Child Leaders School — Official Website</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -1492,13 +1492,16 @@ async function api(path,options={}){
       }
       const actions={'/api/registrations':'register','/api/payments':'payment','/api/results/pin':'result_pin','/api/results/access':'result_access'};
       if(actions[path]){
-        const r=await fetch(window.SCL_PUBLIC_API+'?action='+actions[path],{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body||{})});
-        if(!r.ok)throw new Error('SCL API '+r.status);
-        return await r.json();
+        const headers={'Content-Type':'application/json','apikey':window.SCL_SUPABASE_PUBLISHABLE_KEY||window.SCL_SUPABASE_ANON_KEY||''};
+        try{const sessionResult=await sb.auth.getSession();const session=sessionResult&&sessionResult.data&&sessionResult.data.session;if(session&&session.access_token)headers.Authorization='Bearer '+session.access_token;}catch(_){/* public admissions may be submitted without an account */}
+        const r=await fetch(window.SCL_PUBLIC_API+'?action='+encodeURIComponent(actions[path]),{method:'POST',headers,body:JSON.stringify(body||{})});
+        const result=await r.json().catch(()=>({error:'The school registration service returned an unreadable response.'}));
+        if(!r.ok||result.error||result.ok===false)throw new Error(result.error||('SCL registration service returned HTTP '+r.status+'.'));
+        return result;
       }
     }
     let r=await fetch(path,options);if(!r.ok)throw new Error('API '+r.status);return await r.json();
-  }catch(e){console.warn('SCL backend request failed:',e);return null}
+  }catch(e){console.warn('SCL backend request failed:',e);if(path==='/api/registrations')throw e;return null}
 }
 async function loadSchoolData(){
  let fees=await api('/api/fees');
@@ -1615,13 +1618,7 @@ async function submitBulkPayment(){
  if(!saved){d.status='Pending Admin Confirmation';let p=JSON.parse(localStorage.getItem('schoolPayments')||'[]');p.push(d);localStorage.setItem('schoolPayments',JSON.stringify(p))}
  closeM('bulkPay');openFees(selectedClass);toast('Your existing payment has been submitted for admin verification.')
 }
-(document.getElementById('form')||{}).onsubmit=async e=>{
- e.preventDefault();let fd=new FormData(e.target),d={};for(let [k,v] of fd.entries()){if(v instanceof File){d[k]=v.name}else d[k]=v}
- d.date=new Date().toISOString();d.session=sessionLabel();d.term=currentTerm();
- let saved=await api('/api/registrations',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});
- if(!saved){d.status='New';d.registrationId='REG-'+Date.now();d.studentId=d.studentId||'LOCAL-'+Date.now();d.accessPin=d.accessPin||'123456';localStorage.setItem('lastRegistration',JSON.stringify(d));saved=d; updateSclLocalStat('students',1)}
- closeM('reg'); if(saved&&saved.studentId){alert('Registration successful. Student ID: '+saved.studentId+'\nResult PIN: '+saved.accessPin+(saved.officialAcademicEmail?'\nOfficial Academic Email: '+saved.officialAcademicEmail:'')+'\nPlease keep these details safe.')} toast('Registration submitted successfully.')
-}
+/* Legacy registration onsubmit handler removed. The single guarded handler in scl-master-registration-promotion-v1 is authoritative. */
 async function openResults(){openM('resultsModal');document.getElementById('resultsModal').style.display='flex';document.getElementById('pinGate').classList.add('hidden');document.getElementById('outstandingBox').classList.add('hidden');document.getElementById('resultGate').classList.add('hidden');document.getElementById('resultView').classList.add('hidden');renderResultHistory();}
 function demoFeeState(studentId,term){try{const all=JSON.parse(localStorage.getItem('sclFeeRecords')||'{}');return all[studentId]?.[term]||null}catch(e){return null}}
 function resultDemoRecord(studentId,term,session){if(studentId==='SCL-2026-0001'){return {studentName:'Demo Student',class:'JSS 2',term,session,resultType:'Student Report Card',subjects:[{subject:'English Language',ca:25,exam:60,total:85,grade:'A',remark:'Excellent'},{subject:'Mathematics',ca:23,exam:55,total:78,grade:'B',remark:'Very Good'}],position:'5th',average:'81.5',teacherComment:'Keep up the good work.'}}return null}
@@ -2974,19 +2971,40 @@ window.sclYouTube=function(){const q=(by("sclAiInput")?.value||"").trim();if(q){
   window.sclSubmitPromotion=async function(e){e?.preventDefault();const sid=document.getElementById('promoStudentId')?.value.trim(),email=document.getElementById('promoParentEmail')?.value.trim(),target=document.getElementById('promoTargetClass')?.value,doublePromo=document.getElementById('promoDoublePromotion')?.checked||false,reason=document.getElementById('promoDoubleReason')?.value.trim()||'';if(!sid||!email||!target){toast('Verify the student and select the class before submitting.');return}if(doublePromo&&!reason){toast('Provide the double-promotion reason or application reference.');return}try{const d=await promoApi('promotion_submit',{studentId:sid,parentEmail:email,toClass:target,doublePromotion:doublePromo,reason});toast(d.message||'Class registration submitted.');closeM('reg');openFees(target)}catch(e){toast(e.message||'Unable to submit class registration.')}};
   const form=document.getElementById('form');
   if(form){form.addEventListener('submit',async function(e){
-    e.preventDefault(); e.stopImmediatePropagation();syncFullName();const choice=document.querySelector('input[name="academicEmailStatus"]:checked')?.value,generated=document.getElementById('regOfficialAcademicEmail')?.value.trim();if(choice==='create'&&!generated){toast('Please create the official academic email before submitting this registration.');return}
-    const fd=new FormData(form),d={};for(const [k,v] of fd.entries()){if(k==='age')continue;if(v instanceof File)d[k]=v.name;else d[k]=v}d.childName=document.getElementById('regChildFullName')?.value.trim();d.date=new Date().toISOString();d.session=typeof sessionLabel==='function'?sessionLabel():'2026/2027';d.term=typeof currentTerm==='function'?currentTerm():'First Term';
-    /* Parent/Guardian workflow handoff: one account may register/associate any number of children. */
+    e.preventDefault();e.stopImmediatePropagation();syncFullName();
+    const submit=form.querySelector('button[type="submit"],input[type="submit"]');
+    const oldLabel=submit?submit.textContent:'';
+    const choice=document.querySelector('input[name="academicEmailStatus"]:checked')?.value;
+    const generated=document.getElementById('regOfficialAcademicEmail')?.value.trim();
+    if((choice==='create'&&!generated)||!generated){toast('Create or enter the official SCL academic email before submitting. No record has been saved yet.');return}
+    const fd=new FormData(form),d={};
+    for(const [k,v] of fd.entries()){if(k==='age')continue;if(v instanceof File)d[k]=v.name;else d[k]=v}
+    d.childName=document.getElementById('regChildFullName')?.value.trim();
+    d.date=new Date().toISOString();d.session=typeof sessionLabel==='function'?sessionLabel():'2026/2027';d.term=typeof currentTerm==='function'?currentTerm():'First Term';
+    d.officialAcademicEmail=generated;
     if(window.__sclParentChildRelationship){d.relationship=window.__sclParentChildRelationship;d.parentRelationship=window.__sclParentChildRelationship;}
     if(window.__sclParentChildPhone){d.parentPhone=window.__sclParentChildPhone;d.parent_phone=window.__sclParentChildPhone;}
     if(window.__sclParentChildEmail){d.parentEmail=window.__sclParentChildEmail;d.parent_email=window.__sclParentChildEmail;}
-    const authNow=typeof auth==='function'?auth():null;if(authNow?.user?.email){d.parentEmail=d.parentEmail||authNow.user.email;d.parent_email=d.parent_email||authNow.user.email;}
+    const authNow=typeof auth==='function'?auth():null;
+    if(authNow?.user?.email){d.parentEmail=d.parentEmail||authNow.user.email;d.parent_email=d.parent_email||authNow.user.email;}
     if(window.__sclParentChildRelationship==='Guardian')d.guardianName=authNow?.profile?.full_name||authNow?.user?.user_metadata?.full_name||d.guardianName||'';
-    const files=['childPhoto','parentPhoto','birthCertificate','previousResult'];for(const k of files){const f=form.elements[k]?.files?.[0];if(f){try{d[k+'Data']=await fileToDataURL(f)}catch(_){}}}
-    let saved=null;try{saved=await api('/api/registrations',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)})}catch(_){}
-    if(!saved){d.status='New';d.registrationId='REG-'+Date.now();d.studentId=d.studentId||'LOCAL-'+Date.now();d.accessPin=d.accessPin||'123456';try{localStorage.setItem('lastRegistration',JSON.stringify(d))}catch(_){}saved=d;toast('Registration saved on this device. Connect the SCL backend to make it official.')}else toast('Registration submitted successfully.');
-    window.__sclParentChildRelationship='';window.__sclParentChildPhone='';window.__sclParentChildEmail='';
-    closeM('reg');if(saved&&saved.studentId){try{document.dispatchEvent(new CustomEvent('scl:student-registered',{detail:{studentId:saved.studentId,className:saved.class||d.class||selectedClass}}))}catch(_){}alert('Registration successful.\nStudent ID: '+saved.studentId+'\nResult PIN: '+saved.accessPin+(saved.officialAcademicEmail?'\nOfficial Academic Email: '+saved.officialAcademicEmail:''));openFees(saved.class||d.class||selectedClass)}
+    const files=['childPhoto','parentPhoto','birthCertificate','previousResult'];
+    try{
+      for(const k of files){const f=form.elements[k]?.files?.[0];if(f)d[k+'Data']=await fileToDataURL(f)}
+      if(submit){submit.disabled=true;submit.textContent='Saving to school database…'}
+      const saved=await api('/api/registrations',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});
+      if(!saved||saved.ok!==true||!saved.studentId||!saved.accessPin)throw new Error('The school database did not confirm the registration. Do not submit the same child again yet; check Registered Students first.');
+      window.__sclParentChildRelationship='';window.__sclParentChildPhone='';window.__sclParentChildEmail='';
+      try{document.dispatchEvent(new CustomEvent('scl:student-registered',{detail:{studentId:saved.studentId,className:d.class||selectedClass}}))}catch(_){}
+      closeM('reg');
+      alert('Registration saved to the SCL database.\nStudent ID: '+saved.studentId+'\nResult PIN: '+saved.accessPin+'\nOfficial Academic Email: '+(saved.officialAcademicEmail||generated)+'\nKeep these details safe.');
+      toast('Student registered successfully in the school database.');
+      if(typeof window.sclOpenAddSheet==='function'&&typeof window.loadRosterDb==='function'){try{window.loadRosterDb(true)}catch(_){}}
+      if(d.class||selectedClass)openFees(d.class||selectedClass);
+    }catch(err){
+      console.error('SCL student registration was not confirmed:',err);
+      toast('REGISTRATION NOT CONFIRMED: '+(err&&err.message||'The database could not save this record.')+' Please correct the issue and retry only after checking Registered Students.');
+    }finally{if(submit){submit.disabled=false;submit.textContent=oldLabel||'SUBMIT NEW STUDENT REGISTRATION'}}
   },true)}
 })();
 </script>
@@ -10338,11 +10356,12 @@ function renderMenu(){
     :'Signed in as <b>'+esc(LV_LABEL[lv]||'Staff')+'</b>. What you add is sent to the school by email and goes live once an administrator confirms it.')+'</p>';
   if(lv==='admin'){['teaching','non_teaching'].forEach(function(k){h+='<button type="button" class="scl-add-item" data-a="verify" data-t="'+k+'"><span class="ic">'+(k==='teaching'?'👩‍🏫':'🧰')+'</span><span><b>'+esc(VK[k])+'</b><small>Review submitted applications</small></span></button>'})}
   menuFor(lv).forEach(function(k){var c=KINDS[k];h+='<button type="button" class="scl-add-item" data-a="kind" data-k="'+k+'"><span class="ic">'+c.icon+'</span><span><b>'+esc(c.label)+'</b><small>'+esc(c.sub)+'</small></span></button>'});
-  if(lv==='admin'){h+='<button type="button" class="scl-add-item" data-a="approvals" id="sclPendingApprovalBtn"><span class="ic">🔔</span><span><b>Pending approvals <span id="sclPendingApprovalCount" class="scl-pending-count">…</span></b><small>New accounts and role registrations awaiting review</small></span></button>';h+='<button type="button" class="scl-add-item" data-a="student-queue" id="sclStudentQueueBtn"><span class="ic">🎓</span><span><b>Student verification <span id="sclStudentQueueCount" class="scl-pending-count">…</span></b><small>Review student drafts, parent contacts and approval status</small></span></button>';}
+  if(lv==='admin'){h+='<button type="button" class="scl-add-item" data-a="approvals" id="sclPendingApprovalBtn"><span class="ic">🔔</span><span><b>Pending approvals <span id="sclPendingApprovalCount" class="scl-pending-count">…</span></b><small>New accounts and role registrations awaiting review</small></span></button>';h+='<button type="button" class="scl-add-item" data-a="students-list" id="sclStudentQueueBtn"><span class="ic">🎓</span><span><b>Registered Students <span id="sclStudentQueueCount" class="scl-pending-count">…</span></b><small>Check students saved in the official school database</small></span></button>';}
   b.innerHTML=h;
   if(lv==='admin')refreshPendingBadge()
 }
-function refreshPendingBadge(){if(level()!=='admin')return;rest('scl_registrations?status=eq.pending&select=id&limit=200').then(function(rows){var el=$('#sclPendingApprovalCount');if(el)el.textContent=String((rows||[]).length)}).catch(function(){var el=$('#sclPendingApprovalCount');if(el)el.textContent='!'});studentQueueRequest({action:'list',status:'pending_review'}).then(function(d){var el=$('#sclStudentQueueCount');if(el)el.textContent=String((d.records||[]).length)}).catch(function(){var el=$('#sclStudentQueueCount');if(el)el.textContent='!'})}
+function refreshPendingBadge(){if(level()!=='admin')return;rest('scl_registrations?status=eq.pending&select=id&limit=200').then(function(rows){var el=$('#sclPendingApprovalCount');if(el)el.textContent=String((rows||[]).length)}).catch(function(){var el=$('#sclPendingApprovalCount');if(el)el.textContent='!'});rest('students?select=id&limit=200').then(function(rows){var el=$('#sclStudentQueueCount');if(el)el.textContent=String((rows||[]).length)}).catch(function(){var el=$('#sclStudentQueueCount');if(el)el.textContent='!'})}
+function renderRegisteredStudents(){var b=body();title('Registered Students');b.innerHTML='<p class="scl-add-note">Loading official student records from the school database…</p>';rest('students?select=id,student_id,child_name,class_name,parent_email,parent_phone,status,created_at&order=created_at.desc&limit=100').then(function(rows){var h=vBack('menu');h+='<p class="scl-add-note">Only records returned by the live school database are listed here. If a registration failed, it will not appear in this list.</p>';if(!rows||!rows.length){b.innerHTML=h+'<p class="scl-add-note">No official student records found yet. Use Register a Student to open the full registration form.</p><div class="scl-add-actions"><button type="button" class="scl-add-btn primary" data-a="kind" data-k="student">Register a Student</button></div>';return}rows.forEach(function(r){h+='<div class="scl-add-card2"><b>🎓 '+esc(r.child_name||'Name missing')+'</b><small>Student ID: <b>'+esc(r.student_id||'Not assigned')+'</b></small><small>Class: '+esc(r.class_name||'Not assigned')+' · Status: '+esc(r.status||'unknown')+'</small><small>Parent email: '+esc(r.parent_email||'Not supplied')+' · Phone: '+esc(r.parent_phone||'Not supplied')+'</small><small>Saved: '+esc(fdate(r.created_at))+'</small></div>'});h+='<div class="scl-add-actions"><button type="button" class="scl-add-btn primary" data-a="kind" data-k="student">Register another student</button></div>';b.innerHTML=h}).catch(function(e){b.innerHTML=vBack('menu')+'<p class="scl-add-err">Could not load official student records: '+esc(e.message||'database access failed')+'</p><p class="scl-add-note">No student has been created by this screen. Use the full registration form only after access is restored.</p>'})}
 
 function renderForm(k){
   var c=KINDS[k],b=body(),lv=level();title(c.label);
@@ -10510,10 +10529,10 @@ function onClick(e){
   var a=t.getAttribute('data-a');
   if(a==='close')close();
   else if(a==='menu')renderMenu();
-  else if(a==='kind')renderForm(t.getAttribute('data-k'));
+  else if(a==='kind'){var kind=t.getAttribute('data-k');if(kind==='student'){close();if(typeof window.pickRegistration==='function')window.pickRegistration();else if(window.toast)window.toast('Open Register Your Child from the home screen to use the official registration form.')}else renderForm(kind)}
   else if(a==='approvals')renderApprovals();
-  else if(a==='student-queue')renderStudentQueue();
-  else if(a==='student-queue-all')renderStudentQueueAll();
+  else if(a==='students-list')renderRegisteredStudents();
+  else if(a==='student-queue-all')renderRegisteredStudents();
   else if(a==='student-return'){if(!confirm('Return this student draft for correction?'))return;studentQueueRequest({action:'return',id:t.getAttribute('data-id'),reason:'Returned from the Pending Approvals menu for completion/correction.'}).then(function(){renderStudentQueue()}).catch(function(x){if(window.toast)window.toast(x.message||'Could not return record')})}
   else if(a==='student-approve'){if(!confirm('Approve this student and generate the official SCL student ID? Confirm that the name, class and parent contact are correct.'))return;studentQueueRequest({action:'approve',id:t.getAttribute('data-id')}).then(function(d){if(window.toast)window.toast('Student approved. ID: '+(d.studentId||'created'));renderStudentQueue();try{loadRosterDb(true)}catch(_){}}).catch(function(x){if(window.toast)window.toast(x.message||'Approval failed')})}
   else if(a==='verify')renderVerifyList(t.getAttribute('data-t'),'pending');
