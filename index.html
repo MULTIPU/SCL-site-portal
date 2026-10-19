@@ -1349,7 +1349,7 @@ body.scl-night .scl-craft-learning{background:linear-gradient(135deg,#171c2b,#20
 <button onclick="choose('Daycare')">Daycare - 0 to 2 years</button><button onclick="choose('Nursery 1')">Nursery 1 - 2 to 3 years</button><button onclick="choose('Nursery 2')">Nursery 2 - 3 to 4 years</button><button onclick="choose('Reception')">Reception - 4 to 5 years</button><button onclick="choose('Primary 1')">Primary 1 - Grade 1</button><button onclick="choose('Primary 2')">Primary 2 - Grade 2</button><button onclick="choose('Primary 3')">Primary 3 - Grade 3</button><button onclick="choose('Primary 4')">Primary 4 - Grade 4</button><button onclick="choose('Primary 5')">Primary 5 - Graduating Class</button><button onclick="choose('JSS 1')">JSS 1 - Junior Secondary</button><button onclick="choose('JSS 2')">JSS 2 - Junior Secondary</button><button onclick="choose('JSS 3')">JSS 3 - Junior Secondary</button><button onclick="choose('SSS 1')">SSS 1 - Senior Secondary</button><button onclick="choose('SSS 2')">SSS 2 - Senior Secondary</button><button onclick="choose('SSS 3')">SSS 3 - Senior Secondary</button></div></div></div><div class="modal" id="reg"><div class="card scl-registration-card"><div class="mh"><div><h3>Child Registration</h3><small class="scl-reg-kicker">New admission and annual class registration / promotion — all in one clean form</small></div><button onclick="closeM('reg')" type="button">X</button></div>
 <div class="scl-reg-tabs" role="tablist"><button class="scl-reg-tab active" id="sclRegTabNew" onclick="sclRegistrationMode('new')" type="button">👤 NEW STUDENT</button><button class="scl-reg-tab" id="sclRegTabReturning" onclick="sclRegistrationMode('returning')" type="button">⬆️ RETURNING STUDENT / PROMOTION</button></div>
 <div class="scl-reg-body">
-<section id="sclNewStudentRegistration">
+<section id="sclNewStudentRegistration"><form id="form" novalidate onsubmit="return false;">
 <div class="scl-reg-section"><div class="scl-reg-section-head"><b>1. ACADEMIC &amp; IDENTIFICATION DATA</b><span>System-generated fields cannot be edited by the parent.</span></div><div class="grid">
 <div class="field"><label>Admission / Student ID</label><input id="regAdmissionId" name="admissionId" placeholder="Generated after submission" readonly=""/></div>
 <div class="field"><label>LASGEM / State Identification Number</label><input name="lasgem" placeholder="If already assigned"/></div>
@@ -1357,8 +1357,8 @@ body.scl-night .scl-craft-learning{background:linear-gradient(135deg,#171c2b,#20
 <div class="field"><label>Date of Admission</label><input id="regAdmissionDate" name="admissionDate" type="date"/></div>
 <div class="field"><label>Last School Attended</label><input name="lastSchoolAttended" placeholder="Previous school"/></div>
 </div></div>
-<div class="scl-reg-section"><div class="scl-reg-section-head"><b>2. STUDENT PERSONAL INFORMATION</b><span>Age is calculated automatically from the date of birth.</span></div><div class="grid">
-<div class="field"><label>First Name *</label><input name="firstName" required=""/></div><div class="field"><label>Middle Name</label><input name="middleName"/></div><div class="field"><label>Surname / Last Name *</label><input name="surname" required=""/></div>
+<div class="scl-reg-section"><div class="scl-reg-section-head"><b>2. STUDENT PERSONAL INFORMATION</b><span>Nigerian name order: Surname first, First/Given name second, then other names. Age is calculated automatically from date of birth.</span></div><div class="grid">
+<div class="field"><label>Surname * <small>(family name — entered first)</small></label><input name="surname" autocomplete="family-name" required=""/></div><div class="field"><label>First / Given Name *</label><input name="firstName" autocomplete="given-name" required=""/></div><div class="field"><label>Other Names</label><input name="middleName" autocomplete="additional-name"/></div>
 <div class="field"><label>Child Full Name</label><input id="regChildFullName" name="childName" placeholder="Auto-built from names" readonly=""/></div>
 <div class="field"><label>Date of Birth *</label><input id="regDob" name="dateOfBirth" onchange="sclUpdateRegistrationAge()" required="" type="date"/><small class="scl-auto-note">Age is calculated automatically from this date.</small></div>
 <div class="field"><label>Student Age — Automatically Calculated</label><div aria-live="polite" class="scl-auto-output" id="regAgeDisplay">Select the date of birth</div></div>
@@ -1374,7 +1374,7 @@ body.scl-night .scl-craft-learning{background:linear-gradient(135deg,#171c2b,#20
 <input id="regOfficialAcademicEmail" name="officialAcademicEmail" type="hidden" value=""/><div class="scl-reg-email-action" hidden="" id="regAcademicEmailAction"><button class="btn gold" onclick="openSclEmailCreatorForRegistration()" type="button">CREATE OFFICIAL ACADEMIC EMAIL</button><span id="regAcademicEmailStatus">Email creation is required before registration can be completed.</span></div></div>
 <div class="scl-reg-section"><div class="scl-reg-section-head"><b>5. DIGITAL DOCUMENT &amp; MEDIA ATTACHMENTS</b><span>Upload clear, readable copies. Previous result is optional.</span></div><div class="grid"><div class="field"><label>Passport Photograph of Student *</label><input accept="image/jpeg,image/png" name="childPhoto" required="" type="file"/></div><div class="field"><label>Passport Photograph of Parent / Guardian *</label><input accept="image/jpeg,image/png" name="parentPhoto" required="" type="file"/></div><div class="field"><label>Student Birth Certificate *</label><input accept="image/*,.pdf" name="birthCertificate" required="" type="file"/></div><div class="field"><label>Previous Academic Result / Report Card (Optional)</label><input accept="image/*,.pdf" name="previousResult" type="file"/></div></div></div>
 <div class="scl-reg-section"><div class="scl-reg-section-head"><b>6. REGISTRATION &amp; FEE ROUTING</b><span>After successful registration, the selected class fee schedule opens automatically.</span></div><div class="paybox"><b>Important:</b> The system creates the student record and registration reference first. The fee schedule for the selected class is then shown. Keep the generated Student ID and Result PIN safely.</div></div>
-<p style="text-align:right"><button class="btn outline" onclick="closeM('reg')" type="button">CANCEL</button> <button class="btn red" type="submit">SUBMIT NEW STUDENT REGISTRATION</button></p></section>
+<p style="text-align:right"><button class="btn outline" onclick="closeM('reg')" type="button">CANCEL</button> <button class="btn red" type="submit">SUBMIT NEW STUDENT REGISTRATION</button></p><div id="sclStudentRegistrationStatus" role="status" aria-live="polite" style="margin-top:10px"></div></form></section>
 <section class="hidden" id="sclReturningStudentRegistration">
 <div class="scl-reg-section"><div class="scl-reg-section-head"><b>RETURNING STUDENT VERIFICATION</b><span>Enter the admission/student number and parent contact used by SCL. The system will read the existing academic record.</span></div><div class="grid"><div class="field"><label>Student Admission / Student ID *</label><input id="promoStudentId" placeholder="Example: SCL-2026-XXXX" required=""/></div><div class="field"><label>Parent / Guardian Email *</label><input id="promoParentEmail" required="" type="email"/></div><div class="field"><label>Current / Previous Class</label><input id="promoPreviousClass" readonly=""/></div><div class="field"><label>Academic Status Flag</label><input id="promoAcademicStatus" placeholder="VERIFY STUDENT first" readonly=""/></div></div><div class="scl-reg-actions"><button class="btn gold" onclick="sclVerifyReturningStudent()" type="button">VERIFY STUDENT RECORD</button></div><div class="statusbox hidden" id="promoVerifyStatus"></div></div>
 <div class="scl-reg-section hidden" id="promoDetails"><div class="scl-reg-section-head"><b>STUDENT VERIFICATION DATA</b><span>Read-only information retrieved from the SCL academic record.</span></div><div class="grid"><div class="field"><label>Student Full Name</label><input id="promoStudentName" readonly=""/></div><div class="field"><label>Admission Number</label><input id="promoAdmissionNumber" readonly=""/></div><div class="field"><label>Current / Previous Class</label><input id="promoCurrentClass" readonly=""/></div><div class="field"><label>Academic Status</label><input id="promoStatusReadout" readonly=""/></div></div></div>
@@ -1490,7 +1490,7 @@ async function api(path,options={}){
         const out={};(data||[]).forEach(x=>{out[x.key]=x.value});
         return Object.assign({},out.account||{},out);
       }
-      const actions={'/api/registrations':'register','/api/payments':'payment','/api/results/pin':'result_pin','/api/results/access':'result_access'};
+      const actions={'/api/registrations':'register','/api/registrations/draft':'register_draft','/api/payments':'payment','/api/results/pin':'result_pin','/api/results/access':'result_access'};
       if(actions[path]){
         const headers={'Content-Type':'application/json','apikey':window.SCL_SUPABASE_PUBLISHABLE_KEY||window.SCL_SUPABASE_ANON_KEY||''};
         try{const sessionResult=await sb.auth.getSession();const session=sessionResult&&sessionResult.data&&sessionResult.data.session;if(session&&session.access_token)headers.Authorization='Bearer '+session.access_token;}catch(_){/* public admissions may be submitted without an account */}
@@ -1501,7 +1501,7 @@ async function api(path,options={}){
       }
     }
     let r=await fetch(path,options);if(!r.ok)throw new Error('API '+r.status);return await r.json();
-  }catch(e){console.warn('SCL backend request failed:',e);if(path==='/api/registrations')throw e;return null}
+  }catch(e){console.warn('SCL backend request failed:',e);if(path==='/api/registrations'||path==='/api/registrations/draft')throw e;return null}
 }
 async function loadSchoolData(){
  let fees=await api('/api/fees');
@@ -2952,7 +2952,7 @@ window.sclYouTube=function(){const q=(by("sclAiInput")?.value||"").trim();if(q){
     if(months<0){years--;months+=12}
     out.textContent=years+' year'+(years===1?'':'s')+(months?' '+months+' month'+(months===1?'':'s'):'');
   };
-  function syncFullName(){const f=document.querySelector('[name="firstName"]')?.value.trim()||'',m=document.querySelector('[name="middleName"]')?.value.trim()||'',s=document.querySelector('[name="surname"]')?.value.trim()||'';const x=[f,m,s].filter(Boolean).join(' ');const out=document.getElementById('regChildFullName');if(out)out.value=x}
+  function syncFullName(){const s=document.querySelector('[name="surname"]')?.value.trim()||'',f=document.querySelector('[name="firstName"]')?.value.trim()||'',m=document.querySelector('[name="middleName"]')?.value.trim()||'';const x=[s,f,m].filter(Boolean).join(' ');const out=document.getElementById('regChildFullName');if(out)out.value=x}
   document.addEventListener('input',e=>{if(['firstName','middleName','surname'].includes(e.target?.name))syncFullName()});
   document.addEventListener('DOMContentLoaded',()=>{const today=new Date().toLocaleDateString('en-CA',{timeZone:'Africa/Lagos'});const d=document.getElementById('regAdmissionDate');if(d&&!d.value)d.value=today;const dob=document.getElementById('regDob');if(dob){dob.max=today;dob.addEventListener('input',sclUpdateRegistrationAge);sclUpdateRegistrationAge()}sclRegistrationMode('new')});
   async function promoApi(action,payload){
@@ -2974,12 +2974,18 @@ window.sclYouTube=function(){const q=(by("sclAiInput")?.value||"").trim();if(q){
     e.preventDefault();e.stopImmediatePropagation();syncFullName();
     const submit=form.querySelector('button[type="submit"],input[type="submit"]');
     const oldLabel=submit?submit.textContent:'';
-    const choice=document.querySelector('input[name="academicEmailStatus"]:checked')?.value;
-    const generated=document.getElementById('regOfficialAcademicEmail')?.value.trim();
-    if((choice==='create'&&!generated)||!generated){toast('Create or enter the official SCL academic email before submitting. No record has been saved yet.');return}
+    const choice=document.querySelector('input[name="academicEmailStatus"]:checked')?.value||'';
+    const generated=document.getElementById('regOfficialAcademicEmail')?.value.trim()||'';
     const fd=new FormData(form),d={};
+    const requiredFields=['firstName','surname','dateOfBirth','gender','fatherName','motherName','guardianName','phone','email'];
+    const missing=requiredFields.filter(k=>!String(fd.get(k)||'').trim());
+    if(!d.class && !fd.get('class')) missing.push('class');
+    d.registrationStatus=(missing.length||!generated||!choice)?'incomplete':'pending_review';
+    d.completionStatus=d.registrationStatus==='incomplete'?'incomplete':'submitted';
+    d.missingFields=Array.from(new Set([...(d.missingFields||[]),...missing,...(!generated?['officialAcademicEmail']:[]),...(!choice?['academicEmailStatus']:[])]));
     for(const [k,v] of fd.entries()){if(k==='age')continue;if(v instanceof File)d[k]=v.name;else d[k]=v}
     d.childName=document.getElementById('regChildFullName')?.value.trim();
+    try{d.draftId=sessionStorage.getItem('scl_student_registration_draft_id')||''}catch(_){}
     d.date=new Date().toISOString();d.session=typeof sessionLabel==='function'?sessionLabel():'2026/2027';d.term=typeof currentTerm==='function'?currentTerm():'First Term';
     d.officialAcademicEmail=generated;
     if(window.__sclParentChildRelationship){d.relationship=window.__sclParentChildRelationship;d.parentRelationship=window.__sclParentChildRelationship;}
@@ -2990,12 +2996,22 @@ window.sclYouTube=function(){const q=(by("sclAiInput")?.value||"").trim();if(q){
     if(window.__sclParentChildRelationship==='Guardian')d.guardianName=authNow?.profile?.full_name||authNow?.user?.user_metadata?.full_name||d.guardianName||'';
     const files=['childPhoto','parentPhoto','birthCertificate','previousResult'];
     try{
-      for(const k of files){const f=form.elements[k]?.files?.[0];if(f)d[k+'Data']=await fileToDataURL(f)}
+      const isDraft=d.registrationStatus==='incomplete';
+      if(!isDraft){for(const k of files){const f=form.elements[k]?.files?.[0];if(f)d[k+'Data']=await fileToDataURL(f)}}
       if(submit){submit.disabled=true;submit.textContent='Saving to school database…'}
-      const saved=await api('/api/registrations',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});
-      if(!saved||saved.ok!==true||!saved.studentId||!saved.accessPin)throw new Error('The school database did not confirm the registration. Do not submit the same child again yet; check Registered Students first.');
+      const saved=await api(isDraft?'/api/registrations/draft':'/api/registrations',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});
+      if(!saved||saved.ok!==true)throw new Error('The school database did not confirm that this registration was saved. No success will be shown until the server confirms it.');
+      if(!isDraft&&(!saved.studentId||!saved.accessPin))throw new Error('The school database did not return an official Student ID and PIN. Check Registered Students before retrying.');
+      if(!isDraft){try{sessionStorage.removeItem('scl_student_registration_draft_id')}catch(_){}}
       window.__sclParentChildRelationship='';window.__sclParentChildPhone='';window.__sclParentChildEmail='';
       try{document.dispatchEvent(new CustomEvent('scl:student-registered',{detail:{studentId:saved.studentId,className:d.class||selectedClass}}))}catch(_){}
+      if(isDraft){
+        if(saved.draftId){try{sessionStorage.setItem('scl_student_registration_draft_id',saved.draftId)}catch(_){}}
+        const statusBox=document.getElementById('sclStudentRegistrationStatus');
+        if(statusBox)statusBox.textContent='Saved to the school database: '+(saved.status||'Incomplete — Pending Completion')+'. Draft reference: '+(saved.registrationRef||saved.draftId||'saved')+'. Missing: '+(d.missingFields||[]).join(', ')+'. Your entered details remain in this form so you can continue.';
+        toast('Incomplete registration saved as draft.');
+        return;
+      }
       closeM('reg');
       alert('Registration saved to the SCL database.\nStudent ID: '+saved.studentId+'\nResult PIN: '+saved.accessPin+'\nOfficial Academic Email: '+(saved.officialAcademicEmail||generated)+'\nKeep these details safe.');
       toast('Student registered successfully in the school database.');
