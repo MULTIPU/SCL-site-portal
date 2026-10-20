@@ -1,0 +1,23 @@
+SCL Portal repair package — read before replacing files
+
+Repository inspected: MULTIPU/SCL-site-portal (default branch appears to be MAIN).
+Expected Pages project URL: https://multipu.github.io/SCL-site-portal/
+
+Included:
+1. vite.config.ts: explicit GitHub Pages project base path.
+2. .github/workflows/deploy-pages.yml: valid Pages build/deploy workflow; npm ci errors are no longer hidden by an npm install fallback; it verifies dist/index.html and prints generated files to the Actions log.
+3. index.html: manifest and icon links now use Vite's BASE_URL placeholder so they work under a repository subpath.
+
+Important findings from source review:
+- src/services/dataService.ts is currently a localStorage/demo-data service and package.json does not include @supabase/supabase-js. That means this frontend does NOT currently persist its primary student/result/payment/attendance data to the live Supabase backend. This is a real backend wiring gap, but replacing the service blindly would be unsafe because the existing app models and deployed API actions must be mapped field-by-field first.
+- Supabase project eypdoeqiojopkbzckjor is ACTIVE_HEALTHY and has deployed Edge Functions, including scl-public-api. So the database being online does not prove this app uses it.
+- The deployed scl-public-api checks that the request's apikey exactly matches its configured publishable key and uses a service-role key internally. The browser must use only the publishable/anon key, never a service-role key.
+- Supabase security advisor reported 16 tables with RLS enabled but no policies, including scl_registration_intake and scl_staff_applications. Do not add broad public policies to “fix” this; it can expose private student/staff data. Each table needs purpose-specific access policies or exclusive access through authenticated Edge Functions.
+
+Install steps:
+- Replace the matching files in the GitHub repository with these files (do not upload the ZIP as a single repository file).
+- Commit to the default branch MAIN. The workflow also supports main/master.
+- In GitHub, open Actions and inspect the newest “Build and deploy SCL Portal to GitHub Pages” run. A green deploy confirms the build/deploy succeeded; it does not by itself confirm all app features or Supabase integration work.
+
+Access limitation during this repair attempt:
+The connected GitHub integration rejected writes with HTTP 403 “Resource not accessible by integration”. Therefore these corrections have been packaged, but have NOT been committed or deployed by this assistant. Granting write access to the GitHub integration (or manually committing these files) is required before the live site changes.
