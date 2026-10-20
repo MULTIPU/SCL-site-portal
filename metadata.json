@@ -1,0 +1,6 @@
+{
+  "name": "SCL Portal",
+  "description": "Shining Child Leaders School Android portal for student results, attendance, admissions, fee payments, and school management.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
