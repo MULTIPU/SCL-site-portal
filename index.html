@@ -1350,6 +1350,8 @@ body.scl-night .scl-craft-learning{background:linear-gradient(135deg,#171c2b,#20
 <div class="scl-reg-tabs" role="tablist"><button class="scl-reg-tab active" id="sclRegTabNew" onclick="sclRegistrationMode('new')" type="button">👤 NEW STUDENT</button><button class="scl-reg-tab" id="sclRegTabReturning" onclick="sclRegistrationMode('returning')" type="button">⬆️ RETURNING STUDENT / PROMOTION</button></div>
 <div class="scl-reg-body">
 <section id="sclNewStudentRegistration"><form id="form" novalidate onsubmit="return false;">
+<div class="scl-reg-section scl-child-photo-card" id="sclChildPhotoCard"><div class="scl-child-photo-copy"><b>📷 Child’s passport photo <span class="scl-required">Required for every application</span></b><small>Upload a recent clear photo or tap the camera option on your phone. This stays visible in both registration paths.</small></div><div class="field"><input accept="image/*" capture="user" name="childPhoto" required type="file" aria-label="Required child passport photo"/></div><div class="scl-photo-preview" id="sclChildPhotoPreview" hidden><img alt="Preview of selected child photo"><span>Photo selected</span></div></div>
+
 <div class="scl-reg-section"><div class="scl-reg-section-head"><b>1. ACADEMIC &amp; IDENTIFICATION DATA</b><span>System-generated fields cannot be edited by the parent.</span></div><div class="grid">
 <div class="field"><label>Admission / Student ID</label><input id="regAdmissionId" name="admissionId" placeholder="Generated after submission" readonly=""/></div>
 <div class="field"><label>LASGEM / State Identification Number</label><input name="lasgem" placeholder="If already assigned"/></div>
@@ -1386,7 +1388,18 @@ body.scl-night .scl-craft-learning{background:linear-gradient(135deg,#171c2b,#20
 <div class="scl-reg-section"><div class="scl-reg-section-head"><b>4. ACADEMIC EMAIL</b><span>The child's academic identity must be selected before registration can be completed.</span></div>
 <div class="scl-reg-email-options"><label><input name="academicEmailStatus" onchange="updateRegAcademicEmailUI()" required="" type="radio" value="existing"/> Child already has a suitable email</label><label><input name="academicEmailStatus" onchange="updateRegAcademicEmailUI()" type="radio" value="create"/> Create Official SCL Academic Email</label></div>
 <input id="regOfficialAcademicEmail" name="officialAcademicEmail" type="hidden" value=""/><div class="scl-reg-email-action" hidden="" id="regAcademicEmailAction"><button class="btn gold" onclick="openSclEmailCreatorForRegistration()" type="button">CREATE OFFICIAL ACADEMIC EMAIL</button><span id="regAcademicEmailStatus">Email creation is required before registration can be completed.</span></div></div>
-<div class="scl-reg-section"><div class="scl-reg-section-head"><b>5. DIGITAL DOCUMENT &amp; MEDIA ATTACHMENTS</b><span>Upload clear, readable copies. Previous result is optional.</span></div><div class="grid"><div class="field"><label>Passport Photograph of Student *</label><input accept="image/jpeg,image/png" name="childPhoto" required="" type="file"/></div><div class="field"><label>Passport Photograph of Parent / Guardian *</label><input accept="image/jpeg,image/png" name="parentPhoto" required="" type="file"/></div><div class="field"><label>Student Birth Certificate *</label><input accept="image/*,.pdf" name="birthCertificate" required="" type="file"/></div><div class="field"><label>Previous Academic Result / Report Card (Optional)</label><input accept="image/*,.pdf" name="previousResult" type="file"/></div></div></div>
+<div class="scl-reg-section scl-documents-section" id="sclDocumentUploads"><div class="scl-reg-section-head"><b>DOCUMENTS FOR AUTO-FILL &amp; VERIFICATION</b><span>Upload a clear photo, scan, or PDF. You can also use your camera.</span></div>
+<div class="scl-doc-intro">Start with the birth certificate. SCL will scan readable document photos, suggest details it can recognise, and leave you in control to confirm or correct them. Scanning is an aid—not proof that a document is genuine.</div>
+<div class="scl-doc-grid">
+<div class="field"><label>Birth Certificate / Age Declaration <em class="scl-required">Required</em></label><input accept="image/*,.pdf" capture="environment" data-scl-scan-source="birthCertificate" name="birthCertificate" required type="file"/><small>Main source for the child’s legal name and date of birth.</small></div>
+<div class="field"><label>Previous School Result / Report Card <em>Where applicable</em></label><input accept="image/*,.pdf" capture="environment" data-scl-scan-source="previousResult" name="previousResult" type="file"/><small>For a child transferring from another school.</small></div>
+<div class="field"><label>Immunisation / Health Record <em>Where applicable</em></label><input accept="image/*,.pdf" capture="environment" data-scl-scan-source="immunizationRecord" name="immunizationRecord" type="file"/><small>Especially useful for younger learners; medical details are handled carefully.</small></div>
+<div class="field"><label>Transfer Certificate / School Testimonial <em>Transfer students</em></label><input accept="image/*,.pdf" capture="environment" data-scl-scan-source="transferCertificate" name="transferCertificate" type="file"/><small>Only needed when moving from another school.</small></div>
+<div class="field"><label>Parent / Guardian Identification <em>Optional</em></label><input accept="image/*,.pdf" capture="environment" data-scl-scan-source="parentIdDocument" name="parentIdDocument" type="file"/><small>For confirming the responsible adult’s identity when requested.</small></div>
+<div class="field"><label>Parent / Guardian Photo <em>Optional</em></label><input accept="image/*" capture="user" name="parentPhoto" type="file"/><small>Optional; a parent photo is not required to submit the child’s application.</small></div>
+</div>
+<div class="scl-scan-actions"><button type="button" class="btn gold" id="sclScanDocuments">✨ Scan document and suggest details</button><button type="button" class="btn outline" id="sclReviewDetails">Review / edit details</button></div><div id="sclScanStatus" class="scl-scan-status" role="status" aria-live="polite">Choose a document photo to scan. PDFs can be attached for school review; for automatic reading, use a clear photo or camera capture.</div><pre id="sclScanPreview" class="scl-scan-preview" hidden></pre>
+</div>
 <div class="scl-reg-section"><div class="scl-reg-section-head"><b>6. REGISTRATION &amp; FEE ROUTING</b><span>After successful registration, the selected class fee schedule opens automatically.</span></div><div class="paybox"><b>Important:</b> The system creates the student record and registration reference first. The fee schedule for the selected class is then shown. Keep the generated Student ID and Result PIN safely.</div></div>
 <p style="text-align:right"><button class="btn outline" onclick="closeM('reg')" type="button">CANCEL</button> <button class="btn red" type="submit">SUBMIT NEW STUDENT REGISTRATION</button></p><div id="sclStudentRegistrationStatus" role="status" aria-live="polite" style="margin-top:10px"></div></form></section>
 <section class="hidden" id="sclReturningStudentRegistration">
@@ -2993,6 +3006,8 @@ window.sclYouTube=function(){const q=(by("sclAiInput")?.value||"").trim();if(q){
     const fd=new FormData(form),d={};
     const requiredFields=['firstName','surname','dateOfBirth','gender','phone','email'];
     const missing=requiredFields.filter(k=>!String(fd.get(k)||'').trim());
+    if(!form.elements.childPhoto?.files?.length)missing.push('childPhoto');
+    if(!form.elements.birthCertificate?.files?.length)missing.push('birthCertificate');
     const adultNames=['fatherName','motherName','guardianName','guardian2Name','guardian3Name','guardian4Name','guardian5Name'];
     if(!adultNames.some(k=>String(fd.get(k)||'').trim()))missing.push('parentOrGuardianName');
     if(!d.class && !fd.get('class')) missing.push('class');
@@ -3010,10 +3025,10 @@ window.sclYouTube=function(){const q=(by("sclAiInput")?.value||"").trim();if(q){
     const authNow=typeof auth==='function'?auth():null;
     if(authNow?.user?.email){d.parentEmail=d.parentEmail||authNow.user.email;d.parent_email=d.parent_email||authNow.user.email;}
     if(window.__sclParentChildRelationship==='Guardian')d.guardianName=authNow?.profile?.full_name||authNow?.user?.user_metadata?.full_name||d.guardianName||'';
-    const files=['childPhoto','parentPhoto','birthCertificate','previousResult'];
+    const files=['childPhoto','parentPhoto','birthCertificate','previousResult','immunizationRecord','transferCertificate','parentIdDocument'];
     try{
       const isDraft=d.registrationStatus==='incomplete';
-      if(!isDraft){for(const k of files){const f=form.elements[k]?.files?.[0];if(f)d[k+'Data']=await fileToDataURL(f)}}
+      if(!isDraft){for(const k of files){const f=form.elements[k]?.files?.[0];if(f)d[k+'Data']=await sclCompressedFileDataURL(f)}}
       if(submit){submit.disabled=true;submit.textContent='Saving to school database…'}
       const saved=await api(isDraft?'/api/registrations/draft':'/api/registrations',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});
       if(!saved||saved.ok!==true)throw new Error('The school database did not confirm that this registration was saved. No success will be shown until the server confirms it.');
@@ -11925,7 +11940,7 @@ function initBackground(){
  const c=document.createElement('canvas');c.id='sclLiveBackground';c.setAttribute('aria-hidden','true');document.body.prepend(c);
  const ctx=c.getContext('2d');if(!ctx)return;let w=0,h=0,dpr=1,pts=[];
  function resize(){dpr=Math.min(devicePixelRatio||1,1.5);w=innerWidth;h=innerHeight;c.width=w*dpr;c.height=h*dpr;c.style.width=w+'px';c.style.height=h+'px';ctx.setTransform(dpr,0,0,dpr,0,0);pts=Array.from({length:Math.min(34,Math.max(14,Math.floor(w/34)))},()=>({x:Math.random()*w,y:Math.random()*h,r:1+Math.random()*2,v:.12+Math.random()*.28,a:.12+Math.random()*.25,phase:Math.random()*6.28}))}
- function frame(t){if(document.hidden){requestAnimationFrame(frame);return}ctx.clearRect(0,0,w,h);const g=ctx.createLinearGradient(0,0,w,h);g.addColorStop(0,'rgba(83,0,10,.30)');g.addColorStop(.55,'rgba(150,22,26,.12)');g.addColorStop(1,'rgba(215,159,25,.20)');ctx.fillStyle=g;ctx.fillRect(0,0,w,h);
+ function frame(t){if(document.hidden){requestAnimationFrame(frame);return}ctx.clearRect(0,0,w,h);const g=ctx.createLinearGradient(0,0,w,h);g.addColorStop(0,'#16030b');g.addColorStop(.28,'#390511');g.addColorStop(.58,'#21152c');g.addColorStop(.82,'#49200f');g.addColorStop(1,'#12050d');ctx.fillStyle=g;ctx.fillRect(0,0,w,h);
   pts.forEach(p=>{p.y-=p.v;if(p.y<-5)p.y=h+5;p.x+=Math.sin(t*.00025+p.phase)*.12;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle='rgba(244,195,69,'+p.a+')';ctx.fill();});
   for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){const a=pts[i],b=pts[j],dx=a.x-b.x,dy=a.y-b.y,dist=Math.hypot(dx,dy);if(dist<115){ctx.strokeStyle='rgba(211,164,59,'+((1-dist/115)*.12)+')';ctx.lineWidth=.7;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke()}}
   requestAnimationFrame(frame)
@@ -12993,3 +13008,84 @@ html body #communityCard .scl-top.show{opacity:1;transform:none;pointer-events:a
 })();
 
 </script>
+
+
+<style id="scl-refinement-v2-styles">
+/* Site-wide backdrop: one animated burgundy / midnight / gold system, independent of time-of-day theme. */
+html,html body{background:transparent!important;background-image:none!important;background-color:transparent!important}
+body{background:transparent!important;background-image:none!important;isolation:isolate;position:relative}
+body::before,body::after{content:none!important;display:none!important;background:none!important}
+#sclLiveBackground{position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;z-index:-1!important;pointer-events:none!important;opacity:1!important;display:block!important}
+/* Do not assign position to every direct body child: it created unnecessary stacking contexts. */
+.scl-reg-pathways{margin:0 0 14px;border:1px solid rgba(226,190,94,.65);border-radius:16px;padding:12px;background:linear-gradient(135deg,rgba(255,252,243,.97),rgba(255,244,218,.94));box-shadow:0 12px 32px rgba(20,0,6,.16)}
+.scl-pathway-heading{margin:0 0 5px;color:#59000b;font-size:16px;font-weight:900}.scl-pathway-sub{margin:0 0 12px;color:#6e5b50;font-size:12px;line-height:1.5}
+.scl-pathway-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.scl-pathway-tab{border:1px solid #d9c69c;border-radius:12px;background:#fffdf7;color:#5b1117;padding:12px 10px;font-weight:900;text-align:left;cursor:pointer;min-height:68px}.scl-pathway-tab small{display:block;margin-top:5px;font-weight:500;line-height:1.35}.scl-pathway-tab[aria-selected="true"]{background:linear-gradient(135deg,#650007,#8e1724);border-color:#e4c15f;color:#fff;box-shadow:0 5px 15px rgba(75,0,10,.18)}
+.scl-pathway-panel[hidden]{display:none!important}.scl-child-photo-card{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:10px;align-items:center;border-color:#e0c16a!important;background:linear-gradient(135deg,#fffdf7,#fff3d2)!important}.scl-child-photo-copy b{display:block;color:#5d000a}.scl-child-photo-copy small{display:block;margin-top:5px;color:#695d4d;line-height:1.45}.scl-child-photo-card .field{margin:0}.scl-required{display:inline-block;color:#8a0010;font-size:10px;font-style:normal;font-weight:900;margin-left:4px}.scl-child-photo-card input[type=file],.scl-documents-section input[type=file]{width:100%;max-width:100%;font-size:12px}.scl-photo-preview{grid-column:1/-1;display:flex;align-items:center;gap:10px;font-size:12px;color:#31623e}.scl-photo-preview img{width:56px;height:64px;object-fit:cover;border-radius:8px;border:1px solid #d9c69c}
+.scl-documents-section{border-color:#e0c16a!important;background:linear-gradient(145deg,#fffdf7,#fff6df)!important}.scl-doc-intro{font-size:12px;line-height:1.55;color:#69533c;background:#fff9e9;border:1px solid #ead8a6;padding:10px;border-radius:10px;margin-bottom:12px}.scl-doc-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.scl-doc-grid .field{min-width:0;padding:10px;border:1px solid #eadfc8;border-radius:10px;background:rgba(255,255,255,.82);margin:0}.scl-doc-grid .field label{display:block;font-weight:800;color:#4b1417;margin-bottom:7px}.scl-doc-grid .field small{display:block;margin-top:6px;font-size:11px;line-height:1.4;color:#77685b}.scl-scan-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.scl-scan-status{margin-top:10px;padding:10px 12px;border-radius:10px;background:#f4eddb;color:#5b3c16;font-size:12px;line-height:1.5}.scl-scan-preview{white-space:pre-wrap;max-height:170px;overflow:auto;background:#fff;border:1px solid #e3d3ad;border-radius:9px;padding:10px;font-size:11px;color:#51483d}.scl-child-photo-card .field input:focus,.scl-doc-grid input:focus{outline:2px solid #c99b2b;outline-offset:2px}
+@media(max-width:560px){.scl-pathway-tabs{grid-template-columns:1fr}.scl-doc-grid{grid-template-columns:1fr}.scl-child-photo-card{grid-template-columns:1fr}.scl-photo-preview{grid-column:auto}}
+@media(prefers-reduced-motion:reduce){#sclLiveBackground{display:block!important}.scl-pathway-tab{transition:none!important}}
+</style>
+<script id="scl-registration-refinement-v2">
+(function(){
+'use strict';
+function $(s,r){return (r||document).querySelector(s)}
+function all(s,r){return Array.from((r||document).querySelectorAll(s))}
+/* Compress large camera photos before converting them to the JSON payload. PDFs and other files remain unchanged. */
+window.sclCompressedFileDataURL=async function(file){
+ if(!file)return '';
+ if(!/^image\//i.test(file.type)||file.size<450*1024)return await fileToDataURL(file);
+ try{
+  const src=await new Promise((resolve,reject)=>{const u=URL.createObjectURL(file),im=new Image();im.onload=()=>{URL.revokeObjectURL(u);resolve(im)};im.onerror=()=>{URL.revokeObjectURL(u);reject(new Error('Image could not be decoded'))};im.src=u});
+  const max=1800,scale=Math.min(1,max/Math.max(src.naturalWidth||src.width,src.naturalHeight||src.height));
+  const c=document.createElement('canvas');c.width=Math.max(1,Math.round((src.naturalWidth||src.width)*scale));c.height=Math.max(1,Math.round((src.naturalHeight||src.height)*scale));
+  const x=c.getContext('2d',{alpha:false});x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(src,0,0,c.width,c.height);
+  return c.toDataURL('image/jpeg',.82);
+ }catch(e){return await fileToDataURL(file)}
+};
+function setup(){
+ const form=$('#form');if(!form||form.dataset.sclRefined==='1')return;form.dataset.sclRefined='1';
+ const sections=all(':scope > .scl-reg-section:not(#sclChildPhotoCard)',form);if(sections.length<6)return;
+ const manual=document.createElement('div');manual.className='scl-pathway-panel';manual.id='sclManualPath';
+ const docs=document.createElement('div');docs.className='scl-pathway-panel';docs.id='sclDocumentPath';docs.hidden=true;
+ const sharedPhoto=$('#sclChildPhotoCard',form);const path=document.createElement('div');path.className='scl-reg-pathways';path.innerHTML='<h3 class="scl-pathway-heading">Choose how you want to register</h3><p class="scl-pathway-sub">You only need one path. You can switch at any time; entered details and selected files stay in the form.</p><div class="scl-pathway-tabs" role="tablist" aria-label="Registration method"><button type="button" class="scl-pathway-tab" id="sclManualTab" role="tab" aria-controls="sclManualPath" aria-selected="true">✍️ Fill in manually<small>Best if you have the information ready.</small></button><button type="button" class="scl-pathway-tab" id="sclDocumentTab" role="tab" aria-controls="sclDocumentPath" aria-selected="false">📄 Upload documents to auto-fill<small>Upload or photograph documents; review any details the scan recognises.</small></button></div>';
+ form.insertBefore(path,sharedPhoto||sections[0]);
+ // Shared photo is always visible whichever path is selected.
+ if(sharedPhoto)form.insertBefore(sharedPhoto,path.nextSibling);
+ sections.slice(0,4).forEach(el=>manual.appendChild(el));
+ docs.appendChild(sections[4]);
+ const fees=sections[5];
+ path.insertAdjacentElement('afterend',manual);manual.insertAdjacentElement('afterend',docs);
+ function setMode(mode){const isDoc=mode==='docs';manual.hidden=isDoc;docs.hidden=!isDoc;$('#sclManualTab').setAttribute('aria-selected',String(!isDoc));$('#sclDocumentTab').setAttribute('aria-selected',String(isDoc));$('#sclManualTab').classList.toggle('active',!isDoc);$('#sclDocumentTab').classList.toggle('active',isDoc);form.dataset.registrationPath=mode;}
+ $('#sclManualTab').addEventListener('click',()=>setMode('manual'));$('#sclDocumentTab').addEventListener('click',()=>setMode('docs'));
+ // Put the fees/submit section after either path, so it is common to both.
+ docs.insertAdjacentElement('afterend',fees);
+ if(sharedPhoto)form.insertBefore(sharedPhoto,manual);
+ const photo=form.elements.childPhoto,preview=$('#sclChildPhotoPreview'),previewImg=$('img',preview||document.createElement('div'));
+ if(photo)photo.addEventListener('change',()=>{const f=photo.files&&photo.files[0];if(!f){if(preview)preview.hidden=true;return}if(preview&&previewImg){previewImg.src=URL.createObjectURL(f);preview.hidden=false}});
+ const review=$('#sclReviewDetails');if(review)review.addEventListener('click',()=>{setMode('manual');manual.scrollIntoView({behavior:'smooth',block:'start'})});
+ const scanBtn=$('#sclScanDocuments'),status=$('#sclScanStatus'),out=$('#sclScanPreview');
+ let ocrPromise=null;
+ async function loadOCR(){if(window.Tesseract)return window.Tesseract;if(!ocrPromise)ocrPromise=new Promise((resolve,reject)=>{const sc=document.createElement('script');sc.src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';sc.async=true;sc.onload=()=>window.Tesseract?resolve(window.Tesseract):reject(new Error('Document scanner did not start'));sc.onerror=()=>reject(new Error('Could not load the document scanner. Check your internet connection and try again.'));document.head.appendChild(sc)});return ocrPromise}
+ function fillIfEmpty(name,value){const el=form.elements[name];if(!el||!value||String(el.value||'').trim())return false;el.value=value;el.dispatchEvent(new Event('input',{bubbles:true}));el.dispatchEvent(new Event('change',{bubbles:true}));return true}
+ function dateISO(raw){let m=raw.match(/\b(\d{1,2})[\/.\- ](\d{1,2})[\/.\- ](\d{4})\b/);if(!m)return '';let a=+m[1],b=+m[2],y=+m[3];if(y<1900||y>new Date().getFullYear())return '';let d,mo;if(a>12){d=a;mo=b}else if(b>12){mo=a;d=b}else{d=a;mo=b}const dt=new Date(y,mo-1,d);if(dt.getFullYear()!==y||dt.getMonth()!==mo-1||dt.getDate()!==d)return '';return y+'-'+String(mo).padStart(2,'0')+'-'+String(d).padStart(2,'0')}
+ function applyOCR(text){let changed=[];const clean=text.replace(/\r/g,'\n');
+  let m=clean.match(/(?:date\s+of\s+birth|d\.?o\.?b\.?|born\s+on)\s*[:\-]?\s*([^\n]{5,25})/i);let dob=m&&dateISO(m[1]);if(!dob){const dates=clean.match(/\b\d{1,2}[\/.\- ]\d{1,2}[\/.\- ]\d{4}\b/g)||[];if(dates.length===1)dob=dateISO(dates[0])}if(dob&&fillIfEmpty('dateOfBirth',dob)){changed.push('date of birth');if(typeof window.sclUpdateRegistrationAge==='function')window.sclUpdateRegistrationAge()}
+  const explicitSurname=clean.match(/(?:surname|family\s+name)\s*[:\-]\s*([A-Z][A-Z' -]{1,45})/i);const explicitGiven=clean.match(/(?:first\s+name|given\s+name)\s*[:\-]\s*([A-Z][A-Z' -]{1,45})/i);const explicitOther=clean.match(/(?:middle\s+name|other\s+names)\s*[:\-]\s*([A-Z][A-Z' -]{1,45})/i);
+  if(explicitSurname&&fillIfEmpty('surname',explicitSurname[1].trim()))changed.push('surname');if(explicitGiven&&fillIfEmpty('firstName',explicitGiven[1].trim()))changed.push('given name');if(explicitOther&&fillIfEmpty('middleName',explicitOther[1].trim()))changed.push('other names');
+  if(!explicitSurname&&!explicitGiven){m=clean.match(/(?:child'?s?\s+name|name\s+of\s+child|full\s+name)\s*[:\-]\s*([^\n]{3,65})/i);if(m){const words=m[1].replace(/[^A-Za-z' -]/g,' ').trim().split(/\s+/).filter(Boolean);if(words.length>=2){if(fillIfEmpty('surname',words[0]))changed.push('surname');if(fillIfEmpty('firstName',words[1]))changed.push('given name');if(words.length>2&&fillIfEmpty('middleName',words.slice(2).join(' ')))changed.push('other names')}}}
+  m=clean.match(/\b(male|female)\b/i);if(m&&fillIfEmpty('gender',m[1].toLowerCase()==='male'?'Male':'Female'))changed.push('gender');
+  return changed;
+ }
+ if(scanBtn)scanBtn.addEventListener('click',async()=>{
+  const candidates=['birthCertificate','previousResult','immunizationRecord','transferCertificate','parentIdDocument'];let f=null,slot='';for(const n of candidates){const el=form.elements[n],file=el&&el.files&&el.files[0];if(file&&/^image\//i.test(file.type)){f=file;slot=n;break}}
+  if(!f){if(status)status.textContent='Choose a clear photo of the birth certificate (or another document) first. PDFs can be uploaded for review, but this scanner currently reads image files only.';return}
+  if(scanBtn)scanBtn.disabled=true;if(status)status.textContent='Loading the document scanner…';if(out)out.hidden=true;
+  try{const T=await loadOCR();if(status)status.textContent='Reading '+f.name+'… keep this page open. The first scan may take a little longer.';const result=await T.recognize(f,'eng',{logger:m=>{if(status&&m.status==='recognizing text')status.textContent='Scanning document… '+Math.round((m.progress||0)*100)+'%'}});const text=(result&&result.data&&result.data.text||'').trim();if(out){out.textContent=text||'No readable text found. Try a sharper photo with the full page in view.';out.hidden=false}const changed=applyOCR(text);if(status)status.textContent=(changed.length?'Suggested details from '+slot+': '+changed.join(', ')+'.':'Scan completed, but no reliable blank fields could be filled automatically.')+' Please review all details before submitting. Original documents are still sent for school verification.';if(changed.length){const note=document.createElement('div');note.className='scl-scan-status';note.textContent='Auto-fill is only a suggestion. Check the child’s name order and date of birth against the original document.';status.insertAdjacentElement('afterend',note)}}catch(e){if(status)status.textContent=(e&&e.message)||'The document could not be scanned. You can still upload it and fill the form manually.'}finally{if(scanBtn)scanBtn.disabled=false}
+ });
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup);else setup();
+})();
+</script>
+<style id="scl-final-background-overrides">
+html{background:transparent!important;background-color:transparent!important}body{background:transparent!important;background-color:transparent!important;background-image:none!important}#sclLiveBackground{z-index:-1!important}
+</style>
