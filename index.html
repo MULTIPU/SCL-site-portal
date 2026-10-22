@@ -13139,5 +13139,39 @@ html{background:transparent!important;background-color:transparent!important}bod
 })();
 </script>
 
+\n<!-- SCL v105: registration visibility and student-verification reconciliation panel -->
+<script id="scl-registration-attendance-reconciliation-v105">
+(function(){
+ 'use strict';
+ var U=window.SCL_SUPABASE_URL||'',K=window.SCL_SUPABASE_PUBLISHABLE_KEY||'';
+ var classes=['Daycare','Nursery 1','Nursery 2','Reception','Primary 1','Primary 2','Primary 3','Primary 4','Primary 5','JSS 1','JSS 2','JSS 3','SSS 1','SSS 2','SSS 3'];
+ function token(){try{return(JSON.parse(sessionStorage.getItem('sclAuthSession')||'null')||{}).accessToken||''}catch(e){return''}}
+ function headers(){return{apikey:K,Authorization:'Bearer '+(token()||K),Accept:'application/json'}}
+ function esc(x){return String(x==null?'':x).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+ function authOK(){var a;try{a=JSON.parse(sessionStorage.getItem('sclAuthSession')||'null')}catch(e){};var roles=((a&&a.roles)||[]).map(function(x){return String(x).toLowerCase()});return !!(a&&a.accessToken&&roles.some(function(x){return /admin|teacher|staff|worker|management|developer/.test(x)}))}
+ function get(path){return fetch(U+'/rest/v1/'+path,{headers:headers()}).then(function(r){return r.text().then(function(t){var d;try{d=t?JSON.parse(t):[]}catch(e){d=[]}if(!r.ok)throw Error((d&&d.message)||('Server returned '+r.status));return d})})}
+ function mount(){var b=document.getElementById('sclSuiteBody');if(!b||!window.sclCanSeeStudentAttendance||!window.sclCanSeeStudentAttendance())return;
+  var d=document.getElementById('sclRegRecoveryV105');if(!d){d=document.createElement('section');d.id='sclRegRecoveryV105';d.style.cssText='margin:14px 0;padding:14px;border:1px solid #d5b56d;border-radius:14px;background:linear-gradient(135deg,rgba(40,13,48,.97),rgba(25,9,32,.97));color:#fff5dc';
+   d.innerHTML='<h4 style="margin:0 0 6px">🎓 Registered students & verification queue</h4><p style="margin:0 0 10px;font-size:12px;line-height:1.5">Approved students appear in the official attendance register. Pending or incomplete registrations are shown here for review and are not counted as present or absent.</p><div id="sclRegRecoveryStatusV105">Loading registrations…</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button type="button" id="sclRegRecoveryRefreshV105" style="padding:8px 12px;border-radius:9px">Refresh registrations</button><button type="button" id="sclRegRecoveryVerifyV105" style="padding:8px 12px;border-radius:9px">Open student verification</button></div>';
+   var anchor=b.querySelector('#ngAttReg')||b.querySelector('.ng-conf')||b.firstChild;if(anchor&&anchor.parentNode)anchor.parentNode.insertBefore(d,anchor.nextSibling);else b.appendChild(d);
+   d.querySelector('#sclRegRecoveryRefreshV105').onclick=function(){load(d)};
+   d.querySelector('#sclRegRecoveryVerifyV105').onclick=function(){try{if(typeof window.renderStudentQueue==='function'){window.renderStudentQueue();return}if(typeof window.sclOpenStudentVerification==='function'){window.sclOpenStudentVerification();return}if(typeof window.toast==='function')window.toast('Open People, Registration & Identity → Verify student.')}catch(e){}}
+  }
+  load(d)
+ }
+ function load(d){var out=d.querySelector('#sclRegRecoveryStatusV105');if(!out)return;if(!U||!K){out.textContent='Backend configuration is missing from this page.';return}if(!token()){out.textContent='Please sign in with an authorised staff or administrator account to view student records.';return}out.textContent='Loading approved students and pending registrations…';
+  Promise.all([get('students?select=id,student_id,child_name,first_name,middle_name,surname,class_name,status,created_at&order=created_at.desc&limit=500'),get('student_verification_queue?select=id,registration_ref,student_name,class_name,class_label_raw,parent_guardian_name,parent_phone,parent_email,status,completion_status,created_at&order=created_at.desc&limit=500')]).then(function(res){
+   var approved=Array.isArray(res[0])?res[0]:[],queue=Array.isArray(res[1])?res[1]:[];var pending=queue.filter(function(x){return !/^(approved|active|verified|rejected)$/i.test(String(x.status||''))});
+   var h='<div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0"><span style="border:1px solid #c8ad6b;border-radius:8px;padding:6px 9px">Approved student records: <b>'+approved.length+'</b></span><span style="border:1px solid #c8ad6b;border-radius:8px;padding:6px 9px">Pending/correction records: <b>'+pending.length+'</b></span></div>';
+   if(approved.length){h+='<div style="overflow:auto;max-height:260px"><table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr><th style="text-align:left;padding:6px">Student</th><th style="text-align:left;padding:6px">Class</th><th style="text-align:left;padding:6px">Student ID</th><th style="text-align:left;padding:6px">Status</th></tr></thead><tbody>';approved.forEach(function(x){var n=[x.surname,x.first_name,x.middle_name].filter(Boolean).join(' ')||x.child_name||'Name missing';h+='<tr><td style="padding:6px;border-top:1px solid #6f526e">'+esc(n)+'</td><td style="padding:6px;border-top:1px solid #6f526e">'+esc(x.class_name||'Unassigned')+'</td><td style="padding:6px;border-top:1px solid #6f526e">'+esc(x.student_id||'Not issued')+'</td><td style="padding:6px;border-top:1px solid #6f526e">'+esc(x.status||'—')+'</td></tr>'});h+='</tbody></table></div>'}else h+='<p style="font-size:12px;color:#ffd7a0">No approved student records were returned by the database. Pending registrations cannot be used as official attendance until verified.</p>';
+   if(pending.length){h+='<details style="margin-top:10px"><summary style="cursor:pointer">View pending registrations ('+pending.length+')</summary><div style="overflow:auto;max-height:300px;margin-top:8px"><table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr><th style="text-align:left;padding:6px">Child name</th><th style="text-align:left;padding:6px">Class</th><th style="text-align:left;padding:6px">Parent/guardian</th><th style="text-align:left;padding:6px">Status</th></tr></thead><tbody>';pending.forEach(function(x){h+='<tr><td style="padding:6px;border-top:1px solid #6f526e">'+esc(x.student_name||'Name missing')+'</td><td style="padding:6px;border-top:1px solid #6f526e">'+esc(x.class_name||x.class_label_raw||'Needs class review')+'</td><td style="padding:6px;border-top:1px solid #6f526e">'+esc(x.parent_guardian_name||'Not supplied')+'<br>'+esc(x.parent_phone||x.parent_email||'No contact supplied')+'</td><td style="padding:6px;border-top:1px solid #6f526e">'+esc(x.status||'pending')+' / '+esc(x.completion_status||'—')+'</td></tr>'});h+='</tbody></table></div></details>'}
+   h+='<p style="font-size:11px;opacity:.85;margin-bottom:0">Data loaded directly from the SCL Supabase database. This panel is read-only; approve/correct records in Student Verification.</p>';out.innerHTML=h;
+  }).catch(function(e){out.innerHTML='<span style="color:#ffd0c9">Could not load registrations: '+esc(e.message||e)+'. Check the signed-in account and Supabase access policies.</span>'})
+ }
+ var last=0;setInterval(function(){if(Date.now()-last<1500)return;var b=document.getElementById('sclSuiteBody');if(b&&b.querySelector('#ngAttReg')){last=Date.now();mount()}},1800);
+ document.addEventListener('visibilitychange',function(){if(!document.hidden){var d=document.getElementById('sclRegRecoveryV105');if(d)load(d)}});
+})();
+</script>
+
 </body>
 </html>
