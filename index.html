@@ -1366,9 +1366,23 @@ body.scl-night .scl-craft-learning{background:linear-gradient(135deg,#171c2b,#20
 <div class="field"><label>State of Origin</label><input name="stateOfOrigin"/></div><div class="field"><label>LGA of Origin</label><input name="lgaOfOrigin"/></div><div class="field"><label>Place of Birth</label><input name="placeOfBirth"/></div><div class="field"><label>Religion</label><input name="religion"/></div>
 <div class="field full"><label>Any Ailments / Medical Conditions</label><textarea name="medicalConditions" placeholder="State relevant condition, allergy, medication or write None." rows="3"></textarea></div>
 </div></div>
-<div class="scl-reg-section"><div class="scl-reg-section-head"><b>3. PARENT / GUARDIAN INFORMATION</b><span>These details are used for school communication and child access.</span></div><div class="grid">
-<div class="field"><label>Father's Full Name *</label><input name="fatherName" required=""/></div><div class="field"><label>Mother's Full Name *</label><input name="motherName" required=""/></div><div class="field"><label>Primary Guardian / Contact Name *</label><input name="guardianName" required=""/></div><div class="field"><label>Parent / Guardian Phone *</label><input name="phone" required="" type="tel"/></div><div class="field"><label>Parent / Guardian Email *</label><input name="email" required="" type="email"/></div><div class="field"><label>Parent / Guardian Occupation</label><input name="guardianOccupation"/></div>
-</div></div>
+<div class="scl-reg-section scl-family-section" id="sclFamilySection">
+<div class="scl-reg-section-head"><b>3. PARENT / GUARDIAN INFORMATION</b><span>Add only the adults relevant to this child. Tap a card to open or close it.</span></div>
+<div class="scl-family-summary"><div><strong id="sclFamilyPercent">0%</strong><span>family details complete</span></div><div class="scl-family-progress"><i id="sclFamilyProgress"></i></div></div>
+<div class="scl-family-group"><div class="scl-family-group-title">Parents</div><div class="scl-family-buttons">
+<button type="button" class="scl-family-toggle" aria-expanded="false" data-family="father"><span>👨 Father / Guardian</span><small id="sclFamilyState-father">Not filled · 0%</small></button>
+<button type="button" class="scl-family-toggle" aria-expanded="false" data-family="mother"><span>👩 Mother / Guardian</span><small id="sclFamilyState-mother">Not filled · 0%</small></button></div>
+<div class="scl-family-panel" data-family-panel="father" hidden><div class="grid">
+<div class="field"><label>Father's full name</label><input name="fatherName" autocomplete="name"/></div><div class="field"><label>Occupation</label><input name="fatherOccupation"/></div><div class="field"><label>Phone / WhatsApp</label><input name="fatherPhone" type="tel"/></div><div class="field"><label>Email</label><input name="fatherEmail" type="email"/></div><div class="field full"><label>Address</label><input name="fatherAddress" autocomplete="street-address"/></div></div><p class="scl-family-hint">Enter the details exactly as they can be confirmed from the adult’s credentials or contact information.</p></div>
+<div class="scl-family-panel" data-family-panel="mother" hidden><div class="grid">
+<div class="field"><label>Mother's full name</label><input name="motherName" autocomplete="name"/></div><div class="field"><label>Occupation</label><input name="motherOccupation"/></div><div class="field"><label>Phone / WhatsApp</label><input name="motherPhone" type="tel"/></div><div class="field"><label>Email</label><input name="motherEmail" type="email"/></div><div class="field full"><label>Address</label><input name="motherAddress" autocomplete="street-address"/></div></div><p class="scl-family-hint">Enter the details exactly as they can be confirmed from the adult’s credentials or contact information.</p></div></div>
+<div class="scl-family-group"><div class="scl-family-group-title">Guardian(s)</div><p class="scl-family-hint">Use this when a parent is unavailable or when another adult is authorised to care for the child. You can add up to five guardians.</p>
+<div class="scl-family-buttons" id="sclGuardianButtons"><button type="button" class="scl-family-toggle" aria-expanded="false" data-family="guardian1"><span>🧑 Guardian 1</span><small id="sclFamilyState-guardian1">Not filled · 0%</small></button></div>
+<div class="scl-family-panel" data-family-panel="guardian1" hidden><div class="grid"><div class="field"><label>Guardian full name</label><input name="guardianName"/></div><div class="field"><label>Relationship to child</label><select name="guardianRelationship"><option value="">Choose relationship</option><option>Grandparent</option><option>Aunt / Uncle</option><option>Sibling</option><option>Foster parent</option><option>Legal guardian</option><option>Other</option></select></div><div class="field"><label>Phone / WhatsApp</label><input name="guardianPhone" type="tel"/></div><div class="field"><label>Email</label><input name="guardianEmail" type="email"/></div><div class="field"><label>Occupation</label><input name="guardianOccupation"/></div><div class="field"><label>Address</label><input name="guardianAddress"/></div></div></div>
+<div id="sclExtraGuardians"></div><button type="button" class="btn outline" id="sclAddGuardian">＋ Add another guardian <span>(1 of 5)</span></button>
+</div>
+<div class="scl-family-contact"><b>Preferred school contact</b><div class="grid"><div class="field"><label>Primary contact phone *</label><input name="phone" required="" type="tel" autocomplete="tel"/></div><div class="field"><label>Primary contact email *</label><input name="email" required="" type="email" autocomplete="email"/></div><div class="field full"><label>Who should the school contact first?</label><select name="primaryContactType"><option value="">Select</option><option>Father</option><option>Mother</option><option>Guardian 1</option><option>Guardian 2</option><option>Guardian 3</option><option>Guardian 4</option><option>Guardian 5</option></select></div></div></div>
+</div>
 <div class="scl-reg-section"><div class="scl-reg-section-head"><b>4. ACADEMIC EMAIL</b><span>The child's academic identity must be selected before registration can be completed.</span></div>
 <div class="scl-reg-email-options"><label><input name="academicEmailStatus" onchange="updateRegAcademicEmailUI()" required="" type="radio" value="existing"/> Child already has a suitable email</label><label><input name="academicEmailStatus" onchange="updateRegAcademicEmailUI()" type="radio" value="create"/> Create Official SCL Academic Email</label></div>
 <input id="regOfficialAcademicEmail" name="officialAcademicEmail" type="hidden" value=""/><div class="scl-reg-email-action" hidden="" id="regAcademicEmailAction"><button class="btn gold" onclick="openSclEmailCreatorForRegistration()" type="button">CREATE OFFICIAL ACADEMIC EMAIL</button><span id="regAcademicEmailStatus">Email creation is required before registration can be completed.</span></div></div>
@@ -2977,8 +2991,10 @@ window.sclYouTube=function(){const q=(by("sclAiInput")?.value||"").trim();if(q){
     const choice=document.querySelector('input[name="academicEmailStatus"]:checked')?.value||'';
     const generated=document.getElementById('regOfficialAcademicEmail')?.value.trim()||'';
     const fd=new FormData(form),d={};
-    const requiredFields=['firstName','surname','dateOfBirth','gender','fatherName','motherName','guardianName','phone','email'];
+    const requiredFields=['firstName','surname','dateOfBirth','gender','phone','email'];
     const missing=requiredFields.filter(k=>!String(fd.get(k)||'').trim());
+    const adultNames=['fatherName','motherName','guardianName','guardian2Name','guardian3Name','guardian4Name','guardian5Name'];
+    if(!adultNames.some(k=>String(fd.get(k)||'').trim()))missing.push('parentOrGuardianName');
     if(!d.class && !fd.get('class')) missing.push('class');
     d.registrationStatus=(missing.length||!generated||!choice)?'incomplete':'pending_review';
     d.completionStatus=d.registrationStatus==='incomplete'?'incomplete':'submitted';
@@ -11839,7 +11855,88 @@ html body #hv2#hv2 .hv2-top .hv2-in>div>button[aria-selected="true"],html body #
 /* Visual helpers only: header shadow on scroll, loading state on buttons that start async work. */
 (function(){try{var h=function(){var t=document.querySelector('.hv2-top');if(t)t.classList.toggle('scl-up',(window.scrollY||0)>8)};addEventListener('scroll',h,{passive:true});h();
 document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('.btn,.ag-btn');if(!b||b.disabled)return;b.classList.add('loading');setTimeout(function(){b.classList.remove('loading')},650)},true)}catch(e){}})();
-</script></body></html>
+</script>
+<style id="scl-family-and-live-background">
+/* One background system only: disable stacked legacy body textures and paint a single animated canvas. */
+html{background:#2b0008!important}
+body{background:transparent!important;background-image:none!important;background-attachment:initial!important;position:relative;isolation:isolate}
+body::before{display:none!important;background:none!important}
+#sclLiveBackground{position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;opacity:.8}
+body>*{position:relative}
+body>.modal,body>.wa-modal,body>#sclLegalM,body>#sclShortcutPanel,body>#sclShortcutToggle,body>#sclThemeToggle{position:fixed}
+.scl-family-section{border-color:#d9b65c!important;background:linear-gradient(145deg,#fffefa,#fff7e8)!important}
+.scl-family-summary{display:flex;align-items:center;gap:12px;padding:10px 12px;margin:8px 0 14px;border-radius:12px;background:#fff7df;border:1px solid #e6cf8d}
+.scl-family-summary>div:first-child{display:flex;align-items:center;gap:8px;white-space:nowrap}
+.scl-family-summary strong{font-size:22px;color:#650007}.scl-family-summary span{font-size:11px;color:#6b5b45}
+.scl-family-progress{height:9px;flex:1;background:#eadfca;border-radius:99px;overflow:hidden}.scl-family-progress i{display:block;width:0;height:100%;background:linear-gradient(90deg,#c18b14,#16783d);border-radius:99px;transition:width .2s}
+.scl-family-group{margin:10px 0 15px}.scl-family-group-title{font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;color:#6c1a1e;margin:0 0 8px}
+.scl-family-buttons{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.scl-family-toggle{display:flex;flex-direction:column;gap:5px;align-items:flex-start;text-align:left;padding:12px;border:1px solid #e4d2ae;border-radius:12px;background:#fff;color:#4b1114;font-weight:800;cursor:pointer;min-width:0}
+.scl-family-toggle[aria-expanded=true]{border-color:#d6a82e;background:#fff4cf;box-shadow:0 0 0 2px #d6a82e22}
+.scl-family-toggle small{font-weight:600;font-size:11px;color:#77695e}.scl-family-toggle.scl-filled small{color:#14733a}
+.scl-family-panel{margin-top:8px;padding:12px;border:1px solid #ead5b6;border-radius:12px;background:#fffdf8;animation:sclFamilyReveal .16s ease-out}
+.scl-family-panel[hidden]{display:none!important}
+.scl-family-panel .grid{margin:0!important}.scl-family-hint{font-size:11px;color:#766655;line-height:1.4;margin:9px 0 0}
+.scl-family-contact{border-top:1px solid #ead5b6;padding-top:12px;margin-top:14px}.scl-family-contact>b{display:block;color:#650007;margin-bottom:8px}
+#sclAddGuardian{margin-top:10px;width:100%}
+@keyframes sclFamilyReveal{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+@media(max-width:500px){.scl-family-buttons{grid-template-columns:1fr}.scl-family-summary{align-items:flex-start;flex-direction:column}.scl-family-progress{width:100%;flex:auto}}
+@media(prefers-reduced-motion:reduce){#sclLiveBackground{display:none}.scl-family-panel{animation:none}.scl-family-progress{transition:none}}
+</style>
+<script id="scl-family-and-live-background-js">
+(function(){
+function initFamily(){
+ const form=document.getElementById('form'),section=document.getElementById('sclFamilySection');if(!form||!section||section.dataset.ready)return;section.dataset.ready='1';
+ const buttons=section.querySelector('#sclGuardianButtons'),extras=section.querySelector('#sclExtraGuardians'),add=section.querySelector('#sclAddGuardian');
+ let guardianCount=1;
+ function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+ function addGuardian(n){
+  const label='Guardian '+n, id='guardian'+n, nameKey=n===1?'guardianName':'guardian'+n+'Name';
+  const btn=document.createElement('button');btn.type='button';btn.className='scl-family-toggle';btn.dataset.family=id;btn.setAttribute('aria-expanded','false');
+  btn.innerHTML='<span>🧑 '+label+'</span><small id="sclFamilyState-'+id+'">Not filled · 0%</small>';
+  const panel=document.createElement('div');panel.className='scl-family-panel';panel.dataset.familyPanel=id;panel.hidden=true;
+  panel.innerHTML='<div class="grid"><div class="field"><label>'+label+' full name</label><input name="'+nameKey+'"/></div><div class="field"><label>Relationship to child</label><select name="guardian'+n+'Relationship"><option value="">Choose relationship</option><option>Grandparent</option><option>Aunt / Uncle</option><option>Sibling</option><option>Foster parent</option><option>Legal guardian</option><option>Other</option></select></div><div class="field"><label>Phone / WhatsApp</label><input name="guardian'+n+'Phone" type="tel"/></div><div class="field"><label>Email</label><input name="guardian'+n+'Email" type="email"/></div><div class="field"><label>Occupation</label><input name="guardian'+n+'Occupation"/></div><div class="field"><label>Address</label><input name="guardian'+n+'Address"/></div></div>';
+  if(n===1){const oldPanel=section.querySelector('[data-family-panel="guardian1"]');if(oldPanel){oldPanel.replaceWith(panel);buttons.appendChild(btn);return}}
+  extras.appendChild(btn);extras.appendChild(panel);
+ }
+ function openFamily(id){const panel=section.querySelector('[data-family-panel="'+id+'"]'),btn=section.querySelector('[data-family="'+id+'"]');if(!panel||!btn)return;const show=panel.hidden;panel.hidden=!show;btn.setAttribute('aria-expanded',String(show));}
+ section.addEventListener('click',e=>{const b=e.target.closest('[data-family]');if(b&&section.contains(b)){openFamily(b.dataset.family)}});
+ function update(){
+  let total=0,filled=0;
+  ['father','mother','guardian1','guardian2','guardian3','guardian4','guardian5'].forEach(id=>{
+   const panel=section.querySelector('[data-family-panel="'+id+'"]'),btn=section.querySelector('[data-family="'+id+'"]'),state=section.querySelector('#sclFamilyState-'+id);if(!panel)return;
+   const inputs=[...panel.querySelectorAll('input,select,textarea')];const count=inputs.filter(x=>x.value.trim()).length;const pct=Math.round(count/Math.max(1,inputs.length)*100);total+=inputs.length;filled+=count;
+   if(state)state.textContent=(count===0?'Not filled':count===inputs.length?'Complete':'In progress')+' · '+pct+'%';
+   if(btn)btn.classList.toggle('scl-filled',count>0);
+  });
+  const pct=Math.round(filled/Math.max(1,total)*100),out=section.querySelector('#sclFamilyPercent'),bar=section.querySelector('#sclFamilyProgress');if(out)out.textContent=pct+'%';if(bar)bar.style.width=pct+'%';
+ }
+ // Replace first guardian markup's panel with a consistently generated accessible panel.
+ const firstPanel=section.querySelector('[data-family-panel="guardian1"]');
+ if(firstPanel){const firstBtn=section.querySelector('[data-family="guardian1"]');if(firstBtn){firstBtn.dataset.family='guardian1';firstBtn.setAttribute('aria-expanded','false')}}
+ add.addEventListener('click',()=>{if(guardianCount>=5)return;guardianCount++;addGuardian(guardianCount);add.querySelector('span').textContent='('+guardianCount+' of 5)';if(guardianCount>=5){add.disabled=true;add.textContent='Maximum of 5 guardians added'}update()});
+ // Make extra guardian panels and buttons collapse/expand using the same delegated handler.
+ form.addEventListener('input',update);form.addEventListener('change',update);update();
+ // Maintain legacy fields consumed by existing APIs: the preferred contact is mirrored into canonical parent keys.
+ form.addEventListener('submit',()=>{},true);
+}
+function initBackground(){
+ if(document.getElementById('sclLiveBackground'))return;
+ const c=document.createElement('canvas');c.id='sclLiveBackground';c.setAttribute('aria-hidden','true');document.body.prepend(c);
+ const ctx=c.getContext('2d');if(!ctx)return;let w=0,h=0,dpr=1,pts=[];
+ function resize(){dpr=Math.min(devicePixelRatio||1,1.5);w=innerWidth;h=innerHeight;c.width=w*dpr;c.height=h*dpr;c.style.width=w+'px';c.style.height=h+'px';ctx.setTransform(dpr,0,0,dpr,0,0);pts=Array.from({length:Math.min(34,Math.max(14,Math.floor(w/34)))},()=>({x:Math.random()*w,y:Math.random()*h,r:1+Math.random()*2,v:.12+Math.random()*.28,a:.12+Math.random()*.25,phase:Math.random()*6.28}))}
+ function frame(t){if(document.hidden){requestAnimationFrame(frame);return}ctx.clearRect(0,0,w,h);const g=ctx.createLinearGradient(0,0,w,h);g.addColorStop(0,'rgba(83,0,10,.30)');g.addColorStop(.55,'rgba(150,22,26,.12)');g.addColorStop(1,'rgba(215,159,25,.20)');ctx.fillStyle=g;ctx.fillRect(0,0,w,h);
+  pts.forEach(p=>{p.y-=p.v;if(p.y<-5)p.y=h+5;p.x+=Math.sin(t*.00025+p.phase)*.12;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle='rgba(244,195,69,'+p.a+')';ctx.fill();});
+  for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){const a=pts[i],b=pts[j],dx=a.x-b.x,dy=a.y-b.y,dist=Math.hypot(dx,dy);if(dist<115){ctx.strokeStyle='rgba(211,164,59,'+((1-dist/115)*.12)+')';ctx.lineWidth=.7;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke()}}
+  requestAnimationFrame(frame)
+ }
+ resize();addEventListener('resize',resize,{passive:true});requestAnimationFrame(frame);
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{initFamily();initBackground()});else{initFamily();initBackground()}
+})();
+</script>
+
+</body></html>
 
 <style id="scl-v311-rank-medal-effects">
 /* Distinct, light-weight rank and medal micro-animations */
