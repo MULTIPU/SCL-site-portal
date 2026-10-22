@@ -9296,7 +9296,7 @@ window.sclNotesWithMarker=function(f,notes){var T=f&&f.__T;if(!T)return notes;
  return line+(notes?'\n'+notes:'')};
 window.sclBuildStaffStructured=function(f,data){
  var T=f&&f.__T||null,wp=data.workPattern||'';
- var et={'Full-Time':'full_time','Half-Day Part-Time':'part_time_half_day','Full-Day Part-Time':'part_time_full_day','Scheduled Part-Time':'part_time_scheduled'}[wp]||'';
+ var et=wp==='Full-Time'?'full_time':(/Part-Time/.test(wp)?'part_time':'');
  var tm={'In school':'in_school','Online':'online','In school and online':'both'};
  var prof=data.professions||[],cls=[],subj=[];
  if(T){T.classes.forEach(function(c){
@@ -9304,7 +9304,7 @@ window.sclBuildStaffStructured=function(f,data){
    else{cls.push({class_name:c,assignment_type:'subject_teacher'});(T.subjects[c]||[]).forEach(function(s){subj.push({class_name:c,subject:s})})}})}
  return{surname:f.surname?f.surname.value.trim():'',first_name:f.firstName?f.firstName.value.trim():'',other_names:f.otherNames?f.otherNames.value.trim():'',
   employment_start_date:data.employmentStartDate||null,employment_end_date:(f.employmentEndDate&&f.employmentEndDate.value)||null,
-  employment_type:et,teaching_mode:T?(tm[T.delivery]||''):'',primary_profession:prof[0]||'',additional_professions:prof.slice(1),
+  employment_type:et,work_pattern:wp,work_pattern_detail:wp,teaching_mode:T?(tm[T.delivery]||''):'',primary_profession:prof[0]||'',additional_professions:prof.slice(1),
   qualifications:data.credentials?[data.credentials]:[],subject_assignments:subj,class_assignments:cls,
   part_time_schedule:window.sclPartTime(f),teaching_level:T?T.level:'',timetable_slots:window.sclSlots(f)}};
 
@@ -9426,7 +9426,7 @@ function patchWorker(){
   if(f.employmentStartDate&&E.employmentStartDate){f.employmentStartDate.value=E.employmentStartDate;if(window.sclUpdateWorkerTenure)window.sclUpdateWorkerTenure()}
   set('employmentEndDate',E.employmentEndDate);set('credentials',E.credentials);
   var cleanNotes=String(E.notes||'').replace(/\[TEACHING ASSIGNMENT\][\s\S]*?\[\/TEACHING ASSIGNMENT\]\s*/,'');set('notes',cleanNotes);
-  var wp=f.querySelector('input[name="workPattern"][value="'+(E.workPattern||'')+'"]');if(wp){wp.checked=true;wp.dispatchEvent(new Event('change',{bubbles:true}))}
+  var rawWP=E.workPattern||E.work_pattern||E.employment_type||E.employmentType||(E.structured&&(E.structured.work_pattern||E.structured.employment_type))||'';var normWP=String(rawWP).toLowerCase().replace(/[^a-z]+/g,' ').trim();var wpValue='';if(/^full( time)?$/.test(normWP)||/full time/.test(normWP))wpValue='Full-Time';else if(/half/.test(normWP))wpValue='Half-Day Part-Time';else if(/full day/.test(normWP))wpValue='Full-Day Part-Time';else if(/part|sched/.test(normWP))wpValue='Scheduled Part-Time';var wp=wpValue&&f.querySelector('input[name="workPattern"][value="'+wpValue+'"]');if(wp){wp.checked=true;wp.dispatchEvent(new Event('change',{bubbles:true}))}else if(!rawWP){var legacyWP=f.querySelector('input[name="workPattern"]:checked');if(legacyWP)legacyWP.checked=false;}
   if(f.__setPT)f.__setPT(E.partTimeSchedule||(E.structured&&E.structured.part_time_schedule));
   if(f.__teachRestore)f.__teachRestore(E.teaching);if(window.sclUploads)window.sclUploads.refresh(f);
   var ban=D.createElement('div');ban.className='worker-form-note scl-edit-banner';
@@ -11192,26 +11192,30 @@ function ring(title,body,tag,opts){
  stop();
  var b=bar();b.querySelector('.rb-t').textContent='🔔 '+(title||'School alert')+(body?' — '+body:'');b.classList.add('on');
  playSound(p.sound,p,false);
+ deviceNotify(title||'SCL school alert',body||'You have a new school update.',tag||'scl-school-alert');
  if(p.vibrate&&navigator.vibrate){var pat=[400,200,400,200,800];try{navigator.vibrate(pat)}catch(e){}vibT=setInterval(function(){try{navigator.vibrate(pat)}catch(e){}},2600)}
  stopT=setTimeout(stop,Math.max(3,p.seconds)*1000)}
 window.sclRing=ring;window.sclStopRing=stop;
 /* ---- hook every existing notification so it also rings when the site is open ---- */
-(function(){
- var N=window.Notification;
- if(N&&!N.__scl){var W=function(title,o){var n=new N(title,o);try{ring(title,o&&o.body,o&&o.tag)}catch(e){}return n};W.prototype=N.prototype;Object.defineProperty(W,'permission',{get:function(){return N.permission}});W.requestPermission=function(){return N.requestPermission.apply(N,arguments)};W.__scl=1;window.Notification=W}
- var P=window.ServiceWorkerRegistration&&ServiceWorkerRegistration.prototype;
- if(P&&P.showNotification&&!P.showNotification.__scl){var o=P.showNotification;P.showNotification=function(t,opts){try{ring(t,opts&&opts.body,opts&&opts.tag)}catch(e){}return o.call(this,t,opts)};P.showNotification.__scl=1}
- if(navigator.serviceWorker&&navigator.serviceWorker.addEventListener)navigator.serviceWorker.addEventListener('message',function(e){var d=e.data||{};if(d.type==='scl-ring')ring(d.title,d.body,d.tag||'push')});
-})();
+function deviceNotify(title,body,tag){
+ try{if(!('Notification' in window)||Notification.permission!=='granted')return false;
+  var opts={body:String(body||'Open Shining Child Leaders School to view details.'),tag:String(tag||'scl-school-alert'),icon:'./favicon.ico',badge:'./favicon.ico',renotify:false};
+  /* A page-visible alert should not wait indefinitely for serviceWorker.ready. */
+  try{var n=new Notification(String(title||'SCL school alert'),opts);n.onclick=function(){try{window.focus();n.close()}catch(_){}};return true}catch(nativeErr){}
+  if('serviceWorker' in navigator){navigator.serviceWorker.ready.then(function(reg){if(reg&&reg.showNotification)return reg.showNotification(String(title||'SCL school alert'),opts)}).catch(function(){})}
+  return false}catch(e){return false}
+}
+window.sclDeviceNotify=deviceNotify;
+(function(){if(navigator.serviceWorker&&navigator.serviceWorker.addEventListener)navigator.serviceWorker.addEventListener('message',function(e){var d=e.data||{};if(d.type==='scl-ring')ring(d.title,d.body,d.tag||'push')})})();
 /* ---- push subscription (needs the backend to send; fails quietly) ---- */
 function u8(b){var p='='.repeat((4-b.length%4)%4),s=(b+p).replace(/-/g,'+').replace(/_/g,'/'),r=atob(s),a=new Uint8Array(r.length);for(var i=0;i<r.length;i++)a[i]=r.charCodeAt(i);return a}
 function pushSubscribe(){
  return(async function(){
   if(!('serviceWorker' in navigator)||!('PushManager' in window))return'Background push is not supported on this browser.';
-  var a=null;try{a=JSON.parse(sessionStorage.getItem('sclAuthSession')||'null')}catch(e){}
+  var a=null;try{a=JSON.parse(sessionStorage.getItem('sclAuthSession')||'null')}catch(e){};if(!(a&&a.accessToken)&&window.sclSupabase&&window.sclSupabase.auth){try{var ss=await window.sclSupabase.auth.getSession();if(ss&&ss.data&&ss.data.session)a={accessToken:ss.data.session.access_token,user:ss.data.session.user}}catch(e){}}
   if(!(a&&a.accessToken))return'Sign in to also receive alerts when the site is closed.';
   var rf=window.__sclRawFetch||window.fetch,base=String(window.SCL_SUPABASE_URL||'').replace(/\/$/,'')+'/functions/v1/scl-results-api';
-  var h={'Content-Type':'application/json',apikey:window.SCL_SUPABASE_PUBLISHABLE_KEY||'',Authorization:'Bearer '+a.accessToken};
+  var h={'Content-Type':'application/json',apikey:window.SCL_SUPABASE_PUBLISHABLE_KEY||window.SCL_SUPABASE_ANON_KEY||'',Authorization:'Bearer '+a.accessToken};
   var r=await rf.call(window,base,{method:'POST',headers:h,body:JSON.stringify({action:'vapid_public'})});if(!r.ok)return'Background push is not set up on the school server yet.';
   var d=await r.json().catch(function(){return{}}),key=d.publicKey||d.vapid_public||d.vapidPublicKey||d.key;if(!key)return'Background push is not set up on the school server yet.';
   var reg=await navigator.serviceWorker.ready,sub=await reg.pushManager.getSubscription()||await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:u8(key)});
@@ -11243,15 +11247,16 @@ D.addEventListener('click',async function(e){
  var b=e.target.closest&&e.target.closest('#sclAlertPanel [data-a]');if(!b)return;var a=b.dataset.a;
  if(a==='close'){close();return}
  if(a==='play'){stop();playSound(b.dataset.s,Object.assign({},prefs(),{sound:b.dataset.s}),true);return}
- if(a==='test'){ring('SCL test alert','This is how your alert will ring.','test',{force:true});try{var sessRaw=null;try{sessRaw=JSON.parse(sessionStorage.getItem('sclAuthSession')||'null')}catch(_){}if(sessRaw&&sessRaw.accessToken){var pushBase=String(window.SCL_SUPABASE_URL||'').replace(/\/$/,'')+'/functions/v1/scl-push-api';var pushTest=await fetch(pushBase,{method:'POST',headers:{'Content-Type':'application/json','apikey':window.SCL_SUPABASE_PUBLISHABLE_KEY||'','Authorization':'Bearer '+sessRaw.accessToken},body:JSON.stringify({action:'test'})});var pushData=await pushTest.json().catch(function(){return{}});var statusBox=document.getElementById('apStatus');if(statusBox)statusBox.textContent=pushTest.ok?'Local ringtone tested. Background push test: '+(pushData.sent||0)+' device(s) reached.':(pushData.error||'Background push test failed.')} }catch(pushErr){console.warn('SCL push test:',pushErr)}return}
+ if(a==='test'){if(('Notification' in window)&&Notification.permission==='default'){try{var permResult=await Notification.requestPermission();if(permResult==='granted')deviceNotify('SCL test alert','Browser/device notifications are working.','scl-test')}catch(_){}}ring('SCL test alert','This is how your alert will ring.','test',{force:true});try{var sessRaw=null;try{sessRaw=JSON.parse(sessionStorage.getItem('sclAuthSession')||'null')}catch(_){}if(sessRaw&&sessRaw.accessToken){var pushBase=String(window.SCL_SUPABASE_URL||'').replace(/\/$/,'')+'/functions/v1/scl-push-api';var pushTest=await fetch(pushBase,{method:'POST',headers:{'Content-Type':'application/json','apikey':window.SCL_SUPABASE_PUBLISHABLE_KEY||'','Authorization':'Bearer '+sessRaw.accessToken},body:JSON.stringify({action:'test'})});var pushData=await pushTest.json().catch(function(){return{}});var statusBox=document.getElementById('apStatus');if(statusBox)statusBox.textContent=pushTest.ok?'Local ringtone tested. Background push test: '+(pushData.sent||0)+' device(s) reached.':(pushData.error||'Background push test failed.')} }catch(pushErr){console.warn('SCL push test:',pushErr)}return}
  if(a==='rmtone'){await setTone(null);var p=prefs();if(p.sound==='custom'){p.sound='shine';savePrefs(p)}render();return}
  if(a==='enable'){
   if(!('Notification' in window)){render('This browser does not support notifications.');return}
   var r=await Notification.requestPermission().catch(function(){return'denied'});
   try{if('serviceWorker' in navigator)await navigator.serviceWorker.register('./sw.js',{scope:'./'})}catch(x){}
   if(r!=='granted'){render(permText());return}
-  render('✅ Device notifications are ON. Checking background alerts…');
-  var m=await pushSubscribe();render('✅ Device notifications are ON. '+m)}
+  render('✅ Device notifications are ON. Sending a test notification…');
+  deviceNotify('Shining Child Leaders School','Device notifications are enabled on this phone.','scl-permission-test');
+  var m=await pushSubscribe();render('✅ Browser/device notifications are enabled. '+m)}
 });
 D.addEventListener('change',async function(e){
  var t=e.target;if(!t.closest||!t.closest('#sclAlertPanel'))return;var p=prefs();
@@ -11877,7 +11882,7 @@ html{background:#2b0008!important}
 body{background:transparent!important;background-image:none!important;background-attachment:initial!important;position:relative;isolation:isolate}
 body::before{display:none!important;background:none!important}
 #sclLiveBackground{position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;opacity:.8}
-body>*{position:relative}
+/* Preserve each component's original positioning; only the canvas is fixed. */
 body>.modal,body>.wa-modal,body>#sclLegalM,body>#sclShortcutPanel,body>#sclShortcutToggle,body>#sclThemeToggle{position:fixed}
 .scl-family-section{border-color:#d9b65c!important;background:linear-gradient(145deg,#fffefa,#fff7e8)!important}
 .scl-family-summary{display:flex;align-items:center;gap:12px;padding:10px 12px;margin:8px 0 14px;border-radius:12px;background:#fff7df;border:1px solid #e6cf8d}
@@ -11942,7 +11947,7 @@ function initBackground(){
  function resize(){dpr=Math.min(devicePixelRatio||1,1.5);w=innerWidth;h=innerHeight;c.width=w*dpr;c.height=h*dpr;c.style.width=w+'px';c.style.height=h+'px';ctx.setTransform(dpr,0,0,dpr,0,0);pts=Array.from({length:Math.min(34,Math.max(14,Math.floor(w/34)))},()=>({x:Math.random()*w,y:Math.random()*h,r:1+Math.random()*2,v:.12+Math.random()*.28,a:.12+Math.random()*.25,phase:Math.random()*6.28}))}
  function frame(t){if(document.hidden){requestAnimationFrame(frame);return}ctx.clearRect(0,0,w,h);const g=ctx.createLinearGradient(0,0,w,h);g.addColorStop(0,'#16030b');g.addColorStop(.28,'#390511');g.addColorStop(.58,'#21152c');g.addColorStop(.82,'#49200f');g.addColorStop(1,'#12050d');ctx.fillStyle=g;ctx.fillRect(0,0,w,h);
   pts.forEach(p=>{p.y-=p.v;if(p.y<-5)p.y=h+5;p.x+=Math.sin(t*.00025+p.phase)*.12;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle='rgba(244,195,69,'+p.a+')';ctx.fill();});
-  for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){const a=pts[i],b=pts[j],dx=a.x-b.x,dy=a.y-b.y,dist=Math.hypot(dx,dy);if(dist<115){ctx.strokeStyle='rgba(211,164,59,'+((1-dist/115)*.12)+')';ctx.lineWidth=.7;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke()}}
+  for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){const a=pts[i],b=pts[j],dx=a.x-b.x,dy=a.y-b.y,dist=Math.hypot(dx,dy);if(dist<145){ctx.strokeStyle='rgba(211,164,59,'+((1-dist/145)*.145)+')';ctx.lineWidth=.7;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke()}}
   requestAnimationFrame(frame)
  }
  resize();addEventListener('resize',resize,{passive:true});requestAnimationFrame(frame);
@@ -11951,7 +11956,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 })();
 </script>
 
-</body></html>
+
 
 <style id="scl-v311-rank-medal-effects">
 /* Distinct, light-weight rank and medal micro-animations */
@@ -13089,3 +13094,50 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 <style id="scl-final-background-overrides">
 html{background:transparent!important;background-color:transparent!important}body{background:transparent!important;background-color:transparent!important;background-image:none!important}#sclLiveBackground{z-index:-1!important}
 </style>
+
+<style id="scl-accessibility-tab-colors-v2">
+/* Color memory cues: restrained color strips identify destinations without relying on color alone. */
+#sclTabs button:nth-child(1),.bottom button:nth-child(1){--scl-tab:#e6b83f}
+#sclTabs button:nth-child(2),.bottom button:nth-child(2){--scl-tab:#35a7a0}
+#sclTabs button:nth-child(3),.bottom button:nth-child(3){--scl-tab:#7d68d7}
+#sclTabs button:nth-child(4),.bottom button:nth-child(4){--scl-tab:#3d91dc}
+#sclTabs button:nth-child(5),.bottom button:nth-child(5){--scl-tab:#e58b43}
+#sclTabs button:nth-child(6),.bottom button:nth-child(6){--scl-tab:#df6688}
+#sclTabs button:nth-child(7),.bottom button:nth-child(7){--scl-tab:#63a65b}
+#sclTabs button,.bottom button{position:relative;box-shadow:inset 0 -2px 0 color-mix(in srgb,var(--scl-tab,#e6b83f) 55%,transparent);}
+#sclTabs button[aria-selected="true"],.bottom button.active,.bottom button[aria-current="page"]{background:color-mix(in srgb,var(--scl-tab,#e6b83f) 18%,transparent)!important;box-shadow:inset 0 -3px 0 var(--scl-tab,#e6b83f),0 0 0 1px color-mix(in srgb,var(--scl-tab,#e6b83f) 35%,transparent)!important}
+#sclTabs button:focus-visible,.bottom button:focus-visible{outline:3px solid var(--scl-tab,#e6b83f)!important;outline-offset:2px}
+@media(prefers-reduced-motion:reduce){#sclLiveBackground{opacity:.45}}
+</style>
+<script id="scl-device-notification-and-profile-repair-v2">
+(function(){'use strict';
+  // Make the selected staff schedule resilient to older saved field names during profile editing/reapplication.
+  function restoreStaffWorkPattern(){
+    var f=document.getElementById('workerForm'),e=window.__sclEdit;if(!f||!e)return;
+    var raw=e.workPattern||e.work_pattern||e.employment_type||e.employmentType||(e.structured&&(e.structured.work_pattern||e.structured.employment_type))||'';
+    var t=String(raw).toLowerCase().replace(/[^a-z]+/g,' ').trim();if(!t)return;
+    var v=/^full( time)?$/.test(t)||/full time/.test(t)?'Full-Time':/half/.test(t)?'Half-Day Part-Time':/full day/.test(t)?'Full-Day Part-Time':/part|sched/.test(t)?'Scheduled Part-Time':'';
+    if(!v)return;var r=f.querySelector('input[name="workPattern"][value="'+v+'"]');if(r&&!r.checked){r.checked=true;r.dispatchEvent(new Event('change',{bubbles:true}))}
+  }
+  var mo=new MutationObserver(function(){restoreStaffWorkPattern()});
+  if(document.documentElement)mo.observe(document.documentElement,{childList:true,subtree:true});
+  // OCR-assisted staff credential entry. Uploaded original remains the source document; OCR text is only a draft.
+  var ocrPromise=null;
+  function loadOCR(){if(window.Tesseract)return Promise.resolve(window.Tesseract);if(ocrPromise)return ocrPromise;ocrPromise=new Promise(function(resolve,reject){var sc=document.createElement('script');sc.src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';sc.async=true;sc.onload=function(){window.Tesseract?resolve(window.Tesseract):reject(Error('Text scanner did not load'))};sc.onerror=function(){reject(Error('Could not load text scanner. Check your internet connection.'))};document.head.appendChild(sc)});return ocrPromise}
+  async function scanCredential(file,form,status){
+    if(!file)return;if(!/^image\//i.test(file.type)){status.textContent='For automatic reading, choose or photograph a clear image (JPG, PNG or WEBP). You can still upload a PDF normally.';return}
+    if(file.size>8*1024*1024){status.textContent='Image is larger than 8 MB. Choose a smaller image.';return}
+    status.textContent='Reading the document… keep this page open.';
+    try{var T=await loadOCR(),res=await T.recognize(file,'eng'),txt=String(res&&res.data&&res.data.text||'').replace(/[ \t]+/g,' ').replace(/\n{3,}/g,'\n\n').trim();if(!txt)throw Error('No readable text found. Try a brighter, sharper photo.');
+      var cred=form.elements.credentials;if(cred){var lines=txt.split(/\n+/).map(function(x){return x.trim()}).filter(Boolean);var useful=lines.filter(function(x){return /degree|diploma|certificate|nce|b\.ed|bsc|b\.sc|m\.ed|m\.sc|trcn|qualification|education|university|college|professional|teaching/i.test(x)});var draft=(useful.length?useful:lines).slice(0,8).join(' · ').slice(0,500);if(!cred.value.trim()||confirm('Replace the current qualification text with the details read from this document?'))cred.value=draft;cred.dispatchEvent(new Event('input',{bubbles:true}));}
+      var sup=form.elements.cvSupporting;if(sup&&typeof DataTransfer!=='undefined'){try{var current=[].slice.call(sup.files||[]);if(current.length<5){var dt=new DataTransfer();current.forEach(function(f){dt.items.add(f)});dt.items.add(file);sup.files=dt.files;sup.dispatchEvent(new Event('change',{bubbles:true}));}}catch(_){}}
+      status.textContent='Text extracted as a draft. Check the qualification field and confirm the original document was added to Supporting Documents before saving.';
+    }catch(err){status.textContent=(err&&err.message)||'Could not read this document. You can still upload it and type the qualification manually.'}
+  }
+  function mountScanner(){var f=document.getElementById('workerForm');if(!f||f.dataset.sclOcrReady)return;var cred=f.elements.credentials;if(!cred)return;f.dataset.sclOcrReady='1';var wrap=document.createElement('div');wrap.className='field full scl-credential-scan';wrap.innerHTML='<label>Read a qualification document (optional)</label><div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><input type="file" accept="image/*" capture="environment" id="sclCredentialScanFile" style="max-width:100%"><button type="button" id="sclCredentialScanButton" class="btn outline">📄 Scan &amp; suggest details</button></div><small>Use a clear photo of a certificate. Text is only a suggestion; check it before saving. The original image can be attached to your supporting documents.</small><div id="sclCredentialScanStatus" role="status" aria-live="polite" style="font-size:12px;margin-top:6px"></div>';var field=cred.closest('.field');if(field&&field.parentNode)field.parentNode.insertBefore(wrap,field.nextSibling);var input=wrap.querySelector('#sclCredentialScanFile'),btn=wrap.querySelector('#sclCredentialScanButton'),status=wrap.querySelector('#sclCredentialScanStatus');btn.addEventListener('click',function(){scanCredential(input.files&&input.files[0],f,status)});input.addEventListener('change',function(){if(input.files&&input.files[0])scanCredential(input.files[0],f,status)});}
+  var wmo=new MutationObserver(function(){mountScanner()});if(document.documentElement)wmo.observe(document.documentElement,{childList:true,subtree:true});document.addEventListener('change',function(e){if(e.target&&e.target.id==='sclCredentialScanFile'){var f=document.getElementById('workerForm');if(f)mountScanner()}});
+})();
+</script>
+
+</body>
+</html>
