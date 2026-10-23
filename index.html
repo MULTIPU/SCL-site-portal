@@ -10403,7 +10403,7 @@ function renderMenu(){
     :'Signed in as <b>'+esc(LV_LABEL[lv]||'Staff')+'</b>. What you add is sent to the school by email and goes live once an administrator confirms it.')+'</p>';
   if(lv==='admin'){['teaching','non_teaching'].forEach(function(k){h+='<button type="button" class="scl-add-item" data-a="verify" data-t="'+k+'"><span class="ic">'+(k==='teaching'?'👩‍🏫':'🧰')+'</span><span><b>'+esc(VK[k])+'</b><small>Review submitted applications</small></span></button>'})}
   menuFor(lv).forEach(function(k){var c=KINDS[k];h+='<button type="button" class="scl-add-item" data-a="kind" data-k="'+k+'"><span class="ic">'+c.icon+'</span><span><b>'+esc(c.label)+'</b><small>'+esc(c.sub)+'</small></span></button>'});
-  if(lv==='admin'){h+='<button type="button" class="scl-add-item" data-a="approvals" id="sclPendingApprovalBtn"><span class="ic">🔔</span><span><b>Pending approvals <span id="sclPendingApprovalCount" class="scl-pending-count">…</span></b><small>New accounts and role registrations awaiting review</small></span></button>';h+='<button type="button" class="scl-add-item" data-a="students-list" id="sclStudentQueueBtn"><span class="ic">🎓</span><span><b>Registered Students <span id="sclStudentQueueCount" class="scl-pending-count">…</span></b><small>Check students saved in the official school database</small></span></button>';}
+  if(lv==='admin'){h+='<button type="button" class="scl-add-item" data-a="approvals" id="sclPendingApprovalBtn"><span class="ic">🔔</span><span><b>Pending approvals <span id="sclPendingApprovalCount" class="scl-pending-count">…</span></b><small>New accounts and role registrations awaiting review</small></span></button>';h+='<button type="button" class="scl-add-item" data-a="students-list" id="sclStudentQueueBtn"><span class="ic">🎓</span><span><b>Registered Students <span id="sclStudentQueueCount" class="scl-pending-count">…</span></b><small>Check students saved in the official school database</small></span></button>';h+='<button type="button" class="scl-add-item" data-a="student-verify" id="sclStudentVerifyBtn"><span class="ic">✅</span><span><b>Verify / Approve Students</b><small>Review student submissions, correct missing details, and approve verified children</small></span></button>';}
   b.innerHTML=h;
   if(lv==='admin')refreshPendingBadge()
 }
@@ -10579,6 +10579,7 @@ function onClick(e){
   else if(a==='kind'){var kind=t.getAttribute('data-k');if(kind==='student'){close();if(typeof window.pickRegistration==='function')window.pickRegistration();else if(window.toast)window.toast('Open Register Your Child from the home screen to use the official registration form.')}else renderForm(kind)}
   else if(a==='approvals')renderApprovals();
   else if(a==='students-list')renderRegisteredStudents();
+  else if(a==='student-verify')renderStudentQueue();
   else if(a==='student-queue-all')renderRegisteredStudents();
   else if(a==='student-return'){if(!confirm('Return this student draft for correction?'))return;studentQueueRequest({action:'return',id:t.getAttribute('data-id'),reason:'Returned from the Pending Approvals menu for completion/correction.'}).then(function(){renderStudentQueue()}).catch(function(x){if(window.toast)window.toast(x.message||'Could not return record')})}
   else if(a==='student-approve'){if(!confirm('Approve this student and generate the official SCL student ID? Confirm that the name, class and parent contact are correct.'))return;studentQueueRequest({action:'approve',id:t.getAttribute('data-id')}).then(function(d){if(window.toast)window.toast('Student approved. ID: '+(d.studentId||'created'));renderStudentQueue();try{loadRosterDb(true)}catch(_){}}).catch(function(x){if(window.toast)window.toast(x.message||'Approval failed')})}
@@ -10599,6 +10600,7 @@ function openAdd(){
   build();renderMenu();open()}
 window.sclOpenAddSheet=openAdd;
 window.sclOpenApprovals=function(){build();open();renderApprovals()};
+window.sclOpenStudentVerification=function(){if(!live()){if(window.openM)window.openM('loginModal');return}if(level()!=='admin'){if(window.toast)window.toast('Student verification is restricted to authorised administrators.');return}build();open();renderStudentQueue()};
 window.sclOpenStaffApprovals=function(k){build();open();renderVerifyList(k,'pending')};
 
 /* Capture on window so this runs before the older bottom-bar handler. */
@@ -11015,10 +11017,10 @@ var css='#sclStaffShow{--oct:#5a0c1a;--gold:#e3b23c}#sclStaffShow .sso-head{text
 +'#sclStaffShow.sso-scroll .sso-view{overflow-x:auto;-webkit-overflow-scrolling:touch}'
 +'#sclStaffShow .sso-card{flex:0 0 auto;width:150px;text-align:center;background:none;border:0;padding:0;font:inherit;color:inherit;cursor:default}'
 +'#sclStaffShow .sso-card.ver{cursor:pointer}#sclStaffShow .sso-card.ver:focus-visible{outline:3px solid #fff;outline-offset:4px;border-radius:12px}'
-+'#sclStaffShow .sso-oct{position:relative;width:140px;height:140px;margin:0 auto 8px}'
++'#sclStaffShow .sso-oct{position:relative;width:140px;height:140px;aspect-ratio:1 / 1;margin:0 auto 8px;flex:0 0 140px}'
 +'#sclStaffShow .sso-frame,#sclStaffShow .sso-photo{position:absolute;clip-path:polygon(29.3% 0,70.7% 0,100% 29.3%,100% 70.7%,70.7% 100%,29.3% 100%,0 70.7%,0 29.3%)}'
 +'#sclStaffShow .sso-frame{inset:0;background:linear-gradient(135deg,var(--gold),#a8741a)}#sclStaffShow .sso-card.pend .sso-frame{background:#9a8f80}'
-+'#sclStaffShow .sso-photo{inset:5px;background:#f3e7cf;overflow:hidden}#sclStaffShow .sso-photo img,#sclStaffShow .sso-photo svg{width:100%;height:100%;object-fit:cover;display:block}'
++'#sclStaffShow .sso-photo{inset:5px;aspect-ratio:1 / 1;background:#f3e7cf;overflow:hidden;clip-path:polygon(29.3% 0,70.7% 0,100% 29.3%,100% 70.7%,70.7% 100%,29.3% 100%,0 70.7%,0 29.3%)}#sclStaffShow .sso-photo img,#sclStaffShow .sso-photo svg{width:100%;height:100%;aspect-ratio:1 / 1;object-fit:cover;object-position:center center;display:block;max-width:none;max-height:none;transform:none}'
 +'#sclStaffShow .sso-card.pend .sso-photo img,#sclStaffShow .sso-card.pend .sso-photo svg{filter:blur(9px);transform:scale(1.15)}'
 +'#sclStaffShow .sso-pend{white-space:nowrap;position:absolute;left:50%;top:0;transform:translate(-50%,-10%);z-index:2;background:#b3261e;color:#fff;font-weight:900;font-size:12px;letter-spacing:.12em;padding:4px 12px;border-radius:99px;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.35)}'
 +'#sclStaffShow .sso-name{font-weight:800;font-size:14px;line-height:1.2;color:inherit;overflow-wrap:anywhere}#sclStaffShow .sso-pos{font-size:12px;opacity:.85}'
@@ -11028,7 +11030,7 @@ var css='#sclStaffShow{--oct:#5a0c1a;--gold:#e3b23c}#sclStaffShow .sso-head{text
 +'#sclStaffShow .sso-msg{text-align:center;opacity:.85;padding:18px}'
 +'#sclStaffDlg{position:fixed;inset:0;z-index:100000;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.55);padding:16px}#sclStaffDlg.open{display:flex}'
 +'#sclStaffDlg .box{background:#fff7e8;color:#2e0610;border-radius:16px;max-width:360px;width:100%;padding:20px;text-align:center}'
-+'#sclStaffDlg .box img{width:110px;height:110px;object-fit:cover;clip-path:polygon(29.3% 0,70.7% 0,100% 29.3%,100% 70.7%,70.7% 100%,29.3% 100%,0 70.7%,0 29.3%)}'
++'#sclStaffDlg .box img{display:block;width:110px;height:110px;aspect-ratio:1 / 1;object-fit:cover;object-position:center center;max-width:none;max-height:none;margin:0 auto 10px;border-radius:0;clip-path:polygon(29.3% 0,70.7% 0,100% 29.3%,100% 70.7%,70.7% 100%,29.3% 100%,0 70.7%,0 29.3%)}'
 +'#sclStaffDlg .box p{margin:8px 0;overflow-wrap:anywhere}#sclStaffDlg .box button{margin-top:10px;padding:8px 18px;border-radius:99px;border:1px solid #5a0c1a;background:#5a0c1a;color:#fff;font-weight:700;cursor:pointer}';
 var st=D.createElement('style');st.id='scl-staff-octagon-css';st.textContent=css;D.head.appendChild(st);
 
