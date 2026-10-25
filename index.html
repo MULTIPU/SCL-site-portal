@@ -1168,21 +1168,7 @@ body.scl-night .scl-craft-learning{background:linear-gradient(135deg,#171c2b,#20
    <p class="ag-msg" id="m-si"></p>
   </form>
 
-  <form class="ag-view" id="v-register" novalidate>
-   <div class="ag-top"><button type="button" class="ag-back" id="rb">&larr; Back</button><div class="ag-dots" id="dots" aria-hidden="true"><i class="ag-on"></i><i></i><i></i></div></div>
-   <div class="ag-st" data-s="1"><h2>Who is registering?</h2><p class="ag-sub">Pick one, then enter your full name.</p>
-    <div class="ag-roles" id="roles" role="group" aria-label="I am a"><button type="button" data-r="student" class="ag-on">Student</button><button type="button" data-r="parent">Parent</button><button type="button" data-r="guardian">Guardian</button></div>
-    <div class="ag-row3"><div><label for="r-sn">Surname</label><input id="r-sn" autocomplete="family-name" required></div><div><label for="r-fn">First name</label><input id="r-fn" autocomplete="given-name" required></div><div><label for="r-ln">Last name</label><input id="r-ln" autocomplete="additional-name" required></div></div></div>
-   <div class="ag-st" data-s="2" hidden><h2>Your details</h2><div class="ag-rf" id="rf"></div>
-    <label for="r-em">Email address</label><input id="r-em" type="email" autocomplete="email" required>
-    <label for="r-pw">Create password</label><div class="ag-pw"><input id="r-pw" type="password" minlength="8" autocomplete="new-password" placeholder="At least 8 characters" required><button type="button" class="ag-eye">Show</button></div></div>
-   <div class="ag-st" data-s="3" hidden><h2>Confirm it's you</h2><p class="ag-sub">A clear face photo is required.</p>
-    <div class="ag-face"><div class="ag-fp" id="fp" aria-live="polite">&#128100;</div><div><div class="ag-b"><button type="button" class="ag-mini ag-p" id="cam">Take photo</button><button type="button" class="ag-mini" id="up">Upload</button><button type="button" class="ag-mini ag-p" id="snap" hidden>Capture</button></div></div><input type="file" id="file" accept="image/*" hidden></div>
-    <label class="ag-ck"><input type="checkbox" id="r-tc"> I agree to the school's terms and privacy policy.</label></div>
-   <button class="ag-btn ag-r" type="button" id="nx">Continue</button>
-   <button class="ag-btn ag-r" type="submit" id="sub" hidden disabled>Submit registration</button>
-   <p class="ag-msg" id="m-r"></p>
-  </form>
+  
  </div>
 </main>
 <footer class="ag-soc" id="soc" hidden></footer>
@@ -1407,7 +1393,7 @@ body.scl-night .scl-craft-learning{background:linear-gradient(135deg,#171c2b,#20
 <div class="scl-reg-section hidden" id="promoDetails"><div class="scl-reg-section-head"><b>STUDENT VERIFICATION DATA</b><span>Read-only information retrieved from the SCL academic record.</span></div><div class="grid"><div class="field"><label>Student Full Name</label><input id="promoStudentName" readonly=""/></div><div class="field"><label>Admission Number</label><input id="promoAdmissionNumber" readonly=""/></div><div class="field"><label>Current / Previous Class</label><input id="promoCurrentClass" readonly=""/></div><div class="field"><label>Academic Status</label><input id="promoStatusReadout" readonly=""/></div></div></div>
 <div class="scl-reg-section hidden" id="promoChoiceSection"><div class="scl-reg-section-head"><b>PROMOTION SELECTION</b><span>The system pre-selects the recommended progression when available.</span></div><div class="grid"><div class="field full"><label>Standard Class Progression</label><select id="promoTargetClass"></select></div><div class="field full"><label class="scl-check-card"><input id="promoDoublePromotion" onchange="sclToggleDoublePromotion()" type="checkbox"/> Apply for Double Promotion</label></div><div class="field full hidden" id="promoDoubleBox"><div class="paybox"><b>Double Promotion requires Admin Approval and Assessment Clearance.</b><p>Provide the reason/application reference. The request is sent to the authorised administrator for review.</p><input id="promoDoubleReason" placeholder="Reason / application reference"/></div></div><div class="field full hidden" id="promoRepeatNotice"><div class="paybox" style="border-left:5px solid #b00000"><b>Academic Warning</b><p>Records indicate a requirement for re-lessons / repeating the previous class. Any override requires School Administrator manual clearance.</p></div></div><div class="field full"><label>Admin Clearance Status</label><input id="promoClearanceStatus" readonly="" value="NOT REQUIRED"/></div></div><p style="text-align:right"><button class="btn red" id="promoSubmitBtn" onclick="sclSubmitPromotion(event)" type="button">SUBMIT CLASS REGISTRATION</button></p></div>
 <div class="paybox"><b>After class registration is locked:</b> the portal routes the parent to the Fee Schedule &amp; Payment Gateway for the registered class.</div>
-</section></div></div></div><div class="modal" id="fees"><div class="card"><div class="mh"><h3 id="feeTitle">Fee Schedule</h3><button onclick="closeM('fees')">X</button></div><div id="feeBody"></div></div></div><div class="modal" id="pay"><div class="card"><div class="mh"><h3 id="payTitle">Make Payment</h3><button onclick="closeM('pay')">X</button></div><div class="form"><div class="paybox"><p><b>Payment account</b></p><p>Account number: <b id="accountNumber">9026246736</b></p><p>Bank: <span id="bankName">OPay / Moniepoint as applicable</span></p><p>Account name: <span id="accountName">Abiola Temitope Oriyomi</span></p></div><div class="field"><label>Student ID</label><input id="payStudentId" placeholder="Your Student ID"/></div><div class="field"><label>Term</label><select id="payTerm"><option>First Term</option><option>Second Term</option><option>Third Term</option></select></div><div class="field"><label>Amount</label><input id="payAmount" readonly=""/></div><div class="field"><label>Payment Reference</label><input id="payRef" placeholder="Enter your transfer reference"/></div><div class="field"><label>Upload Payment Receipt</label><input accept="image/*,.pdf" id="receipt" type="file"/></div><p id="payMessage"></p><div style="text-align:right"><button class="btn outline" onclick="closeM('pay')">CANCEL</button> <button class="btn red" onclick="submitPayment()">I HAVE PAID</button></div></div></div></div><div class="modal" id="bulkPay"><div class="card"><div class="mh"><h3>Already Paid - Bulk Payment</h3><button onclick="closeM('bulkPay')">X</button></div><div class="form"><div class="termbar"><label><input checked="" name="bulkTerm" type="radio" value="First Term"/> First Term</label><label><input name="bulkTerm" type="radio" value="Second Term"/> Second Term</label><label><input name="bulkTerm" type="radio" value="Third Term"/> Third Term</label></div><p><b>Select everything covered by this receipt.</b> You can select several items from the same transfer.</p><div class="bulkitems" id="bulkItems"></div><p class="bulk-total">Selected total: <span id="bulkTotal">NGN 0</span></p><div class="field"><label>Amount actually paid</label><input id="bulkPaidAmount" min="0" placeholder="Enter amount paid" step="0.01" type="number"/></div><div class="field"><label>Student ID</label><input id="bulkStudentId" placeholder="Your Student ID"/></div><div class="field"><label>Payment Reference</label><input id="bulkRef" placeholder="Enter your transfer reference"/></div><div class="field"><label>Upload Receipt</label><input accept="image/*,.pdf" id="bulkReceipt" type="file"/></div><div class="field"><label>What did you pay for?</label><textarea id="bulkNote" placeholder="The selected items are already filled automatically. Add a short note only if needed."></textarea></div><div class="paybox"><b>Admin review</b><p>Your receipt and selected items will be stored as Pending Admin Confirmation. After the school verifies it, each selected fee item will show Paid.</p></div><div style="text-align:right"><button class="btn outline" onclick="closeM('bulkPay')">CANCEL</button> <button class="btn red" onclick="submitBulkPayment()">SUBMIT ALREADY PAID</button></div></div></div></div><div aria-hidden="true" class="modal" id="resultsModal"><div class="card"><div class="mh"><h3>School Results</h3><button onclick="closeM('resultsModal')">X</button></div><div class="form"><div class="paybox"><b>1. Get your Result PIN</b><p>Enter your Student ID, session and term. The system checks the compulsory payment record before generating a PIN.</p></div><div class="grid"><div class="field"><label>Student ID</label><input id="pinStudentId" placeholder="Example: SCL-2026-0001"/></div><div class="field"><label>Session</label><input id="pinSession" value="2026/2027"/></div><div class="field"><label>Term</label><select id="pinTerm"><option>First Term</option><option>Second Term</option><option>Third Term</option></select></div><div class="field"><label>Result PIN</label><div class="pin-row"><input id="generatedResultPin" placeholder="PIN appears here after clearance" readonly=""/><button class="btn outline copy-pin-btn" onclick="copyResultPin()" type="button">COPY PIN</button><button class="btn gold generate-inline-btn" onclick="generateResultPin()" type="button">CHECK PAYMENT &amp; GENERATE PIN</button></div></div></div><div class="statusbox hidden" id="pinGate"></div><div class="paybox hidden" id="outstandingBox"></div><hr/><div class="paybox"><b>2. Check your result</b><p>Use the generated PIN to view and print an available result.</p></div><div class="grid"><div class="field"><label>Student ID</label><input id="resultStudentId" placeholder="Example: SCL-2026-0001"/></div><div class="field"><label>Result PIN</label><input id="resultPin" inputmode="numeric" placeholder="6 digit PIN"/></div><div class="field"><label>Session</label><input id="resultSession" value="2026/2027"/></div><div class="field"><label>Term</label><select id="resultTerm"><option>First Term</option><option>Second Term</option><option>Third Term</option></select></div></div><button class="btn red" onclick="viewResult()">VIEW RESULT</button><div class="statusbox hidden" id="resultGate"></div><div class="hidden" id="resultView"></div><div class="paybox hidden" id="resultHistory"></div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px"><button class="btn gold" onclick="openCertificate()" type="button">CERTIFICATE</button></div></div></div></div><div aria-hidden="true" class="modal" id="teacherResultModal"><div class="card"><div class="mh"><h3 id="teacherResultTitle">Cycle Result Upload</h3><button onclick="closeM('teacherResultModal')">X</button></div><form class="form" id="teacherResultForm" onsubmit="submitTeacherResult(event)"><input id="teacherResultCycle" type="hidden"/><div class="paybox"><b>Teacher Result Information</b><p>Every upload must identify the class and the subjects covered. Cycle 1 to 3 are test-result cycles. Cycle 4 includes the final test and examination result.</p></div><div class="grid"><div class="field"><label>Class *</label><select id="teacherResultClass" onchange="loadTeacherSubjects()" required=""><option value="">Select class</option></select></div><div class="field"><label>Result Document *</label><input accept="application/pdf,.pdf,image/*" name="resultFile" required="" type="file"/></div><div class="field full"><label>Subjects *</label><div class="subject-grid" id="teacherSubjects"><p class="scl-small">Select a class first to load the subjects.</p></div></div><div class="field full"><label>Notes</label><textarea name="notes" placeholder="Optional notes about the result upload" rows="3"></textarea></div></div><p style="text-align:right"><button class="btn outline" onclick="closeM('teacherResultModal')" type="button">CANCEL</button> <button class="btn gold" type="submit">SUBMIT RESULT</button></p><div class="worker-form-note">The upload records the class, subjects and document information. Permanent storage and administrator access will use the SCL backend when connected.</div></form></div></div><div aria-hidden="true" class="modal" id="certificateModal"><div class="card certificate-shell"><div class="mh"><h3>SCL Certificate</h3><button onclick="closeM('certificateModal')" type="button">X</button></div><div class="certificate-form"><div class="paybox"><b>Certificate of Completion</b><p>The certificate is paid for separately. Management confirms the payment before the certificate is issued.</p></div><div class="grid"><div class="field"><label>Student ID *</label><input id="certStudentId" placeholder="Example: SCL-2026-0001"/></div><div class="field"><label>Student Full Name *</label><input id="certStudentName" placeholder="Full name"/></div><div class="field"><label>Certificate Level *</label><select id="certLevel"><option>Basic 5</option><option>JSS 3</option><option>SS 3</option></select></div><div class="field"><label>Graduation Session *</label><input id="certSession" value="2025/2026"/></div></div><div class="cert-fee-box"><div><b>Certificate Fee</b><span id="certFeeDisplay">Price to be set by School</span></div><div><b>QR Regeneration</b><span>₦5,000</span></div></div><div class="cert-actions"><button class="btn gold" onclick="calculateCertificateFee()" type="button">CHECK CERTIFICATE FEE</button><button class="btn red" onclick="submitCertificatePayment()" type="button">SUBMIT CERTIFICATE PAYMENT</button></div><div class="statusbox" id="certPaymentStatus">Payment status: Not submitted.</div><div class="hidden" id="certIssuedBox"></div><button class="btn outline cert-admin-btn" onclick="openCertificateAdmin()" type="button">MANAGEMENT CERTIFICATE TABLE</button></div></div></div><div aria-hidden="true" class="modal" id="certificateAdminModal"><div class="card certificate-shell"><div class="mh"><h3>Certificate Payment Verification</h3><button onclick="closeM('certificateAdminModal')" type="button">X</button></div><div class="form"><div class="paybox"><b>Management confirmation only</b><p>Actual certificate payment is handled through the school banking system. Management confirms the payment here before issuing the QR credential.</p></div><div id="certificateAdminTable"></div></div></div></div><div aria-hidden="true" class="modal" id="workersModal"><div class="card worker-card"><div class="mh"><h3>Workers / Vacancy</h3><button onclick="closeM('workersModal')">X</button></div><div id="workerHome"><div class="worker-intro"><b>Choose an option:</b> Staff registration is for people already working with the school. Vacancy is for people applying for an available position.</div><div class="worker-modes"><button class="worker-mode" onclick="startWorkerFlow('staff')"><strong>STAFF</strong><span>Register as an existing school worker.</span></button><button class="worker-mode" onclick="startWorkerFlow('vacancy')"><strong>VACANCY</strong><span>Apply for a job at Shining Child Leaders School.</span></button></div></div><div class="hidden" id="workerRoles"><div class="worker-form-note">Choose a primary profession, then add up to <b>two additional professions</b> when the same person has multiple approved duties. The system stores a maximum of three professions.</div><div class="role-grid"><button class="role-btn" onclick="selectWorkerRole(this,'Teacher')">Teacher</button><button class="role-btn" onclick="selectWorkerRole(this,'Cleaner / Janitor')">Cleaner / Janitor</button><button class="role-btn" onclick="selectWorkerRole(this,'Driver')">Driver</button><button class="role-btn" onclick="selectWorkerRole(this,'Principal / Director')">Principal / Director</button><button class="role-btn" onclick="selectWorkerRole(this,'Administrative Officer')">Administrative Officer</button><button class="role-btn" onclick="selectWorkerRole(this,'Other Staff')">Others (type your own)</button></div><div class="form" id="workerFormWrap"></div></div><div class="worker-records hidden" id="workerRecords"><div class="scl-salary-head"><h3>Recent submissions on this device</h3><button class="btn outline" onclick="openSalaryAdmin()" type="button">SALARY VERIFICATION TABLE</button></div><div id="workerRecordList"></div></div></div></div><div aria-hidden="true" class="modal" id="salaryAdminModal"><div class="card" style="width:min(1050px,100%)"><div class="mh"><h3>Salary Payment Verification</h3><button onclick="closeM('salaryAdminModal')">X</button></div><div class="form"><div class="paybox"><b>Admin verification only</b><p>This table does not pay salaries automatically. It only shows whether the required four-week result submission has been completed. Green means the payment may be approved for school banking. Red means the required result upload is still outstanding.</p></div><div id="salaryAdminTable"></div></div></div></div><div aria-hidden="true" aria-labelledby="materialsTitle" aria-modal="true" class="modal" id="materialsModal" role="dialog">
+</section></div></div></div><div class="modal" id="fees"><div class="card"><div class="mh"><h3 id="feeTitle">Fee Schedule</h3><button onclick="closeM('fees')">X</button></div><div id="feeBody"></div></div></div><div class="modal" id="pay"><div class="card"><div class="mh"><h3 id="payTitle">Make Payment</h3><button onclick="closeM('pay')">X</button></div><div class="form"><div class="paybox"><p><b>Payment account</b></p><p>Account number: <b id="accountNumber">9026246736</b></p><p>Bank: <span id="bankName">OPay / Moniepoint as applicable</span></p><p>Account name: <span id="accountName">Abiola Temitope Oriyomi</span></p></div><div class="field"><label>Student ID</label><input id="payStudentId" placeholder="Your Student ID"/></div><div class="field"><label>Term</label><select id="payTerm"><option>First Term</option><option>Second Term</option><option>Third Term</option></select></div><div class="field"><label>Amount</label><input id="payAmount" readonly=""/></div><div class="field"><label>Payment Reference</label><input id="payRef" placeholder="Enter your transfer reference"/></div><div class="field"><label>Upload Payment Receipt</label><input accept="image/*,.pdf" id="receipt" type="file"/></div><p id="payMessage"></p><div style="text-align:right"><button class="btn outline" onclick="closeM('pay')">CANCEL</button> <button class="btn red" onclick="submitPayment()">I HAVE PAID</button></div></div></div></div><div class="modal" id="bulkPay"><div class="card"><div class="mh"><h3>Already Paid - Bulk Payment</h3><button onclick="closeM('bulkPay')">X</button></div><div class="form"><div class="termbar"><label><input checked="" name="bulkTerm" type="radio" value="First Term"/> First Term</label><label><input name="bulkTerm" type="radio" value="Second Term"/> Second Term</label><label><input name="bulkTerm" type="radio" value="Third Term"/> Third Term</label></div><p><b>Select everything covered by this receipt.</b> You can select several items from the same transfer.</p><div class="bulkitems" id="bulkItems"></div><p class="bulk-total">Selected total: <span id="bulkTotal">NGN 0</span></p><div class="field"><label>Amount actually paid</label><input id="bulkPaidAmount" min="0" placeholder="Enter amount paid" step="0.01" type="number"/></div><div class="field"><label>Student ID</label><input id="bulkStudentId" placeholder="Your Student ID"/></div><div class="field"><label>Payment Reference</label><input id="bulkRef" placeholder="Enter your transfer reference"/></div><div class="field"><label>Upload Receipt</label><input accept="image/*,.pdf" id="bulkReceipt" type="file"/></div><div class="field"><label>What did you pay for?</label><textarea id="bulkNote" placeholder="The selected items are already filled automatically. Add a short note only if needed."></textarea></div><div class="paybox"><b>Admin review</b><p>Your receipt and selected items will be stored as Pending Admin Confirmation. After the school verifies it, each selected fee item will show Paid.</p></div><div style="text-align:right"><button class="btn outline" onclick="closeM('bulkPay')">CANCEL</button> <button class="btn red" onclick="submitBulkPayment()">SUBMIT ALREADY PAID</button></div></div></div></div><div aria-hidden="true" class="modal" id="resultsModal"><div class="card"><div class="mh"><h3>School Results</h3><button onclick="closeM('resultsModal')">X</button></div><div class="form"><div class="paybox"><b>1. Get your Result PIN</b><p>Enter your Student ID, session and term. The system checks the compulsory payment record before generating a PIN.</p></div><div class="grid"><div class="field"><label>Student ID</label><input id="pinStudentId" placeholder="Example: SCL-2026-0001"/></div><div class="field"><label>Session</label><input id="pinSession" value="2026/2027"/></div><div class="field"><label>Term</label><select id="pinTerm"><option>First Term</option><option>Second Term</option><option>Third Term</option></select></div><div class="field"><label>Result PIN</label><div class="pin-row"><input id="generatedResultPin" placeholder="PIN appears here after clearance" readonly=""/><button class="btn outline copy-pin-btn" onclick="copyResultPin()" type="button">COPY PIN</button><button class="btn gold generate-inline-btn" onclick="generateResultPin()" type="button">CHECK PAYMENT &amp; GENERATE PIN</button></div></div></div><div class="statusbox hidden" id="pinGate"></div><div class="paybox hidden" id="outstandingBox"></div><hr/><div class="paybox"><b>2. Check your result</b><p>Use the generated PIN to view and print an available result.</p></div><div class="grid"><div class="field"><label>Student ID</label><input id="resultStudentId" placeholder="Example: SCL-2026-0001"/></div><div class="field"><label>Result PIN</label><input id="resultPin" inputmode="numeric" placeholder="6 digit PIN"/></div><div class="field"><label>Session</label><input id="resultSession" value="2026/2027"/></div><div class="field"><label>Term</label><select id="resultTerm"><option>First Term</option><option>Second Term</option><option>Third Term</option></select></div></div><button class="btn red" onclick="viewResult()">VIEW RESULT</button><div class="statusbox hidden" id="resultGate"></div><div class="hidden" id="resultView"></div><div class="paybox hidden" id="resultHistory"></div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px"><button class="btn gold" onclick="openCertificate()" type="button">CERTIFICATE</button></div></div></div></div><div aria-hidden="true" class="modal" id="teacherResultModal"><div class="card"><div class="mh"><h3 id="teacherResultTitle">Cycle Result Upload</h3><button onclick="closeM('teacherResultModal')">X</button></div><form class="form" id="teacherResultForm" onsubmit="submitTeacherResult(event)"><input id="teacherResultCycle" type="hidden"/><div class="paybox"><b>Teacher Result Information</b><p>Every upload must identify the class and the subjects covered. Cycle 1 to 3 are test-result cycles. Cycle 4 includes the final test and examination result.</p></div><div class="grid"><div class="field"><label>Class *</label><select id="teacherResultClass" onchange="loadTeacherSubjects()" required=""><option value="">Select class</option></select></div><div class="field"><label>Result Document *</label><input accept="application/pdf,.pdf,image/*" name="resultFile" required="" type="file"/></div><div class="field full"><label>Subjects *</label><div class="subject-grid" id="teacherSubjects"><p class="scl-small">Select a class first to load the subjects.</p></div></div><div class="field full"><label>Notes</label><textarea name="notes" placeholder="Optional notes about the result upload" rows="3"></textarea></div></div><p style="text-align:right"><button class="btn outline" onclick="closeM('teacherResultModal')" type="button">CANCEL</button> <button class="btn gold" type="submit">SUBMIT RESULT</button></p><div class="worker-form-note">The upload records the class, subjects and document information. Permanent storage and administrator access will use the SCL backend when connected.</div></form></div></div><div aria-hidden="true" class="modal" id="certificateModal"><div class="card certificate-shell"><div class="mh"><h3>SCL Certificate</h3><button onclick="closeM('certificateModal')" type="button">X</button></div><div class="certificate-form"><div class="paybox"><b>Certificate of Completion</b><p>The certificate is paid for separately. Management confirms the payment before the certificate is issued.</p></div><div class="grid"><div class="field"><label>Student ID *</label><input id="certStudentId" placeholder="Example: SCL-2026-0001"/></div><div class="field"><label>Student Full Name *</label><input id="certStudentName" placeholder="Full name"/></div><div class="field"><label>Certificate Level *</label><select id="certLevel"><option>Basic 5</option><option>JSS 3</option><option>SS 3</option></select></div><div class="field"><label>Graduation Session *</label><input id="certSession" value="2025/2026"/></div></div><div class="cert-fee-box"><div><b>Certificate Fee</b><span id="certFeeDisplay">Price to be set by School</span></div><div><b>QR Regeneration</b><span>₦5,000</span></div></div><div class="cert-actions"><button class="btn gold" onclick="calculateCertificateFee()" type="button">CHECK CERTIFICATE FEE</button><button class="btn red" onclick="submitCertificatePayment()" type="button">SUBMIT CERTIFICATE PAYMENT</button></div><div class="statusbox" id="certPaymentStatus">Payment status: Not submitted.</div><div class="hidden" id="certIssuedBox"></div><button class="btn outline cert-admin-btn" onclick="openCertificateAdmin()" type="button">MANAGEMENT CERTIFICATE TABLE</button></div></div></div><div aria-hidden="true" class="modal" id="certificateAdminModal"><div class="card certificate-shell"><div class="mh"><h3>Certificate Payment Verification</h3><button onclick="closeM('certificateAdminModal')" type="button">X</button></div><div class="form"><div class="paybox"><b>Management confirmation only</b><p>Actual certificate payment is handled through the school banking system. Management confirms the payment here before issuing the QR credential.</p></div><div id="certificateAdminTable"></div></div></div></div><div aria-hidden="true" class="modal" id="salaryAdminModal"><div class="card" style="width:min(1050px,100%)"><div class="mh"><h3>Salary Payment Verification</h3><button onclick="closeM('salaryAdminModal')">X</button></div><div class="form"><div class="paybox"><b>Admin verification only</b><p>This table does not pay salaries automatically. It only shows whether the required four-week result submission has been completed. Green means the payment may be approved for school banking. Red means the required result upload is still outstanding.</p></div><div id="salaryAdminTable"></div></div></div></div><div aria-hidden="true" aria-labelledby="materialsTitle" aria-modal="true" class="modal" id="materialsModal" role="dialog">
 <div class="materials-panel">
 <div class="materials-head"><h3 id="materialsTitle">School Materials</h3><button aria-label="Close school materials" onclick="closeM('materialsModal')" type="button">X</button></div>
 <div class="materials-body">
@@ -1717,42 +1703,6 @@ const SCL_SUBJECTS={
 function resultSubjectList(cls){if(!cls)return SCL_SUBJECTS.Primary;let k=cls.startsWith('SSS')?'SSS':cls.startsWith('JSS')?'JSS':cls.startsWith('Primary')?'Primary':cls;return SCL_SUBJECTS[k]||SCL_SUBJECTS.Primary}
 function isTeachingRole(role){return role==='Teacher'}
 
-let workerMode='',workerRole='';
-function openWorkers(){const m=document.getElementById('workersModal');if(!m)return;workerMode='';workerRole='';m.classList.add('open');m.style.display='flex';m.setAttribute('aria-hidden','false');document.getElementById('workerHome').classList.remove('hidden');document.getElementById('workerRoles').classList.add('hidden');document.getElementById('workerRecords').classList.remove('hidden');renderWorkerRecords();}
-function startWorkerFlow(mode){workerMode=mode;workerRole='';document.getElementById('workerHome').classList.add('hidden');document.getElementById('workerRoles').classList.remove('hidden');document.getElementById('workerFormWrap').innerHTML='';document.querySelectorAll('.role-btn').forEach(b=>b.classList.remove('selected'))}
-function selectWorkerRole(btn,role){workerRole=role;document.querySelectorAll('.role-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');renderWorkerForm();if(workerMode==='staff'){if(isTeachingRole(role))renderStaffSalaryStatus();else renderNonTeachingStatus()}}
-window.sclUpdateWorkerTenure=function(){const d=document.getElementById('workerStartDate'),out=document.getElementById('workerTenureDisplay'),hidden=document.getElementById('workerExperienceHidden');if(!d||!out||!hidden)return;if(!d.value){out.textContent='Select employment start date';hidden.value='';return}const start=new Date(d.value+'T00:00:00'),now=new Date();if(start>now){out.textContent='Invalid start date';hidden.value='';return}let y=now.getFullYear()-start.getFullYear(),m=now.getMonth()-start.getMonth(),days=now.getDate()-start.getDate();if(days<0){m--;days+=new Date(now.getFullYear(),now.getMonth(),0).getDate()}if(m<0){y--;m+=12}const label=y+' year'+(y===1?'':'s')+(m?' '+m+' month'+(m===1?'':'s'):'');out.textContent=label;hidden.value=label};
-function renderWorkerForm(){const vacancy=workerMode==='vacancy';document.getElementById('workerFormWrap').innerHTML=`<form class="form" id="workerForm" onsubmit="submitWorker(event)"><div class="grid"><div class="field"><label>Surname *</label><input name="surname" required autocomplete="family-name" oninput="sclComposeName(this.form)"></div><div class="field"><label>First Name *</label><input name="firstName" required autocomplete="given-name" oninput="sclComposeName(this.form)"></div><div class="field"><label>Other Names</label><input name="otherNames" autocomplete="additional-name" oninput="sclComposeName(this.form)"></div><input name="fullName" type="hidden"><div class="field"><label>Email *</label><input name="email" type="email" required></div><div class="field"><label>Phone Number *</label><input name="phone" required></div><div class="field"><label>Primary Profession *</label>${workerRole==='Other Staff'?'<input name="role" id="sclOtherProf" maxlength="60" autocomplete="off" required placeholder="Type your profession, e.g. Engineer, Plumber, Carpenter, Mechanic">':'<input name="role" value="'+workerRole+'" readonly required>'}</div><div class="field full scl-profession-picker"><label>Additional Professions <small>(optional — maximum 2 more)</small></label><div class="scl-profession-grid"><select class="scl-profession-select" name="profession2"><option value="">No additional profession</option><option>Teacher</option><option>Cleaner / Janitor</option><option>Driver</option><option>Principal / Director</option><option>Administrative Officer</option><option value="__other">Others (type your own)</option></select><select class="scl-profession-select" name="profession3"><option value="">No additional profession</option><option>Teacher</option><option>Cleaner / Janitor</option><option>Driver</option><option>Principal / Director</option><option>Administrative Officer</option><option value="__other">Others (type your own)</option></select></div><small class="scl-auto-note">Example: a person may be registered as Teacher + Administrative Officer + another approved duty.</small></div>${vacancy?`<div class="field"><label>Years of relevant experience *</label><input name="experience" placeholder="e.g. 3 years" required></div>`:`<div class="field"><label>Employment Start Date *</label><input id="workerStartDate" name="employmentStartDate" type="date" required onchange="sclUpdateWorkerTenure()"><small class="scl-auto-note">The system calculates your length of service automatically.</small></div><div class="field"><label>Length of Service — Automatically Calculated</label><div id="workerTenureDisplay" class="scl-auto-output">Select employment start date</div><input id="workerExperienceHidden" name="experience" type="hidden"></div><div class="field"><label>Employment End Date <small>(leave empty if still working)</small></label><input name="employmentEndDate" type="date"></div>`}<div class="field"><label>Qualification / Credentials *</label><input name="credentials" placeholder="Main qualification or credential" required></div><div class="field full"><label>Work Pattern *</label><div class="scl-work-grid"><label><input type="radio" name="workPattern" value="Full-Time" required> Full-Time</label><label><input type="radio" name="workPattern" value="Half-Day Part-Time"> Half-Day Part-Time</label><label><input type="radio" name="workPattern" value="Full-Day Part-Time"> Full-Day Part-Time</label><label><input type="radio" name="workPattern" value="Scheduled Part-Time"> Scheduled Part-Time</label></div></div><div class="field full"><label>Important Information</label><textarea name="notes" rows="3" placeholder="Additional information, certificates, proof, or other relevant details"></textarea></div><div class="field full scl-uploads">
-<section class="scl-upsec" data-sec="cv"><h4>1. CV AND SUPPORTING DOCUMENTS</h4>
-<div class="scl-upslot" data-slot="cv"><label>CV (PDF) *</label><div class="scl-upsaved"></div><input name="cv" type="file" accept="application/pdf,.pdf"><div class="scl-uplist"></div></div>
-<div class="scl-upslot" data-slot="cv_documents"><label>Supporting documents <small>(optional: qualifications, credentials; PDF or image, up to 5)</small></label><div class="scl-upsaved"></div><input name="cvSupporting" type="file" multiple accept="application/pdf,.pdf,image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"><div class="scl-uplist"></div></div></section>
-<section class="scl-upsec" data-sec="letter"><h4>2. APPLICATION LETTER AND SUPPORTING DOCUMENTS</h4>
-<div class="scl-upslot" data-slot="application_letter"><label>Application letter (PDF) *</label><div class="scl-upsaved"></div><input name="applicationLetter" type="file" accept="application/pdf,.pdf"><div class="scl-uplist"></div></div>
-<div class="scl-upslot" data-slot="application_documents"><label>Supporting documents <small>(optional; PDF or image, up to 5)</small></label><div class="scl-upsaved"></div><input name="appSupporting" type="file" multiple accept="application/pdf,.pdf,image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"><div class="scl-uplist"></div></div></section>
-<section class="scl-upsec" data-sec="photo"><h4>3. APPLICANT PHOTOGRAPH</h4>
-<div class="scl-upslot" data-slot="photo"><label>Photograph (JPG, JPEG, PNG or WEBP) *</label><div class="scl-upsaved"></div><input class="camera-field" name="photo" type="file" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"><div class="scl-uplist"></div></div></section>
-<div class="scl-upnote">Files up to 8 MB each. A successful upload only means the file was received and stored privately. An administrator reviews every document by hand; nothing is approved automatically.</div></div></div><div class="scl-cycle-panel"><h4>FOUR-WEEK TEST AND EXAM CYCLES</h4><div class="scl-cycle-grid"><div><b>Cycle 1</b><br>10 marks<br><small>4 weeks</small></div><div><b>Cycle 2</b><br>10 marks<br><small>4 weeks</small></div><div><b>Cycle 3</b><br>10 marks<br><small>4 weeks</small></div><div><b>Cycle 4</b><br>10 test + 60 exam<br><small>Final cycle. Timing and payment treatment are school-controlled after the normal 12th week.</small></div></div><p><b>Total cycle marks: 90</b></p><p class="scl-small"><b>Cycles 1 to 3:</b> the agreed payment obligation is due when the required test results are uploaded, subject to the employment terms. <b>Cycle 4:</b> includes the 60-mark examination and the school determines the timing and treatment where the term extends beyond the normal 12 weeks.</p></div>${vacancy?'':(isTeachingRole(workerRole)?`<div class="scl-salary-panel"><div class="scl-salary-head"><h4>SALARY PAYMENT VERIFICATION</h4><span id="staffSalaryOverall" class="scl-status-dot red">Pending</span></div><p class="scl-admin-note">Teachers upload each four-week result with the class and subjects covered. The school sees a green or red status before making payment through the school banking system.</p><div id="staffSalaryCycles" class="scl-cycle-status">${[1,2,3,4].map(c=>`<article id="staffCycle${c}" class="scl-red"><b>Cycle ${c}</b><span class="scl-status-dot red">RED - Result not uploaded</span><br><small>${c<4?'10 test marks':'10 test + 60 exam marks'}</small><br><button type="button" class="btn outline" onclick="openTeacherResultUpload(${c})">UPLOAD RESULT</button></article>`).join('')}</div><p class="scl-admin-note"><b>Payment rule:</b> Cycles 1 to 3 require the four-week test result. Cycle 4 requires the test plus the examination result; timing and payment treatment after the normal 12th week remain school-controlled.</p></div>`:`<div class="scl-salary-panel nonteach-panel"><div class="scl-salary-head"><h4>NON-TEACHING STAFF VERIFICATION</h4><span id="nonTeachingOverall" class="scl-status-dot red">PENDING ADMIN REVIEW</span></div><p class="scl-admin-note">Non-teaching staff are verified over <b>4 weeks + 3 days</b>. Attendance, days worked and work quality are checked manually by any authorised school administrator.</p><div class="scl-attendance-summary"><div><b>4 Weeks</b><span>Attendance record</span></div><div><b>+ 3 Days</b><span>Final attendance</span></div><div><b>ADMIN</b><span>Manual approval</span></div></div><button type="button" class="btn gold" onclick="openSalaryAdmin()">OPEN ADMIN VERIFICATION</button><p class="scl-admin-note"><b>Status:</b> Red until an administrator marks attendance and work quality as approved. The website does not pay the worker automatically.</p></div>`)}<div class="worker-form-note"><b>Verification:</b> When you press the button below, the submission is recorded as <b>Verification Submitted</b>. School management must still review and verify it before it is treated as officially verified.</div><p style="text-align:right"><button type="button" class="btn outline" onclick="openWorkers()">BACK</button> <button class="btn gold" type="submit">CLICK FOR VERIFICATION</button></p><div id="workerStatus"></div></form>`;
- const wf=document.getElementById('workerForm'),up=wf&&wf.querySelector('.scl-uploads');
- if(wf&&up){
-  const cvSec=up.querySelector('[data-sec="cv"]'),letterSec=up.querySelector('[data-sec="letter"]'),photoSec=up.querySelector('[data-sec="photo"]');
-  if(vacancy){
-   if(cvSec)cvSec.style.display='';if(letterSec)letterSec.style.display='';if(photoSec)photoSec.style.display='';
-   const cvLabel=up.querySelector('[data-slot="cv"]>label'),certLabel=up.querySelector('[data-slot="cv_documents"]>label'),letterLabel=up.querySelector('[data-slot="application_letter"]>label'),photoLabel=up.querySelector('[data-slot="photo"]>label');
-   if(cvLabel)cvLabel.textContent='CV (PDF) — required *';
-   if(certLabel)certLabel.innerHTML='Certificates / qualification records — at least one required * <small>(PDF or image; upload multiple files, up to 5)</small>';
-   if(letterLabel)letterLabel.textContent='Application letter (PDF) — required *';
-   if(photoLabel)photoLabel.textContent='Applicant photograph (JPG, JPEG, PNG or WEBP) — required *';
-   const note=up.querySelector('.scl-upnote');if(note)note.textContent='Vacancy applicants must submit a CV, an application letter, at least one certificate/qualification document, and a photograph. Each section accepts multiple supporting documents where shown; files are reviewed manually by school management.';
-  }else{
-   if(cvSec)cvSec.style.display='none';if(letterSec)letterSec.style.display='none';if(photoSec)photoSec.style.display='';
-   const photoLabel=up.querySelector('[data-slot="photo"]>label');if(photoLabel)photoLabel.textContent='Photograph for existing-staff verification (JPG, JPEG, PNG or WEBP) *';
-   const note=up.querySelector('.scl-upnote');if(note)note.textContent='Existing SCL employees only need to upload a photograph for verification. Do not upload a CV, application letter or certificates here; you can add your CV and credentials later from your staff dashboard. School management will review the photograph and staff details manually.';
-  }
- }
-}
-function workerReadFile(file){return file?{name:file.name,type:file.type,size:file.size}:null}
-async function submitWorker(e){e.preventDefault();if(!workerRole){toast('Choose a worker role first.');return}const f=e.target;window.sclComposeName&&window.sclComposeName(f);const data={id:'SCL-W-'+Date.now(),mode:workerMode,role:workerRole,fullName:f.fullName.value.trim(),email:f.email.value.trim(),phone:f.phone.value.trim(),experience:f.experience.value.trim(),credentials:f.credentials.value.trim(),employmentStartDate:f.employmentStartDate?.value||'',workPattern:(f.querySelector('input[name=\"workPattern\"]:checked')||{}).value||'',professions:[(workerRole==='Other Staff'?(f.role.value.trim()||workerRole):workerRole),...[...f.querySelectorAll('.scl-profession-select')].map(x=>x.value==='__other'?((x.parentNode.querySelector('.scl-other-prof')||{}).value||'').trim():x.value).filter(Boolean)].filter((x,i,a)=>a.indexOf(x)===i).slice(0,3),notes:f.notes.value.trim(),timetableRegistration:window.sclLegacySlot(f),timetableSlots:window.sclSlots(f),cv:workerReadFile(f.cv?.files?.[0]),applicationLetter:workerReadFile(f.applicationLetter?.files?.[0]),proof:workerReadFile(f.proof?.files?.[0]),photo:workerReadFile(f.photo?.files?.[0]),status:'Verification Submitted',submittedAt:new Date().toISOString()};data.structured=window.sclBuildStaffStructured(f,data);data.teaching=window.sclTeachState(f);data.partTimeSchedule=data.structured.part_time_schedule;data.employmentEndDate=data.structured.employment_end_date||'';data.surname=data.structured.surname;data.firstName=data.structured.first_name;data.otherNames=data.structured.other_names;data.notes=window.sclNotesWithMarker(f,data.notes);let list=[];try{list=JSON.parse(localStorage.getItem('sclWorkerRecords')||'[]')}catch(_){}list=list.filter(x=>!(x.mode===data.mode&&String(x.email||'').trim().toLowerCase()===data.email.toLowerCase()));list.unshift(data);localStorage.setItem('sclWorkerRecords',JSON.stringify(list.slice(0,50)));window.dispatchEvent(new Event('scl:timetable-live-update'));let appRes=null,backendSaved=false;try{appRes=await window.sclSubmitStaffApplication(f,data);backendSaved=!!(appRes&&appRes.ref);data.backendApplicationId=(appRes&&appRes.ref)||''}catch(err){appRes={error:String((err&&err.message)||err)}}if(appRes&&appRes.error){const box=document.getElementById('workerStatus');if(box)box.innerHTML='<div class="worker-status" style="background:#fff0f0;border-color:#d88;color:#7b0000"><b>NOT SUBMITTED — ACTION REQUIRED</b><br>'+window.sclWorkerResultText(appRes)+'<br><small>Your form remains on screen. Correct the issue shown above and submit again.</small></div>';toast('Verification was not submitted. Please read the error message.');return}if(backendSaved&&window.sclConvertQuickAccountToRole){try{await window.sclConvertQuickAccountToRole(isTeachingRole(workerRole)?'teacher':'staff',data)}catch(_){}}const subject=(workerMode==='staff'?'Staff registration':'Vacancy application')+' - '+workerRole+' - '+data.fullName;const body='Official SCL Website\n\nType: '+(workerMode==='staff'?'Staff Registration':'Vacancy Application')+'\nRole: '+workerRole+'\nName: '+data.fullName+'\nEmail: '+data.email+'\nPhone: '+data.phone+'\nExperience: '+data.experience+'\nCredentials: '+data.credentials+'\nStatus: Verification Submitted\nRecord ID: '+data.id+'\n\nPlease review and contact the person through the Management Administrator WhatsApp numbers.';/* Do not launch the user's mail app automatically; management notification is an explicit button below. */const waText='Hello Management Administrator, a '+(workerMode==='staff'?'staff registration':'vacancy application')+' has just been submitted through the official SCL website.\n\nName: '+data.fullName+'\nRole: '+workerRole+'\nPhone: '+data.phone+'\nRecord ID: '+(data.backendApplicationId||data.id)+'\nStatus: Verification Submitted. Please review and contact the person.';document.getElementById('workerStatus').innerHTML='<div class="worker-status"><b>'+window.sclWorkerHeading(appRes)+'</b><br>'+window.sclWorkerResultText(appRes)+'<br><br>School email and Management WhatsApp contact actions are ready below.<br><br><button class="btn red" type="button" onclick="notifyManagementWhatsApp('+JSON.stringify(waText)+')">NOTIFY MANAGEMENT ON WHATSAPP</button></div>';renderWorkerRecords();if(workerMode==='staff'){if(isTeachingRole(workerRole))renderStaffSalaryStatus();else renderNonTeachingStatus()}toast('Worker / vacancy verification submitted.')}
-
 const SCL_SALARY_CYCLES=[1,2,3,4];
 function getSalaryRecords(){try{return JSON.parse(localStorage.getItem('sclSalaryVerification')||'[]')}catch(e){return []}}
 function saveSalaryRecords(list){try{localStorage.setItem('sclSalaryVerification',JSON.stringify(list))}catch(e){}}
@@ -1767,7 +1717,6 @@ async function approveSalaryPayment(id,cycle){let list=getSalaryRecords(),rec=li
 function renderSalaryAdminTable(){const box=document.getElementById('salaryAdminTable');if(!box)return;const list=getSalaryRecords();if(!list.length){box.innerHTML='<p>No staff verification records have been created on this device yet.</p>';return}let teachingRows='',nonRows='';list.slice(0,50).forEach(rec=>{if(rec.type==='non-teaching'){const a=!!rec.attendanceApproved;nonRows+=`<tr><td>${rec.fullName}</td><td>${rec.role||'Non-teaching staff'}</td><td>4 weeks + 3 days</td><td class="${a?'ok':'needs'}">${a?'GREEN - ADMIN APPROVED':'RED - ATTENDANCE / QUALITY REVIEW'}</td><td>${a?'APPROVED FOR SCHOOL REVIEW':'AWAITING ADMIN APPROVAL'}</td><td>${a?'School banking payment required':`<button class="btn gold" type="button" onclick="approveAttendance('${rec.id}')">APPROVE ATTENDANCE</button>`}</td></tr>`}else{SCL_SALARY_CYCLES.forEach(c=>{const done=!!rec.cycles[c],approved=!!rec.approved[c],detail=rec.resultDetails?.[c];teachingRows+=`<tr><td>${rec.fullName}</td><td>Cycle ${c}</td><td>${c<4?'10 test marks':'10 test + 60 exam marks'}</td><td>${detail?`${detail.className}<br><small>${detail.subjects.join(', ')}</small>`:'-'}</td><td class="${done?'ok':'needs'}">${done?'GREEN - UPLOADED':'RED - OUTSTANDING'}</td><td class="${approved?'ok':done?'needs':''}">${approved?'APPROVED FOR PAYMENT':done?'READY FOR ADMIN REVIEW':'NOT READY'}</td><td>${done&&!approved?`<button class="btn gold" type="button" onclick="approveSalaryPayment('${rec.id}',${c})">APPROVE PAYMENT</button>`:approved?'School banking payment required':'UPLOAD RESULT FIRST'}</td></tr>`})}});let html=`<h4 class="scl-admin-section-title">TEACHING STAFF - RESULT / SALARY VERIFICATION</h4><div class="scl-table-scroll"><table class="scl-salary-table"><thead><tr><th>Staff</th><th>Cycle</th><th>Required</th><th>Class / Subjects</th><th>Result Status</th><th>Payment Status</th><th>Admin Action</th></tr></thead><tbody>${teachingRows||'<tr><td colspan="7">No teaching staff records yet.</td></tr>'}</tbody></table></div><h4 class="scl-admin-section-title">NON-TEACHING STAFF - ATTENDANCE / WORK QUALITY</h4><div class="scl-table-scroll"><table class="scl-salary-table"><thead><tr><th>Staff</th><th>Role</th><th>Period</th><th>Verification</th><th>Status</th><th>Admin Action</th></tr></thead><tbody>${nonRows||'<tr><td colspan="6">No non-teaching staff records yet.</td></tr>'}</tbody></table></div><p class="scl-admin-note">Green means the administrator has completed the required verification. Red means action is still required. The website does not make salary payments automatically; the school uses its banking system after verification.</p>`;box.innerHTML=html}
 function openSalaryAdmin(){openM('salaryAdminModal');renderSalaryAdminTable()}
 function notifyManagementWhatsApp(text){SCL_WORKER_CONFIG.management.forEach((n,i)=>{setTimeout(()=>window.open('https://wa.me/'+n+'?text='+encodeURIComponent(text),'_blank','noopener'),i*500)})}
-function renderWorkerRecords(){const box=document.getElementById('workerRecordList');if(!box)return;let list=[];try{list=JSON.parse(localStorage.getItem('sclWorkerRecords')||'[]')}catch(_){}box.innerHTML=list.length?list.slice(0,8).map(x=>`<div class="worker-record"><b>${x.fullName}</b> - ${x.role}<br><small>${x.mode==='staff'?'Staff':'Vacancy'} | ${x.status} | ${new Date(x.submittedAt).toLocaleString()}</small>${x.mode==='staff'?`<br><button type="button" class="btn outline" onclick="sclEditFromRecord(${list.indexOf(x)})">Edit my details</button>`:''}</div>`).join(''):'<small>No submissions on this device yet.</small>'}
 </script>
 <div aria-labelledby="waTitle" aria-modal="true" class="wa-modal" id="waModal" onclick="if(event.target===this) closeWhatsAppChoices()" role="dialog">
 <div class="wa-box">
@@ -7241,9 +7190,6 @@ window.sclSubmitComment=async function(){const a=auth();if(!a?.accessToken){toas
 window.sclDeleteComment=async function(id){if(!confirm('Delete this comment?'))return;try{await commentApi({action:'delete_comment',id});toast('Comment removed.');await window.sclLoadComments();}catch(e){toast(e.message||'Unable to delete comment.');}}
 window.sclOpenComments=function(){ensureModal();const m=document.getElementById('sclV72CommentsModal');m.classList.add('open');document.body.classList.add('modal-open');fillTargets();window.sclLoadComments()};window.sclCloseComments=function(){const m=document.getElementById('sclV72CommentsModal');if(m)m.classList.remove('open');document.body.classList.remove('modal-open')};
 const bottom=document.querySelector('.bottom');if(bottom){const bs=bottom.querySelectorAll('button');if(bs.length>=5){bs[0].onclick=()=>login();bs[1].onclick=()=>window.sclOpenComments();bs[2].onclick=()=>pick();bs[3].onclick=()=>openCollaboration();bs[4].onclick=()=>openWhatsAppChoices();}}
-function syncProfessions(form){const selects=[...form.querySelectorAll('.scl-profession-select')];const used=new Set([form.querySelector('input[name="role"]')?.value||'']);selects.forEach(sel=>{const current=sel.value;sel.querySelectorAll('option').forEach(o=>{if(!o.value){o.hidden=false;return}o.disabled=used.has(o.value)&&o.value!==current});if(current)used.add(current)});}
-document.addEventListener('change',e=>{if(e.target.classList.contains('scl-profession-select'))syncProfessions(e.target.form)});
-const oldRenderWorkerForm=window.renderWorkerForm;window.renderWorkerForm=function(){oldRenderWorkerForm&&oldRenderWorkerForm();const f=document.getElementById('workerForm');if(f)syncProfessions(f)};
 document.documentElement.classList.add('scl-v72-page-polish');
 })();
 </script>
@@ -7918,14 +7864,13 @@ function close(id){if(typeof window.closeM==='function')window.closeM(id);else $
 function status(id,msg,error=false){const el=$(id);if(!el)return;el.classList.remove('hidden');el.textContent=msg;el.style.color=error?'#a40000':''}
 function gateEnter(){document.body.classList.remove('scl-public-locked','scl-v88-booting');window.__sclGateEntryRequested=true;window.__sclGateAwaitingEntry=false;}
 function gateLogin(){window.__sclGateEntryRequested=true;window.__sclGateAwaitingEntry=true;open('loginModal')}
-function gateSignup(){window.__sclGateEntryRequested=true;open('sclSignupModal')}
+function gateSignup(){window.__sclGateEntryRequested=true;if(window.SCLRegister)window.SCLRegister.open()}
 function gateSignIn(){window.__sclGateEntryRequested=true;open('sclSchoolSignInModal');selectRole('member')}
 function selectRole(mode){const idw=$('sclSchoolIdWrap');if(idw)idw.style.display=mode==='admin'?'none':'';['sclSchoolRoleMember','sclSchoolRoleAdmin'].forEach(id=>$(id)?.classList.toggle('active',id===(mode==='admin'?'sclSchoolRoleAdmin':'sclSchoolRoleMember')));window.__sclSchoolRole=mode}
 async function waitSB(ms=8000){const start=Date.now();while(!(window.sclSupabase?.auth?.signInWithPassword)){if(Date.now()-start>ms)throw new Error('SCL authentication service is not ready. Please check your internet connection and try again.');await new Promise(r=>setTimeout(r,100))}return window.sclSupabase}
 async function login(email,password){const sb=await waitSB();const {data,error}=await sb.auth.signInWithPassword({email,password});if(error)throw error;const u=data.user||{};const meta={...(u.user_metadata||{}),...(u.app_metadata||{})};const a={accessToken:data.session?.access_token,refreshToken:data.session?.refresh_token,user:u,roles:meta.roles||u.user_metadata?.roles||[],staff:meta.staff||u.user_metadata?.staff,student:meta.student||u.user_metadata?.student};saveAuth(a);return a}
 window.sclGateLogin=gateLogin;window.sclGateSignup=gateSignup;window.sclGateSignIn=gateSignIn;window.sclGateRegister=gateSignup;window.sclOpenSignInChoice=gateSignIn;window.sclSelectSchoolRole=selectRole;
 window.sclSchoolSignIn=async function(e){e.preventDefault();const mode=window.__sclSchoolRole||'member',email=$('sclSchoolEmail')?.value.trim(),id=$('sclSchoolId')?.value.trim(),pw=$('sclSchoolPassword')?.value;status('sclSchoolSignInStatus','Authenticating securely…');try{const a=await login(email,pw);if(mode==='admin'){if(!isAdmin(a)){throw new Error('This account is not authorized as a school administrator. Use LOGIN for normal account access.')}}else{if(!isSchoolMember(a))throw new Error('This account is not linked to an approved SCL student, teacher or staff record.');const expected=String(a.student?.id||a.student?.student_id||a.staff?.id||a.staff?.staff_id||a.user?.user_metadata?.student_id||a.user?.user_metadata?.staff_id||'').trim();if(expected&&expected!==id)throw new Error('The SCL ID does not match this school identity.')}gateEnter();close('sclSchoolSignInModal');if(inAttendanceWindow()&&mode!=='admin'&&typeof window.sclOpenAttendance==='function'){window.sclOpenAttendance('self')}else{window.sclOpenModernProfile?.();window.sclRefreshHome?.()} }catch(err){status('sclSchoolSignInStatus',err?.message||'Sign in failed.',true)}};
-window.sclSignup=async function(e){e.preventDefault();const name=$('sclSignupName')?.value.trim(),email=$('sclSignupEmail')?.value.trim(),phone=$('sclSignupPhone')?.value.trim(),pw=$('sclSignupPassword')?.value,pw2=$('sclSignupPassword2')?.value;if(pw!==pw2){status('sclSignupStatus','Passwords do not match.',true);return}status('sclSignupStatus','Creating your SCL account…');try{const sb=await waitSB();const {data,error}=await sb.auth.signUp({email,password:pw,options:{data:{full_name:name,phone,account_type:'member'}}});if(error)throw error;if(data.session){saveAuth({accessToken:data.session.access_token,refreshToken:data.session.refresh_token,user:data.user,roles:['member']});gateEnter();close('sclSignupModal');window.sclOpenPublicUserView?.();}else{status('sclSignupStatus','Account created. Check your email to verify your SCL account, then use LOGIN.');}}catch(err){status('sclSignupStatus',err?.message||'Account creation failed.',true)}};
 window.sclBeginAttendanceSignIn=function(){gateSignIn()};window.login=gateLogin;window.pick=gateSignup;
 // Keep registration protected: authenticated users reach it from the homepage, never from the public gate.
 window.sclGateStudentRegistration=function(){if(!live()){gateLogin();return}window.openStudentRegistration?.()||window.openRegistration?.()||window.sclOpenRegistration?.()};
@@ -8369,19 +8314,10 @@ function feedback(t,ok=true){let e=document.getElementById('sclV98Feedback');if(
 function modal98(id,on=true){const e=document.getElementById(id);if(!e)return false;e.classList.toggle('open',on);e.style.display=on?'flex':'none';e.setAttribute('aria-hidden',on?'false':'true');return true}
 function ensureSocial(){if(document.getElementById('sclV98SocialModal'))return;const m=document.createElement('div');m.id='sclV98SocialModal';m.className='scl-new-account-modal';m.innerHTML='<div class="scl-new-account-card"><div class="scl-new-head"><div><h2>SCL Social Media</h2><p>Choose an official SCL social channel.</p></div><button class="scl-new-close" type="button">✕</button></div><div class="scl-v98-social-list"><a href="https://www.youtube.com/@SHININGCHILDLEADERS" target="_blank" rel="noopener"><b>▶ Official SCL YouTube</b><span>SHININGCHILDLEADERS</span></a></div></div>';document.body.appendChild(m);m.querySelector('.scl-new-close').onclick=()=>modal98('sclV98SocialModal',false)}
 function installSignIn(){const form=document.getElementById('sclSignInForm');if(!form||form.dataset.v98==='1')return;form.dataset.v98='1';const ident=document.getElementById('sclSignInIdentifier'),pass=document.getElementById('sclSignInPassword');window.sclPasswordSignIn=async function(e){e?.preventDefault?.();const box=document.getElementById('sclSignInStatus'),identifier=ident?.value.trim()||'',password=pass?.value||'';if(!identifier||!password){box.textContent='Enter your SCL User ID or email address and password.';box.className='scl-new-status err full';return false}try{box.textContent='Checking your SCL identity…';box.className='scl-new-status ok full';const r=await fetch(SUP+'/functions/v1/scl-id-login',{method:'POST',headers:{'Content-Type':'application/json','apikey':KEY},body:JSON.stringify({identifier,password})});const d=await r.json().catch(()=>({}));if(!r.ok||d.error)throw new Error(d.error||'Sign-in failed.');const sb=window.sclSupabase;if(!sb?.auth?.setSession)throw new Error('SCL session service is not ready.');const sr=await sb.auth.setSession(d.session);if(sr.error)throw sr.error;const vr=await fetch(SUP+'/functions/v1/scl-auth-api',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+d.session.access_token,'apikey':KEY},body:JSON.stringify({action:'school_sign_in_check',mode:'scl'})});const vd=await vr.json().catch(()=>({}));if(!vr.ok||vd.error){await sb.auth.signOut();throw new Error(vd.error||'Your SCL account is not yet authorised for Sign In. Please complete registration and wait for approval.')}const syncResponse=await fetch(SUP+'/functions/v1/scl-auth-api',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+d.session.access_token,'apikey':KEY},body:JSON.stringify({action:'sync_account',full_name:d.user?.user_metadata?.full_name||'',phone:d.user?.user_metadata?.phone||'',surname:d.user?.user_metadata?.surname||'',real_name:d.user?.user_metadata?.real_name||'',last_name:d.user?.user_metadata?.last_name||'',account_purpose:d.user?.user_metadata?.account_purpose||'',admin_role:d.user?.user_metadata?.admin_role||'',affairs_type:d.user?.user_metadata?.affairs_type||'',photo_data_url:d.user?.user_metadata?.photo_data_url||''})});const syncData=await syncResponse.json().catch(()=>({}));if(!syncResponse.ok||syncData.error){await sb.auth.signOut();throw new Error(syncData.error||'Your account was authenticated, but its SCL profile could not be synchronized. Please retry or contact SCL support.')}document.body.classList.remove('scl-public-locked');modal98('sclSignInModal',false);await window.sclOpenModernProfile?.();feedback('Sign-in successful. Your authorised profile is ready.');}catch(err){box.textContent=err.message||'Sign-in failed.';box.className='scl-new-status err full'}return false};}
-function installSignup(){const form=document.getElementById('sclQuickSignupForm');if(!form||form.dataset.v98==='1')return;form.dataset.v98='1';
-const purposeEl=document.getElementById('sclSignupPurpose'),adminBox=document.getElementById('sclAdminRegistrationBox'),adminType=document.getElementById('sclSignupAdminType'),affairsBox=document.getElementById('sclAffairsTypeBox'),affairsType=document.getElementById('sclSignupAffairsType'),photoInput=document.getElementById('sclSignupPhoto'),photoData=document.getElementById('sclSignupPhotoData'),photoStatus=document.getElementById('sclSignupPhotoStatus'),photoPreview=document.getElementById('sclSignupPhotoPreview'),photoImg=document.getElementById('sclSignupPhotoImg'),photoSize=document.getElementById('sclSignupPhotoSize');
-function setAdminFields(){const isAdmin=purposeEl?.value==='administrator';if(adminBox)adminBox.style.display=isAdmin?'block':'none';if(adminType){adminType.required=isAdmin;if(!isAdmin)adminType.value=''}const isAff= isAdmin && adminType?.value==='affairs_admin';if(affairsBox)affairsBox.style.display=isAff?'block':'none';if(affairsType){affairsType.required=isAff;if(!isAff)affairsType.value=''}}
-purposeEl?.addEventListener('change',setAdminFields);adminType?.addEventListener('change',setAdminFields);setAdminFields();
-function fmt(n){return n<1024?Math.round(n)+' B':n<1048576?(n/1024).toFixed(1)+' KB':(n/1048576).toFixed(2)+' MB'}
-async function compressPhoto(file){return new Promise((resolve,reject)=>{if(!file||!file.type.startsWith('image/'))return reject(new Error('Please choose an image file.'));const reader=new FileReader();reader.onerror=()=>reject(new Error('The selected photo could not be read.'));reader.onload=()=>{const img=new Image();img.onload=()=>{const max=640;const scale=Math.min(1,max/Math.max(img.naturalWidth,img.naturalHeight));const w=Math.max(1,Math.round(img.naturalWidth*scale)),h=Math.max(1,Math.round(img.naturalHeight*scale));const c=document.createElement('canvas');c.width=w;c.height=h;const ctx=c.getContext('2d',{alpha:false});ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);ctx.drawImage(img,0,0,w,h);let quality=.78,data=c.toDataURL('image/jpeg',quality);while(data.length>120000&&quality>.48){quality-=.06;data=c.toDataURL('image/jpeg',quality)}resolve({data,w,h,bytes:Math.round((data.length-23)*3/4),original:file.size,quality})};img.onerror=()=>reject(new Error('The selected photo could not be decoded.'));img.src=reader.result};reader.readAsDataURL(file)})}
-photoInput?.addEventListener('change',async()=>{const file=photoInput.files?.[0];if(!file)return;photoStatus.textContent='Compressing your photo on this device…';photoStatus.className='scl-photo-status';try{const r=await compressPhoto(file);photoData.value=r.data;photoImg.src=r.data;photoPreview.hidden=false;photoSize.textContent=`Compressed to ${fmt(r.bytes)} (${r.w}×${r.h}); original ${fmt(r.original)}.`;photoStatus.textContent='Photo compressed successfully. This compressed copy is the one attached to your registration.';photoStatus.style.color='#08763a'}catch(err){photoData.value='';photoPreview.hidden=true;photoStatus.textContent=err.message||'Photo compression failed.';photoStatus.style.color='#a00'}});
-window.sclQuickSignup=async function(e){e?.preventDefault?.();const q=id=>document.getElementById(id)?.value.trim()||'';const surname=q('sclSignupSurname'),real=q('sclSignupRealName'),last=q('sclSignupLastName'),preferred=q('sclSignupPreferredName'),email=q('sclSignupEmail').toLowerCase(),phone=q('sclSignupPhone'),country=q('sclSignupCountry'),purpose=q('sclSignupPurpose'),admin_role=q('sclSignupAdminType'),affairs_type=q('sclSignupAffairsType'),photo=q('sclSignupPhotoData'),password=document.getElementById('sclSignupPassword')?.value||'',confirm=document.getElementById('sclSignupConfirm')?.value||'',box=document.getElementById('sclRegisterStatus');const full=[surname,real,last].filter(Boolean).join(' ');document.getElementById('sclSignupFullName').value=full;if(!surname||!real||!last||!email||!phone||!country||!purpose)return(box.textContent='Complete the required sign-up information.',box.className='scl-new-status err full',false);if(!['parent','guardian','visitor'].includes(purpose))return(box.textContent='Choose Parent, Guardian, or Visitor for general sign-up. Student and staff applications are handled through their dedicated SCL registration routes.',box.className='scl-new-status err full',false);if(purpose==='administrator'&&!admin_role)return(box.textContent='Select the administrator position you are registering for.',box.className='scl-new-status err full',false);if(purpose==='administrator'&&admin_role==='affairs_admin'&&!affairs_type)return(box.textContent='Select the type of Affairs administration you are registering for.',box.className='scl-new-status err full',false);if(!photo)return(box.textContent='Take or upload your registration photo. The photo must be compressed successfully before registration can be submitted.',box.className='scl-new-status err full',false);if(password!==confirm)return(box.textContent='The passwords do not match.',box.className='scl-new-status err full',false);if(password.length<8)return(box.textContent='Password must be at least 8 characters.',box.className='scl-new-status err full',false);try{box.textContent='Creating your SCL profile…';box.className='scl-new-status ok full';const sb=window.sclSupabase;if(!sb?.auth?.signUp)throw new Error('SCL account service is still loading.');const metadata={full_name:full,surname,real_name:real,last_name:last,preferred_name:preferred,phone,country,account_purpose:purpose,admin_role,affairs_type,photo_data_url:photo,account_source:'quick_signup_v98'};localStorage.setItem('sclAccountSyncPending','signup_in_progress');const r=await sb.auth.signUp({email,password,options:{data:metadata,emailRedirectTo:location.href.split('#')[0]}});if(r.error)throw r.error;if(r.data?.session){localStorage.setItem('sclAccountSyncPending','signup_syncing');await syncAccountV98(r.data.session,full,phone,surname,real,last,purpose,admin_role,affairs_type,photo);localStorage.removeItem('sclAccountSyncPending');document.body.classList.remove('scl-public-locked');modal98('sclRegisterModal',false);await window.sclOpenModernProfile?.();feedback('Quick sign-up complete. Your compressed registration photo is saved with your SCL profile.');}else{localStorage.setItem('sclAccountSyncPending','signup_confirmation');box.textContent='Your account has been created. Check your email and confirm it, then return to SCL. When the confirmation link restores your session, SCL will automatically synchronize your person profile and selected category. Do not create a second account. If your profile is still not ready after confirmation, keep this account and contact SCL support.';box.className='scl-new-status ok full'}}catch(err){if(localStorage.getItem('sclAccountSyncPending')==='signup_in_progress')localStorage.removeItem('sclAccountSyncPending');box.textContent=err.message||'Quick sign-up failed.';box.className='scl-new-status err full'}return false};}
-async function syncAccountV98(sess,full,phone,surname,real,last,purpose,admin_role,affairs_type,photo){const r=await fetch(SUP+'/functions/v1/scl-auth-api',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+sess.access_token,'apikey':KEY},body:JSON.stringify({action:'sync_account',full_name:full,phone,surname,real_name:real,last_name:last,account_purpose:purpose,admin_role,affairs_type,photo_data_url:photo})});const d=await r.json().catch(()=>({}));if(!r.ok||d.error)throw new Error(d.error||'Profile could not be initialized.');return d}
 function roleFeatures(role){const r=role.toLowerCase();if(r.includes('administrator'))return ['Administration','Notifications','Attendance control','Staff & teachers','Admissions','Results','Fees','GPS / location'];if(r.includes('teacher'))return ['Classes','Student attendance','Results','Assignments','Lesson plans','Timetable'];if(r.includes('janitor')||r.includes('worker')||r.includes('staff'))return ['Work schedule','Attendance','Service rank','Tasks','Notices'];if(r.includes('parent'))return ['My children','Attendance','Results','Fees','Complaints','Teacher comments'];if(r.includes('guardian'))return ['Linked child','Attendance','Results','Fees','Messages'];if(r.includes('student'))return ['My attendance','Results','Assignments','Curriculum','Rank / badges'];return ['Profile','Notifications','SCL information'];}
 async function enhanceProfile(){const modal=document.getElementById('sclNewAccountModal');if(!modal||modal.dataset.v98roles==='1')return;const token=await (async()=>{try{return (await window.sclSupabase.auth.getSession()).data.session?.access_token||''}catch(_){return''}})();if(!token)return;const r=await fetch(SUP+'/functions/v1/scl-auth-api',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token,'apikey':KEY},body:JSON.stringify({action:'access'})});const d=await r.json().catch(()=>({}));if(!r.ok)return;modal.dataset.v98roles='1';const memberships=d.memberships||[];const uid=d.person?.primary_id_number||memberships.find(x=>x.is_primary_school)?.school_id_number||memberships[0]?.school_id_number||'';const uidEl=document.getElementById('sclProfileUserId');if(uidEl)uidEl.textContent=uid?'SCL USER ID: '+uid:'';const roles=[...new Set([...(d.roles||[]).map(x=>x.role),...memberships.map(x=>x.membership_type)])].filter(Boolean);let strip=modal.querySelector('.scl-v98-role-strip');if(!strip){strip=document.createElement('div');strip.className='scl-v98-role-strip';const meter=modal.querySelector('.scl-profile-meter');meter?.after(strip)}strip.innerHTML=roles.length?roles.map(role=>'<div class="scl-v98-role"><h4>'+String(role).replace(/_/g,' ').replace(/\b\w/g,m=>m.toUpperCase())+'</h4><small>One profile • one identity • this registered title</small><div class="scl-v98-role-features">'+roleFeatures(String(role)).map(x=>'<span>'+x+'</span>').join('')+'</div></div>').join(''):'<div class="scl-v98-role"><h4>General Account</h4><small>No SCL school role has been authorised yet.</small><div class="scl-v98-role-features"><span>View site</span><span>Profile</span></div></div>';}
 function installOverlays(){document.addEventListener('keydown',e=>{if(e.key==='Escape'){const opens=[...document.querySelectorAll('.modal.open,.scl-new-account-modal.open')];if(opens.length){const m=opens[opens.length-1];m.classList.remove('open');m.style.display='none';m.setAttribute('aria-hidden','true');if(!document.querySelector('.modal.open,.scl-new-account-modal.open'))document.body.classList.remove('modal-open')}}});}
-function boot98(){installSignIn();installSignup();installOverlays();const p=document.getElementById('sclNewAccountModal');if(p){const mo=new MutationObserver(()=>{if(p.classList.contains('open'))enhanceProfile()});mo.observe(p,{attributes:true,attributeFilter:['class','style']});setTimeout(()=>{if(p.classList.contains('open'))enhanceProfile()},1200)};}
+function boot98(){installSignIn();installOverlays();const p=document.getElementById('sclNewAccountModal');if(p){const mo=new MutationObserver(()=>{if(p.classList.contains('open'))enhanceProfile()});mo.observe(p,{attributes:true,attributeFilter:['class','style']});setTimeout(()=>{if(p.classList.contains('open'))enhanceProfile()},1200)};}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot98,{once:true});else setTimeout(boot98,50);
 const oldToast=window.toast;window.toast=function(t){try{if(typeof oldToast==='function')oldToast.apply(this,arguments)}catch(_){}feedback(String(t||'Done'));};
 window.sclV98Feedback=feedback;
@@ -8519,7 +8455,7 @@ var handlers={login:null,signin:null,register:null};
 function emit(a,d){var e=new CustomEvent("accessgate:"+a,{bubbles:true,detail:Object.assign({action:a,gate:gate},d||{})});document.dispatchEvent(e);if(typeof handlers[a]==="function")handlers[a](e.detail)}
 
 /* views */
-function go(n){gate.classList.toggle("ag-reg",n==="register");if(n==="register")showStep(1);gate.querySelectorAll(".ag-view").forEach(function(v){v.classList.toggle("ag-on",v.id==="v-"+n)});if(n!=="register")stopCam()}
+function go(n){if(n==="register"){if(window.SCLRegister)window.SCLRegister.open();return}gate.querySelectorAll(".ag-view").forEach(function(v){v.classList.toggle("ag-on",v.id==="v-"+n)});}
 gate.querySelectorAll("[data-go]").forEach(function(b){b.onclick=function(){go(b.dataset.go)}});
 gate.querySelector('[data-access-action="signin"]').onclick=function(){go("signin")};
 gate.querySelector('[data-access-action="register"]').onclick=function(){go("register")};
@@ -8531,39 +8467,8 @@ $("v-signin").onsubmit=function(e){e.preventDefault();var id=$("si-id").value.tr
  if(!id||!pw){m.className="ag-msg";m.textContent="Enter your email or user ID and your password.";return}
  m.className="ag-msg ag-ok";m.textContent="Checking your details...";emit("signin",{id:id,password:pw})};
 
-/* register */
-var role="student",photo=null,stream=null,step=1;
-var F={student:[["Class","r-cl","select","Day Care,Nursery 1,Nursery 2,Primary 1,Primary 2,Primary 3,Primary 4,Primary 5,Primary 6,JSS 1,JSS 2,JSS 3,SSS 1,SSS 2,SSS 3"],["Date of birth","r-dob","date"],["Parent or guardian phone","r-ph","tel","sp"]],
-parent:[["I am the","r-pt","chips","Father,Mother"],["Phone number","r-ph","tel"],["Children in school","r-nc","number"],["Child's full name","r-ch","text"],["Child's class","r-cc","text"]],
-guardian:[["Phone number","r-ph","tel"],["Relationship to pupil","r-rel","text"],["Pupil's full name","r-ch","text"],["Pupil's class","r-cc","text"]]};
-function fields(){var h="";F[role].forEach(function(f){var sp=f[2]==="chips"||f[3]==="sp"?' ag-sp':'';h+='<div class="'+sp.trim()+'"><label for="'+f[1]+'">'+f[0]+'</label>';
- if(f[2]==="select")h+='<select id="'+f[1]+'" required>'+f[3].split(",").map(function(o){return"<option>"+o+"</option>"}).join("")+"</select>";
- else if(f[2]==="chips")h+='<div class="ag-roles" style="grid-template-columns:1fr 1fr" data-chips="'+f[1]+'">'+f[3].split(",").map(function(o,k){return'<button type="button"'+(k?"":' class="ag-on"')+'>'+o+'</button>'}).join("")+'</div><input type="hidden" id="'+f[1]+'" value="'+f[3].split(",")[0]+'">';
- else h+='<input id="'+f[1]+'" type="'+f[2]+'" required>';h+="</div>"});$("rf").innerHTML=h}
-fields();
-$("rf").onclick=function(e){var b=e.target.closest("[data-chips] button");if(!b)return;var w=b.parentNode;w.querySelectorAll("button").forEach(function(x){x.classList.toggle("ag-on",x===b)});$(w.dataset.chips).value=b.textContent};
-$("roles").onclick=function(e){var b=e.target.closest("button");if(!b)return;role=b.dataset.r;this.querySelectorAll("button").forEach(function(x){x.classList.toggle("ag-on",x===b)});fields()};
+
 gate.addEventListener("click",function(e){var b=e.target.closest(".ag-eye");if(b){var i=b.parentNode.querySelector("input");i.type=i.type==="password"?"text":"password";b.textContent=i.type==="password"?"Show":"Hide"}});
-function showStep(n){step=n;gate.querySelectorAll(".ag-st").forEach(function(s){s.hidden=+s.dataset.s!==n});gate.querySelectorAll("#dots i").forEach(function(d,i){d.classList.toggle("ag-on",i<n)});$("nx").hidden=n===3;$("sub").hidden=n!==3;$("m-r").textContent="";if(n!==3)stopCam()}
-function valid(n){var ok=true,m=$("m-r");document.querySelectorAll('.ag-st[data-s="'+n+'"] input:not([type=file]),.st[data-s="'+n+'"] select').forEach(function(i){var bad=!i.value.trim();i.style.borderColor=bad?"#ff7a7a":"";if(bad)ok=false});
- m.className="ag-msg";if(!ok){m.textContent="Please complete every field.";return false}
- if(n===2&&(!/^\S+@\S+\.\S+$/.test($("r-em").value)||$("r-pw").value.length<8)){m.textContent="Enter a valid email and a password of 8+ characters.";return false}return true}
-$("nx").onclick=function(){if(valid(step))showStep(step+1)};
-$("rb").onclick=function(){step>1?showStep(step-1):go("home")};
-function chk(){$("sub").disabled=!(photo&&$("r-tc").checked);var m=$("m-r");if(!photo){m.className="ag-msg";m.textContent="Add your face photo to continue."}else if(!$("r-tc").checked){m.className="ag-msg";m.textContent="Tick the agreement to submit."}else{m.className="ag-msg ag-ok";m.textContent="Ready to submit."}}
-$("r-tc").onchange=chk;
-function setPhoto(url){photo=url;var p=$("fp");p.innerHTML="";p.style.backgroundImage="url("+url+")";chk()}
-$("up").onclick=function(){$("file").click()};
-$("file").onchange=function(){var f=this.files[0];if(!f)return;var r=new FileReader();r.onload=function(){stopCam();setPhoto(r.result)};r.readAsDataURL(f)};
-$("cam").onclick=function(){
- if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){$("m-r").className="ag-msg";$("m-r").textContent="Camera not available here. Use Upload instead.";return}
- navigator.mediaDevices.getUserMedia({video:{facingMode:"user"}}).then(function(s){stream=s;var v=document.createElement("video");v.autoplay=true;v.muted=true;v.playsInline=true;v.srcObject=s;var p=$("fp");p.style.backgroundImage="none";p.innerHTML="";p.appendChild(v);$("snap").hidden=false}).catch(function(){$("m-r").className="ag-msg";$("m-r").textContent="Camera permission was blocked. Allow it or use Upload."})};
-$("snap").onclick=function(){var v=$("fp").querySelector("video");if(!v)return;var c=document.createElement("canvas");c.width=c.height=360;var x=c.getContext("2d"),s=Math.min(v.videoWidth,v.videoHeight);
- x.translate(360,0);x.scale(-1,1);x.drawImage(v,(v.videoWidth-s)/2,(v.videoHeight-s)/2,s,s,0,0,360,360);stopCam();setPhoto(c.toDataURL("image/jpeg",.85))};
-function stopCam(){if(stream){stream.getTracks().forEach(function(t){t.stop()});stream=null}$("snap").hidden=true}
-$("v-register").onsubmit=function(e){e.preventDefault();if(!photo||!$("r-tc").checked){chk();return}
- var d={role:role,photo:photo};document.querySelectorAll("#v-register input,#v-register select").forEach(function(i){if(i.id&&i.type!=="file"&&i.type!=="checkbox")d[i.id.replace("r-","")]=i.value.trim()});
- var m=$("m-r");m.className="ag-msg ag-ok";m.textContent="Creating your account...";emit("register",d)};
 $("fg").onclick=function(e){e.preventDefault();var id=$("si-id").value.trim(),m=$("m-si");if(!id){m.className="ag-msg";m.textContent="Type your email or user ID above first.";return}m.className="ag-msg ag-ok";m.textContent="Reset link requested for "+id+".";emit("forgot",{id:id})};
 
 /* occasions: [month, day, name, effect, countries] */
@@ -8690,7 +8595,7 @@ function storedSession(){
 /* keep the page behind the gate out of reach of keyboard and screen readers */
 function setInert(on){
   [].forEach.call(body.children,function(el){
-    if(el===gate||el.tagName==="SCRIPT"||el.tagName==="STYLE")return;
+    if(el===gate||el.tagName==="SCRIPT"||el.tagName==="STYLE"||el.hasAttribute("data-ag-allow"))return;
     if(on){if(!el.hasAttribute("inert")){el.setAttribute("inert","");el.setAttribute("data-ag-inert","1")}}
     else if(el.getAttribute("data-ag-inert")){el.removeAttribute("inert");el.removeAttribute("data-ag-inert")}
   });
@@ -8753,57 +8658,14 @@ document.addEventListener("accessgate:forgot",function(e){
     .catch(function(err){say("m-si",(err&&err.message)||"The reset link could not be sent.")});
 });
 
-/* registration */
-function shrink(url,max){
-  return new Promise(function(res){
-    var img=new Image();
-    img.onload=function(){
-      var s=Math.min(1,max/Math.max(img.width,img.height)),cv=document.createElement("canvas");
-      cv.width=Math.max(1,Math.round(img.width*s));cv.height=Math.max(1,Math.round(img.height*s));
-      cv.getContext("2d").drawImage(img,0,0,cv.width,cv.height);res(cv.toDataURL("image/jpeg",.8));
-    };
-    img.onerror=function(){res(url)};
-    img.src=url;
-  });
-}
-AG.onRegister(function(d){
-  var btn=$("sub"),c=client();
-  if(btn)btn.disabled=true;busy=true;
-  function fail(t){busy=false;say("m-r",t);if(btn)btn.disabled=false}
-  if(!c||!c.auth.signUp){fail("The account service is still loading. Check your connection and try again.");return}
-  var full=[d.sn,d.fn,d.ln].filter(Boolean).join(" ");
-  var purpose=d.role==="parent"?"parent":d.role==="guardian"?"guardian":"visitor";
-  var extra={};["cl","dob","pt","nc","ch","cc","rel"].forEach(function(k){if(d[k])extra[k]=d[k]});
-  shrink(d.photo,360).then(function(photo){
-    var md={full_name:full,surname:d.sn,real_name:d.fn,last_name:d.ln,preferred_name:d.fn,phone:d.ph||"",country:AG.country(),account_purpose:purpose,admin_role:"",affairs_type:"",photo_data_url:photo,account_source:"access_gate_v1",gate_role:d.role,gate_details:extra};
-    try{localStorage.setItem("sclAccountSyncPending","signup_in_progress")}catch(e){}
-    return c.auth.signUp({email:String(d.em).toLowerCase(),password:d.pw,options:{data:md,emailRedirectTo:location.href.split("#")[0]}}).then(function(r){
-      if(r.error)throw r.error;
-      if(r.data&&r.data.session){
-        try{localStorage.setItem("sclAccountSyncPending","signup_syncing")}catch(e){}
-        return post("scl-auth-api",{action:"sync_account",full_name:full,phone:md.phone,surname:md.surname,real_name:md.real_name,last_name:md.last_name,account_purpose:purpose,admin_role:"",affairs_type:"",photo_data_url:photo},r.data.session.access_token).then(function(x){
-          if(!x.ok||x.data.error)throw new Error(x.data.error||"Your account was created, but its profile could not be set up. Contact school support.");
-          try{localStorage.removeItem("sclAccountSyncPending")}catch(e){}
-          say("m-r","Account created. Welcome, "+d.fn+"!",true);try{AG.celebrate()}catch(e){}
-          setTimeout(function(){busy=false;enter(true)},1400);
-        });
-      }
-      try{localStorage.setItem("sclAccountSyncPending","signup_confirmation")}catch(e){}
-      busy=false;say("m-r","Account created. Check your email to confirm it, then come back and sign in.",true);try{AG.celebrate()}catch(e){}
-    });
-  }).catch(function(e){
-    try{if(localStorage.getItem("sclAccountSyncPending")==="signup_in_progress")localStorage.removeItem("sclAccountSyncPending")}catch(x){}
-    fail((e&&e.message)||"Registration failed. Try again.");
-  });
-});
-
 /* hooks the website already calls */
-window.sclAccessGateAction=function(a){lock(a==="account"?"signin":a==="register"?"register":"home")};
+window.sclAccessGateAction=function(a){if(a==="register"){if(window.SCLRegister)window.SCLRegister.open();return}lock(a==="account"?"signin":"home")};
 var viewFor={loginModal:"home",sclSchoolSignInModal:"signin",sclSignInModal:"signin",sclSignupModal:"register",sclRegisterModal:"register",sclV88RegisterModal:"register"};
+
 var rawOpenM=window.openM;
 if(typeof rawOpenM==="function"){
   window.openM=function(id){
-    if(viewFor[id]&&!document.getElementById(id)){lock(viewFor[id]);return}
+    if(viewFor[id]&&!document.getElementById(id)){if(viewFor[id]==="register"){if(window.SCLRegister)window.SCLRegister.open();return}lock(viewFor[id]);return}
     return rawOpenM.apply(this,arguments);
   };
 }
@@ -9063,201 +8925,19 @@ function webAnswer(q){
    return{html:html,acts:acts};
   })});
 }
-/* ---------- TEACHER ASSIGNMENT (structured, v7) ---------- */
-var PRIM=['Daycare','Nursery 1','Nursery 2','Reception','Primary 1','Primary 2','Primary 3','Primary 4','Primary 5'],SEC=['JSS 1','JSS 2','JSS 3','SSS 1','SSS 2','SSS 3'];
-var PERIODS={A:[['p1','08:30','09:25'],['p2','09:25','10:20'],['p3','10:20','11:15'],['p4','11:30','12:25'],['p5','13:05','14:00'],['p6','14:00','14:55']],FRI:[['p1','08:30','09:20'],['p2','09:20','10:10'],['p3','10:10','11:00'],['p4','11:00','11:50']]};
-var WDAYS=[['mon','Monday'],['tue','Tuesday'],['wed','Wednesday'],['thu','Thursday'],['fri','Friday']];
-function stdSubjects(){var S=window.SCL_SUBJECTS||{};return{JSS:(S.JSS||[]).slice(),SSS:(S.SSS||[]).slice(),fromServer:false}}
-var CAT=null,catP=null;
-function parseCatalog(rows){
- if(!Array.isArray(rows)||!rows.length)return null;var out={JSS:[],SSS:[]};
- rows.forEach(function(r){
-  if(!r||r.active===false||r.is_active===false)return;
-  var name=r.subject||r.subject_name||r.name||r.title||r.label;if(!name)return;name=String(name).trim();if(!name)return;
-  var lv=String(r.level||r.section||r.class_level||r.class_name||r.class_group||r.stage||r.category||'').toUpperCase(),tg=[];
-  if(/\bJSS|JUNIOR/.test(lv))tg.push('JSS');
-  if(/\bSSS?\b|SENIOR/.test(lv))tg.push('SSS');
-  if(!tg.length&&/BOTH|ALL|SECONDARY/.test(lv))tg=['JSS','SSS'];
-  tg.forEach(function(k){if(out[k].indexOf(name)<0)out[k].push(name)})});
- if(!out.JSS.length&&!out.SSS.length)return null;
- var fb=stdSubjects();if(!out.JSS.length)out.JSS=fb.JSS;if(!out.SSS.length)out.SSS=fb.SSS;out.fromServer=true;return out}
-function loadCatalog(){
- if(catP)return catP;
- catP=new Promise(function(res){
-  var done=false;function fin(v){if(!done){done=true;res(v)}}
-  setTimeout(function(){fin(null)},6000);
-  try{var rf=window.__sclRawFetch||window.fetch;
-   rf.call(window,String(window.SCL_SUPABASE_URL||'').replace(/\/$/,'')+'/rest/v1/scl_secondary_subject_catalog?select=*&limit=1000',{headers:{apikey:window.SCL_SUPABASE_PUBLISHABLE_KEY||''}})
-    .then(function(r){return r.ok?r.json():null}).then(function(rows){fin(parseCatalog(rows))}).catch(function(){fin(null)})
-  }catch(e){fin(null)}
- }).then(function(c){CAT=c||stdSubjects();return CAT});
- return catP}
-function nrm(s){return String(s||'').toLowerCase().replace(/[^a-z]+/g,' ').trim()}
-function seedClass(c){c=String(c||'').trim();var m=c.match(/^s{2,3}\s*(\d)$/i);if(m)return 'SSS '+m[1];m=c.match(/^jss\s*(\d)$/i);if(m)return 'JSS '+m[1];return c}
-window.sclComposeName=function(f){if(!f||!f.fullName)return;f.fullName.value=['surname','firstName','otherNames'].map(function(n){return f[n]&&f[n].value?f[n].value.trim():''}).filter(Boolean).join(' ')};
-window.sclSlots=function(f){var T=f&&f.__T;if(!T||T.level==='Primary')return[];window.sclComposeName(f);var me=f.fullName.value.trim();return T.slots.map(function(s){return Object.assign({},s,{teacher:me})})};
-window.sclLegacySlot=function(f){var s=window.sclSlots(f)[0];return s?{className:s.className,day:s.day,variant:s.variant,start:s.start,end:s.end,subject:s.subject,teacher:s.teacher}:null};
-window.sclTeachState=function(f){return f&&f.__T?JSON.parse(JSON.stringify(f.__T)):null};
-window.sclPartTime=function(f){var wp=(f.querySelector('input[name="workPattern"]:checked')||{}).value||'';if(wp==='Full-Time'||!f.__getPT)return[];return f.__getPT()};
-window.sclNotesWithMarker=function(f,notes){var T=f&&f.__T;if(!T)return notes;
- var sj=T.level==='Primary'?'':T.classes.map(function(c){return c+' = '+((T.subjects[c]||[]).join(', '))}).join(' | ');
- var line='[TEACHING ASSIGNMENT] Level: '+T.level+'; Classes: '+(T.classes.join(', ')||'none')+'; Delivery: '+T.delivery+(sj?'; Subjects: '+sj:'')+' [/TEACHING ASSIGNMENT]';
- return line+(notes?'\n'+notes:'')};
-window.sclBuildStaffStructured=function(f,data){
- var T=f&&f.__T||null,wp=data.workPattern||'';
- var et=wp==='Full-Time'?'full_time':(/Part-Time/.test(wp)?'part_time':'');
- var tm={'In school':'in_school','Online':'online','In school and online':'both'};
- var prof=data.professions||[],cls=[],subj=[];
- if(T){T.classes.forEach(function(c){
-   if(T.level==='Primary')cls.push({class_name:c,assignment_type:'primary_class_teacher'});
-   else{cls.push({class_name:c,assignment_type:'subject_teacher'});(T.subjects[c]||[]).forEach(function(s){subj.push({class_name:c,subject:s})})}})}
- return{surname:f.surname?f.surname.value.trim():'',first_name:f.firstName?f.firstName.value.trim():'',other_names:f.otherNames?f.otherNames.value.trim():'',
-  employment_start_date:data.employmentStartDate||null,employment_end_date:(f.employmentEndDate&&f.employmentEndDate.value)||null,
-  employment_type:et,work_pattern:wp,work_pattern_detail:wp,teaching_mode:T?(tm[T.delivery]||''):'',primary_profession:prof[0]||'',additional_professions:prof.slice(1),
-  qualifications:data.credentials?[data.credentials]:[],subject_assignments:subj,class_assignments:cls,
-  part_time_schedule:window.sclPartTime(f),teaching_level:T?T.level:'',timetable_slots:window.sclSlots(f)}};
-
-function patchWorker(){
- if(typeof renderWorkerForm!=='function'||renderWorkerForm.__hv2)return;
- var orig=renderWorkerForm;
- var np=function(){orig.apply(this,arguments);try{augment()}catch(e){console.warn(e)}};np.__hv2=1;renderWorkerForm=np;
-
- function augment(){
-  var f=D.getElementById('workerForm');if(!f||f.dataset.v7)return;f.dataset.v7='1';
-  commonAugment(f);
-  if(window.sclUploads)window.sclUploads.mount(f);
-  if(typeof isTeachingRole==='function'&&isTeachingRole(workerRole))teachAugment(f);
-  f.addEventListener('submit',function(e){
-   var msg='',T=f.__T;
-   if(T){
-    if(!T.classes.length)msg='Select at least one class you teach.';
-    else if(T.level!=='Primary'){var miss=T.classes.filter(function(c){return !(T.subjects[c]||[]).length});if(miss.length)msg='Choose at least one subject for '+miss.join(', ')+'.'}}
-   if(!msg){var wp=(f.querySelector('input[name="workPattern"]:checked')||{}).value;
-    if(wp&&wp!=='Full-Time'){var rows=f.__getPT();if(!rows.length)msg='For every part-time arrangement, tick at least one workday and enter the exact expected start and finish times.';else if(rows.some(function(r){return !r.start||!r.end||r.start>=r.end}))msg='Each part-time day needs a start time earlier than its end time.'}}
-   if(msg){e.preventDefault();e.stopImmediatePropagation();if(typeof toast==='function')toast(msg);var t=f.querySelector('.hv2-assign')||f;t.scrollIntoView({block:'center'})}
-  },true);
-  applyEdit(f);
- }
-
- function commonAugment(f){
-  var wf=f.querySelector('.scl-work-grid');wf=wf&&wf.closest('.field');if(!wf)return;
-  var pt=D.createElement('div');pt.className='field full scl-pt-sched';pt.style.display='none';
-  pt.innerHTML='<label>Your part-time schedule *</label><div class="scl-pt-rows">'+WDAYS.map(function(d){return'<div class="scl-pt-row" data-d="'+d[0]+'"><label><input type="checkbox" data-pt="on"> '+d[1]+'</label><input type="time" data-pt="s" aria-label="'+d[1]+' start"><span>to</span><input type="time" data-pt="e" aria-label="'+d[1]+' end"></div>'}).join('')+'</div><small class="scl-auto-note">Tick each day you work and set your hours. This is your employment schedule, separate from the classroom timetable.</small>';
-  wf.insertAdjacentElement('afterend',pt);
-  f.__getPT=function(){return $$('.scl-pt-row',pt).filter(function(r){return $('[data-pt=on]',r).checked}).map(function(r){return{day:r.dataset.d,start:$('[data-pt=s]',r).value,end:$('[data-pt=e]',r).value}})};
-  f.__setPT=function(rows){(rows||[]).forEach(function(x){var r=$('.scl-pt-row[data-d="'+x.day+'"]',pt);if(!r)return;$('[data-pt=on]',r).checked=true;$('[data-pt=s]',r).value=x.start||'';$('[data-pt=e]',r).value=x.end||''})};
-  function show(){var v=(f.querySelector('input[name="workPattern"]:checked')||{}).value;pt.style.display=(v&&v!=='Full-Time')?'':'none';var label=pt.querySelector('label');if(label)label.textContent=(v==='Full-Time'?'':'Your part-time days and exact hours *')}
-  f.addEventListener('change',function(e){if(e.target.name==='workPattern')show()});f.__showPT=show;show();
- }
-
- function teachAugment(f){
-  var vac=workerMode==='vacancy';
-  var T={level:'Secondary',classes:[],delivery:'In school',subjects:{},slots:[]},ui={cls:'',day:'',period:'',subject:''};f.__T=T;
-  var box=D.createElement('div');box.className='field full hv2-assign';
-  box.innerHTML='<label>'+(vac?'Classes you want to teach *':'Classes you teach *')+'</label><div class="seg"><label><input type="radio" name="hv2Lvl" value="Secondary" checked> <span>Secondary teacher<br><small>Any number of JSS and SSS classes</small></span></label><label><input type="radio" name="hv2Lvl" value="Primary"> <span>Primary teacher<br><small>Day Care to Primary 5, up to 2 classes</small></span></label></div><div class="chips" id="hv2Chips"></div>'+
-   '<label>How do you teach? *</label><div class="dv"><label><input type="radio" name="hv2Dv" value="In school" checked> In school</label><label><input type="radio" name="hv2Dv" value="Online"> Online</label><label><input type="radio" name="hv2Dv" value="In school and online"> Both</label></div>'+
-   '<div id="hv2Subjects"></div><div class="note" id="hv2Note"></div><input type="hidden" name="teachJson">';
-  var notes=$('textarea[name=notes]',f),anchor=notes.closest('.field');anchor.parentNode.insertBefore(box,anchor);
-  var tt=null;
-  if(!vac){tt=D.createElement('div');tt.className='field full hv2-tt';tt.innerHTML='<label>Teaching Subject &amp; Timetable Registration</label><div id="hv2TT"></div>';anchor.parentNode.insertBefore(tt,anchor)}
-
-  function list(){return T.level==='Primary'?PRIM:SEC}
-  function drawChips(){$('#hv2Chips',box).innerHTML=list().map(function(c){var on=T.classes.indexOf(c)>-1,off=T.level==='Primary'&&T.classes.length>=2&&!on;return'<label class="'+(on?'on':'')+(off?' off':'')+'"><input type="checkbox" value="'+c+'" hidden'+(on?' checked':'')+'>'+c+'</label>'}).join('')}
-  function drawSubjects(){
-   var h='',cat=CAT||stdSubjects();
-   if(T.level==='Primary')h=T.classes.length?'<div class="note">Primary class teachers are registered for all subjects of their class'+(T.classes.length>1?'es':'')+'. No subject list is needed.</div>':'';
-   else if(!T.classes.length)h='<div class="note">Choose your classes above, then pick the subjects you teach in each class.</div>';
-   else h=T.classes.map(function(c){var l=/^JSS/.test(c)?cat.JSS:cat.SSS,sel=T.subjects[c]||[];
-     return'<div class="hv2-subrow"><b>'+esc(c)+' — subjects you teach *</b><div class="chips">'+l.map(function(s){var on=sel.indexOf(s)>-1;return'<label class="'+(on?'on':'')+'"><input type="checkbox" hidden data-c="'+esc(c)+'" data-s="'+esc(s)+'"'+(on?' checked':'')+'>'+esc(s)+'</label>'}).join('')+'</div></div>'}).join('')+(CAT&&!CAT.fromServer?'<div class="note">Showing the standard school subject list because the live subject catalogue could not be reached.</div>':'');
-   $('#hv2Subjects',box).innerHTML=h}
-  function drawNote(){
-   var n=T.classes.length;
-   $('#hv2Note',box).textContent=T.level==='Primary'?'Primary teachers can register 1 or 2 classes. Selected: '+n+' of 2.':'Secondary teachers can select every class they teach. Selected: '+n+'.'}
-  function pruneSlots(){T.slots=T.slots.filter(function(s){return T.classes.indexOf(s.className)>-1&&(T.subjects[s.className]||[]).indexOf(s.subject)>-1})}
-  function drawTT(){
-   if(!tt)return;var host=$('#hv2TT',tt);
-   if(T.level==='Primary'){host.innerHTML='<div class="note">Primary class teachers appear on the timetable as the class teacher of their class. No individual period registration is needed.</div>';return}
-   if(!T.classes.length){host.innerHTML='<div class="note">Choose your classes and subjects first, then add the periods you teach.</div>';return}
-   if(T.classes.indexOf(ui.cls)<0)ui.cls=T.classes[0];
-   var key=ui.day==='fri'?'FRI':'A',pl=ui.day?PERIODS[key]:[];
-   if(!pl.some(function(p){return p[0]===ui.period}))ui.period='';
-   var subs=T.subjects[ui.cls]||[];if(subs.indexOf(ui.subject)<0)ui.subject=subs[0]||'';
-   function opt(v,l,cur){return'<option value="'+esc(v)+'"'+(v===cur?' selected':'')+'>'+esc(l)+'</option>'}
-   host.innerHTML='<div class="row"><select name="ttClass">'+T.classes.map(function(c){return opt(c,c,ui.cls)}).join('')+'</select><select name="ttDay"><option value="">Day</option>'+WDAYS.map(function(d){return opt(d[0],d[1],ui.day)}).join('')+'</select></div>'+
-    '<div class="row"><select name="ttPeriod"><option value="">'+(ui.day?'Period':'Choose a day first')+'</option>'+pl.map(function(p){return opt(p[0],p[0].toUpperCase().replace('P','Period ')+' · '+p[1]+'–'+p[2],ui.period)}).join('')+'</select><select name="ttSubject">'+subs.map(function(s){return opt(s,s,ui.subject)}).join('')+'</select></div>'+
-    '<button type="button" class="btn outline" data-addslot>＋ Add this period</button>'+
-    '<div class="slots">'+(T.slots.length?T.slots.map(function(s,i){return'<div class="slot"><span><b>'+esc(s.className)+'</b> · '+esc(s.subject)+'<br><small>'+esc((WDAYS.filter(function(d){return d[0]===s.day})[0]||['',s.day])[1])+' · '+esc(s.period.toUpperCase())+' '+esc(s.start)+'–'+esc(s.end)+'</small></span><button type="button" data-rmslot="'+i+'" aria-label="Remove">✕</button></div>'}).join(''):'<div class="note">No periods added yet. Add each class period you teach so it can be placed on the school timetable once approved.</div>')+'</div>'+
-    '<small class="scl-auto-note">Your periods become the live timetable after school management verifies you. Administrators can edit a separate draft directly on the timetable.</small>'}
-  function save(){pruneSlots();f.teachJson.value=JSON.stringify(T)}
-  function redraw(){drawChips();drawSubjects();drawNote();drawTT();save()}
-  f.__redrawSubjects=function(){drawSubjects();drawTT()};
-  f.__teachRestore=function(seed){
-   if(!seed)return;T.level=seed.level==='Primary'?'Primary':'Secondary';
-   $$('input[name=hv2Lvl]',box).forEach(function(r){r.checked=r.value===T.level});
-   var l=list();T.classes=(seed.classes||[]).map(seedClass).filter(function(c){return l.indexOf(c)>-1});if(T.level==='Primary')T.classes=T.classes.slice(0,2);
-   T.subjects={};Object.keys(seed.subjects||{}).forEach(function(c){T.subjects[seedClass(c)]=(seed.subjects[c]||[]).slice()});
-   T.delivery=seed.delivery||'In school';$$('input[name=hv2Dv]',box).forEach(function(r){r.checked=r.value===T.delivery});
-   T.slots=(seed.slots||[]).map(function(s){return Object.assign({},s,{className:seedClass(s.className)})});redraw()};
-  box.addEventListener('change',function(e){
-   var t=e.target;
-   if(t.name==='hv2Lvl'){T.level=t.value;var l=list();T.classes=T.classes.filter(function(c){return l.indexOf(c)>-1});if(T.level==='Primary')T.slots=[];redraw()}
-   else if(t.name==='hv2Dv'){T.delivery=t.value;save()}
-   else if(t.type==='checkbox'&&t.dataset.c){var c=t.dataset.c,s=t.dataset.s,a=T.subjects[c]=T.subjects[c]||[],i=a.indexOf(s);if(t.checked&&i<0)a.push(s);if(!t.checked&&i>-1)a.splice(i,1);drawSubjects();drawTT();save()}
-   else if(t.type==='checkbox'){var i2=T.classes.indexOf(t.value);if(t.checked&&i2<0){if(T.level==='Primary'&&T.classes.length>=2){t.checked=false}else T.classes.push(t.value)}if(!t.checked&&i2>-1){T.classes.splice(i2,1);delete T.subjects[t.value]}redraw()}
-  });
-  if(tt){
-   tt.addEventListener('change',function(e){var n=e.target.name;if(n==='ttClass'){ui.cls=e.target.value;ui.subject=''}else if(n==='ttDay'){ui.day=e.target.value;ui.period=''}else if(n==='ttPeriod')ui.period=e.target.value;else if(n==='ttSubject')ui.subject=e.target.value;drawTT()});
-   tt.addEventListener('click',function(e){
-    var rm=e.target.closest('[data-rmslot]');if(rm){T.slots.splice(+rm.dataset.rmslot,1);drawTT();save();return}
-    if(!e.target.closest('[data-addslot]'))return;
-    if(!ui.cls||!ui.day||!ui.period||!ui.subject){toast('Choose class, day, period and subject first.');return}
-    var key=ui.day==='fri'?'FRI':'A',p=PERIODS[key].filter(function(x){return x[0]===ui.period})[0];
-    if(!p){toast('That period does not exist on this day.');return}
-    if(T.slots.some(function(s){return s.day===ui.day&&s.period===ui.period})){toast('You already have a class in that period.');return}
-    window.sclComposeName(f);var me=f.fullName.value.trim();
-    var taken=window.sclTimetableTaken&&window.sclTimetableTaken(ui.cls,ui.day,key,ui.period);
-    if(taken&&(taken.subject||taken.teacher)&&nrm(taken.teacher)!==nrm(me)){toast(ui.cls+' '+ui.period.toUpperCase()+' on that day is already filled'+(taken.teacher?' by '+taken.teacher:'')+'.');return}
-    T.slots.push({className:ui.cls,day:ui.day,variant:key,period:ui.period,start:p[1],end:p[2],subject:ui.subject,teacher:me});
-    drawTT();save();toast('Period added.')});
-  }
-  redraw();loadCatalog().then(function(){f.__redrawSubjects()});
- }
-
- function applyEdit(f){
-  var E=window.__sclEdit;if(!E||!f)return;
-  function set(n,v){var el=f.elements[n];if(el&&v!=null&&v!==''){el.value=v}}
-  var parts=String(E.fullName||'').trim().split(/\s+/).filter(Boolean);
-  set('surname',E.surname||parts[0]||'');set('firstName',E.firstName||parts[1]||'');set('otherNames',E.otherNames||parts.slice(2).join(' '));
-  window.sclComposeName(f);
-  set('email',E.email);if(f.email&&E.email)f.email.readOnly=true;
-  set('phone',E.phone);
-  var pr=E.professions||[];set('profession2',pr[1]);set('profession3',pr[2]);
-  if(f.employmentStartDate&&E.employmentStartDate){f.employmentStartDate.value=E.employmentStartDate;if(window.sclUpdateWorkerTenure)window.sclUpdateWorkerTenure()}
-  set('employmentEndDate',E.employmentEndDate);set('credentials',E.credentials);
-  var cleanNotes=String(E.notes||'').replace(/\[TEACHING ASSIGNMENT\][\s\S]*?\[\/TEACHING ASSIGNMENT\]\s*/,'');set('notes',cleanNotes);
-  var rawWP=E.workPattern||E.work_pattern||E.employment_type||E.employmentType||(E.structured&&(E.structured.work_pattern||E.structured.employment_type))||'';var normWP=String(rawWP).toLowerCase().replace(/[^a-z]+/g,' ').trim();var wpValue='';if(/^full( time)?$/.test(normWP)||/full time/.test(normWP))wpValue='Full-Time';else if(/half/.test(normWP))wpValue='Half-Day Part-Time';else if(/full day/.test(normWP))wpValue='Full-Day Part-Time';else if(/part|sched/.test(normWP))wpValue='Scheduled Part-Time';var wp=wpValue&&f.querySelector('input[name="workPattern"][value="'+wpValue+'"]');if(wp){wp.checked=true;wp.dispatchEvent(new Event('change',{bubbles:true}))}else if(!rawWP){var legacyWP=f.querySelector('input[name="workPattern"]:checked');if(legacyWP)legacyWP.checked=false;}
-  if(f.__setPT)f.__setPT(E.partTimeSchedule||(E.structured&&E.structured.part_time_schedule));
-  if(f.__teachRestore)f.__teachRestore(E.teaching);if(window.sclUploads)window.sclUploads.refresh(f);
-  var ban=D.createElement('div');ban.className='worker-form-note scl-edit-banner';
-  ban.innerHTML='<b>Editing your staff details.</b> Changes are sent to school management for review and your current approved assignments stay in place until they are approved. Your email cannot be changed here. Leave the photo and document boxes empty to keep what is already on file.'+(E.__partial?'<br><b>Please check:</b> some details are not stored on this device, so re-select your classes, subjects and periods if they look incomplete.':'');
-  f.insertBefore(ban,f.firstChild);
-  var btn=f.querySelector('button[type=submit]');if(btn)btn.textContent='SAVE CHANGES FOR REVIEW';
-  $$('input[type=file]',f).forEach(function(i){i.required=false});
- }
-}
 /* ---------- PROFILE CORNER ---------- */
 function corners(){$$('.mdc-corner').forEach(function(n){n.remove()})}
 /* ---------- BOOT ---------- */
 function boot(){
  D.documentElement.style.setProperty('--mdc-logo','url('+window.SCL_MDC_LOGO+')');
- buildHome();patchWorker();auraBuild();
+ buildHome();auraBuild();
  window.__origCurr=window.__origCurr||(typeof window.sclOpenCurriculum==='function'?window.sclOpenCurriculum:null);
  window.openSchoolCurriculum=openScheme;
  setInterval(corners,1200);if('MutationObserver' in window)new MutationObserver(corners).observe(D.body,{childList:true,subtree:true});corners();
  var o=$('#sclV33CurriculumButton');
 }
 if(D.readyState==='loading')D.addEventListener('DOMContentLoaded',boot);else boot();
-window.addEventListener('load',function(){patchWorker();window.openSchoolCurriculum=openScheme});
+window.addEventListener('load',function(){window.openSchoolCurriculum=openScheme});
 })();
 
 </script>
@@ -10606,133 +10286,7 @@ window.addEventListener('load',function(){setTimeout(watch,600);setTimeout(watch
 
 
 
-<script id="scl-staff-uploads">
-(function(){'use strict';
-if(window.sclUploads)return;
-var KEY='sclStaffUploads',MAXB=8*1024*1024,MAXSUP=5;
-var DOC=['application/pdf'],SUP=['application/pdf','image/jpeg','image/png','image/webp'],PH=['image/jpeg','image/png','image/webp'];
-var EXT={pdf:'application/pdf',jpg:'image/jpeg',jpeg:'image/jpeg',png:'image/png',webp:'image/webp'};
-var INPUT={cv:'cv',cv_documents:'cvSupporting',application_letter:'applicationLetter',application_documents:'appSupporting',photo:'photo'};
-var NAMES={cv:'CV',cv_documents:'CV supporting documents',application_letter:'application letter',application_documents:'application letter supporting documents',photo:'photograph'};
-var MULTI={cv_documents:1,application_documents:1};
-function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(m){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]})}
-function ftype(file){if(file.type)return file.type;var m=/\.([a-z0-9]+)$/i.exec(file.name||'');return m?(EXT[m[1].toLowerCase()]||''):''}
-function okTypes(slot){return slot==='photo'?PH:(slot==='cv'||slot==='application_letter')?DOC:SUP}
-function typeHelp(slot){return slot==='photo'?'JPG, JPEG, PNG or WEBP':(slot==='cv'||slot==='application_letter')?'PDF':'PDF, JPG, PNG or WEBP'}
-function kb(n){return n>=1048576?(n/1048576).toFixed(1)+' MB':Math.max(1,Math.round(n/1024))+' KB'}
-function mk(email,mode){return String(email||'').trim().toLowerCase()+'|'+(mode||'staff')}
-function readAll(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){return{}}}
-function load(email,mode){return readAll()[mk(email,mode)]||{}}
-function save(email,mode,st){var a=readAll();a[mk(email,mode)]=st;try{localStorage.setItem(KEY,JSON.stringify(a))}catch(e){}}
-function needsReplace(it){return !!it&&(it.review==='rejected'||it.review==='replacement_requested')}
-/* Status wording: a successful upload NEVER yields anything except "awaiting admin review". Other labels come only from an administrator's recorded review. */
-function label(it){var r=it&&it.review;
- if(r==='accepted')return'Accepted by an administrator';
- if(r==='rejected')return'Rejected by an administrator — please upload a replacement';
- if(r==='replacement_requested')return'An administrator asked for a replacement';
- return'Uploaded — awaiting admin review.'}
-function hasSaved(st,slot){var v=st[slot];return MULTI[slot]?(v&&v.length>0):!!v}
-function filesOf(f,slot){var i=f.elements[INPUT[slot]];return i&&i.files?[].slice.call(i.files):[]}
-function check(slot,file){
- if(okTypes(slot).indexOf(ftype(file))<0)return'“'+file.name+'” is not allowed. Use '+typeHelp(slot)+'.';
- if(file.size>MAXB)return'“'+file.name+'” is '+kb(file.size)+'. The limit is 8 MB per file.';
- if(!file.size)return'“'+file.name+'” is empty.';return''}
-function ctx(f){return{email:(f.elements.email&&f.elements.email.value)||'',mode:(typeof workerMode!=='undefined'?workerMode:'staff')}}
-function state(f){var c=ctx(f);return load(c.email,c.mode)}
-/* collect + validate; throws Error(message) */
-function collect(f){
- var st=state(f),mode=ctx(f).mode,out={cv:null,cv_documents:[],application_letter:null,application_documents:[],photo:null};
- ['cv','cv_documents','application_letter','application_documents','photo'].forEach(function(slot){
-  var fl=filesOf(f,slot);
-  if(!MULTI[slot]&&fl.length>1)throw new Error('Choose only one file for the '+NAMES[slot]+'.');
-  if(MULTI[slot]&&(fl.length+((st[slot]||[]).length))>MAXSUP)throw new Error('You can keep at most '+MAXSUP+' '+NAMES[slot]+'.');
-  var seen={};fl.forEach(function(file){var e=check(slot,file);if(e)throw new Error(e);var k=file.name+'|'+file.size;if(seen[k])throw new Error('“'+file.name+'” was chosen twice.');seen[k]=1});
-  if(MULTI[slot])out[slot]=fl;else out[slot]=fl[0]||null;
-  /* Existing employees upload only a photo at verification time. CV and credentials can be added later in their dashboard. */
-  var required=(mode==='vacancy')||slot==='photo';
-  if(required&&!MULTI[slot]&&!out[slot]){
-   /* The API requires the actual file in the current request; a browser-saved filename/path is not an upload. */
-   if(mode==='vacancy'||slot==='photo')throw new Error('Please choose your '+NAMES[slot]+' file to submit.');
-   if(!hasSaved(st,slot))throw new Error('Please choose your '+NAMES[slot]+'.');
-   if(needsReplace(st[slot]))throw new Error('An administrator asked for a replacement '+NAMES[slot]+'. Please choose a new file.')}});
- if(mode==='vacancy'&&!out.cv_documents.length)throw new Error('Vacancy applicants must upload at least one certificate or qualification document in the CV and supporting documents section.');
- return out}
-function validate(f){try{collect(f);return''}catch(e){return e.message}}
-/* ---------- rendering ---------- */
-function row(cls,name,sub,btn){return'<div class="scl-uprow '+cls+'"><span><b>'+esc(name)+'</b><small>'+esc(sub)+'</small></span>'+(btn||'')+'</div>'}
-function renderSlot(f,slot){
- var box=f.querySelector('.scl-upslot[data-slot="'+slot+'"]');if(!box)return;
- var st=state(f),saved=box.querySelector('.scl-upsaved'),list=box.querySelector('.scl-uplist'),inp=f.elements[INPUT[slot]];
- var h='',ov=(f.__upStatus&&f.__upStatus[slot])||{};
- var items=MULTI[slot]?(st[slot]||[]):(st[slot]?[st[slot]]:[]);
- items.forEach(function(it,i){h+=row(needsReplace(it)?'err':'ok',it.name||'file',label(it),!MULTI[slot]?'<button type="button" data-up="replace" data-slot="'+slot+'">Replace</button>':'')});
- saved.innerHTML=h;
- var mode=ctx(f).mode;var rep=!(mode==='vacancy'||(slot==='photo'&&mode==='staff'))&&!MULTI[slot]&&items.length&&!needsReplace(items[0])&&!(f.__upReplace&&f.__upReplace[slot]);
- if(inp)inp.style.display=rep?'none':'';
- var l='',fl=filesOf(f,slot);
- fl.forEach(function(file,i){var o=ov[i]||{};var e=check(slot,file);
-  var s=e||(o.state==='uploading'?'Uploading… '+(o.pct||0)+'%':o.state==='error'?('Not uploaded: '+(o.msg||'failed')):o.state==='done'?label({}):'Selected — uploads when you submit');
-  l+=row(e||o.state==='error'?'err':o.state==='done'?'ok':'',file.name+' ('+kb(file.size)+')',s,'')});
- list.innerHTML=l}
-function refresh(f){if(!f||!f.querySelector)return;Object.keys(INPUT).forEach(function(s){renderSlot(f,s)})}
-function mark(f,files,state2,arg){
- f.__upStatus=f.__upStatus||{};
- Object.keys(INPUT).forEach(function(slot){var fl=MULTI[slot]?files[slot]:(files[slot]?[files[slot]]:[]);
-  f.__upStatus[slot]=fl.map(function(){return state2==='uploading'?{state:'uploading',pct:arg||0}:state2==='error'?{state:'error',msg:arg}:{state:'done'}})});
- refresh(f)}
-/* after the backend accepted the request: remember filenames + saved paths, keyed by applicant email */
-function pathsFrom(r,slot,n){
- var d=(r&&(r.documents||r.document_paths))||{},v=d[slot];
- if(v==null&&slot==='application_letter')v=d.applicationLetter;
- if(v==null&&slot==='photo')v=r&&(r.photo_path||d.photo_path);
- var a=v==null?[]:(Array.isArray(v)?v:[v]);
- return a.map(function(x){return typeof x==='string'?x:(x&&(x.path||x.file_path))||''}).slice(-n)}
-function commit(f,data,files,r){
- var email=data.email,mode=data.mode||'staff',st=load(email,mode),now=new Date().toISOString();
- Object.keys(INPUT).forEach(function(slot){
-  var fl=MULTI[slot]?files[slot]:(files[slot]?[files[slot]]:[]);if(!fl.length)return;
-  var paths=pathsFrom(r,slot,fl.length);
-  var items=fl.map(function(file,i){return{name:file.name,size:file.size,path:paths[paths.length-fl.length+i]||paths[i]||'',status:'awaiting_review',review:'',at:now}});
-  if(MULTI[slot])st[slot]=(st[slot]||[]).concat(items);else st[slot]=items[0]});
- save(email,mode,st);
- if(r&&(r.document_reviews||r.reviews))applyServerReview(email,mode,r.document_reviews||r.reviews);
- window.sclUploads.last={email:email,mode:mode};
- mark(f,files,'done');
- Object.keys(INPUT).forEach(function(slot){var i=f.elements[INPUT[slot]];if(i)try{i.value=''}catch(e){}});
- f.__upStatus={};f.__upReplace={};refresh(f)}
-/* review statuses may only come from the backend (an administrator's recorded decision) */
-function applyServerReview(email,mode,map){
- var st=load(email,mode);
- function norm(v){v=String((v&&v.status)||v||'').toLowerCase();return v==='approved'||v==='accepted'?'accepted':v==='rejected'?'rejected':/replac/.test(v)?'replacement_requested':''}
- Object.keys(map||{}).forEach(function(slot){var v=map[slot];
-  if(MULTI[slot]){(st[slot]||[]).forEach(function(it,i){var x=Array.isArray(v)?v[i]:v;it.review=norm(x)})}
-  else if(st[slot])st[slot].review=norm(Array.isArray(v)?v[0]:v)});
- save(email,mode,st)}
-function filterMissing(list){
- var c=window.sclUploads.last;if(!c||!list)return list;var st=load(c.email,c.mode);
- return list.filter(function(m){m=String(m).toLowerCase();
-  if(/\bcv\b/.test(m)&&!/support/.test(m)&&st.cv&&!needsReplace(st.cv))return false;
-  if(/letter/.test(m)&&st.application_letter&&!needsReplace(st.application_letter))return false;
-  if(/photo/.test(m)&&st.photo&&!needsReplace(st.photo))return false;return true})}
-/* ---------- wiring ---------- */
-function mount(f){
- if(!f||f.__upMounted||!f.querySelector('.scl-uploads'))return;f.__upMounted=true;f.__upStatus={};f.__upReplace={};
- f.addEventListener('change',function(e){var t=e.target;
-  if(t&&t.type==='file'){var slot=Object.keys(INPUT).filter(function(s){return INPUT[s]===t.name})[0];
-   if(slot){var fl=[].slice.call(t.files||[]),bad=fl.filter(function(x){return check(slot,x)});
-    if(bad.length&&typeof DataTransfer!=='undefined'){var dt=new DataTransfer();fl.forEach(function(x){if(!check(slot,x))dt.items.add(x)});
-     if(typeof toast==='function')toast(check(slot,bad[0]));try{t.files=dt.files}catch(_){t.value=''}}
-    else if(bad.length){if(typeof toast==='function')toast(check(slot,bad[0]));t.value=''}
-    f.__upStatus[slot]=[];renderSlot(f,slot)}}
-  else if(t&&t.name==='email')refresh(f)});
- f.addEventListener('input',function(e){if(e.target&&e.target.name==='email'){clearTimeout(f.__upT);f.__upT=setTimeout(function(){refresh(f)},300)}});
- f.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-up="replace"]');if(!b)return;
-  f.__upReplace[b.dataset.slot]=true;renderSlot(f,b.dataset.slot);var i=f.elements[INPUT[b.dataset.slot]];if(i)i.click()});
- f.addEventListener('submit',function(e){var m=validate(f);if(m){e.preventDefault();e.stopImmediatePropagation();if(typeof toast==='function')toast(m);var s=f.querySelector('.scl-uploads');if(s&&s.scrollIntoView)s.scrollIntoView({block:'center'})}},true);
- refresh(f)}
-window.sclUploads={collect:collect,validate:validate,mount:mount,refresh:refresh,mark:mark,commit:commit,label:label,load:load,applyServerReview:applyServerReview,filterMissing:filterMissing,last:null};
-})();
-</script>
+
 
 <script id="scl-staff-verification-and-octagon">
 (function(){'use strict';
@@ -10748,71 +10302,6 @@ function rpc(name,args){return rawFetch(URLB()+'/rest/v1/rpc/'+name,{method:'POS
   if(!r.ok){var m=(d&&(d.message||d.error))||('Request failed ('+r.status+')');if(/function .* does not exist|schema cache/i.test(m))m='The staff verification backend is not installed yet. Run SCL_identity_verification_migration.sql in Supabase.';throw new Error(m)}return d})})}
 function uuid(){if(window.crypto&&crypto.randomUUID)return crypto.randomUUID();var h='0123456789abcdef',s='';for(var i=0;i<36;i++)s+=(i===8||i===13||i===18||i===23)?'-':h[Math.floor(Math.random()*16)];return s}
 window.sclStaffRpc=rpc;
-
-/* ===== registration: upload files, then save/resume ONE application per person ===== */
-var MAXB=8*1024*1024;
-function upload(bucket,path,file){return rawFetch(URLB()+'/storage/v1/object/'+bucket+'/'+path,{method:'POST',headers:headers({'Content-Type':file.type||'application/octet-stream','x-upsert':'false'}),body:file}).then(function(r){if(!r.ok)return r.text().then(function(t){throw new Error('File upload failed ('+r.status+'). '+t.slice(0,120))});return path})}
-window.sclSubmitStaffApplication=function(f,data){
-  if(f.__sclBusy)return f.__sclBusy;
-  var U=window.sclUploads,files;
-  try{files=U.collect(f)}catch(e){return Promise.reject(e)}
-  var token=f.__sclToken||(f.__sclToken=uuid()),S=data.structured||{};
-  var payload={credentials:data.credentials,workPattern:data.workPattern,experience:data.experience,employmentStartDate:data.employmentStartDate,
-    professions:data.professions,notes:data.notes,mode:data.mode,timetableRegistration:data.timetableRegistration,timetableSlots:data.timetableSlots||[],teaching:data.teaching||null};
-  Object.keys(S).forEach(function(k){payload[k]=S[k]});
-  payload.profile_payload={mode:data.mode,experience:data.experience,notes:data.notes,workPattern:data.workPattern,teaching:data.teaching||null,timetableSlots:data.timetableSlots||[]};
-  var btn=f.querySelector('button[type=submit]'),btnTxt=btn?btn.textContent:'';
-  if(btn){btn.disabled=true;btn.textContent='Uploading…'}
-  U.mark(f,files,'uploading',0);
-  function viaWorkerApi(){return new Promise(function(res,rej){
-    var fd=new FormData();
-    function put(k,v){if(v==null||v==='')return;fd.append(k,typeof v==='object'?JSON.stringify(v):String(v))}
-    put('submit_token',token);put('mode',data.mode);put('full_name',data.fullName);put('email',data.email);put('phone',data.phone);put('role',data.role);put('position',data.role);
-    put('surname',data.surname||S.surname);put('firstName',data.firstName||S.first_name);put('otherNames',data.otherNames||S.other_names);
-    put('credentials',data.credentials);put('workPattern',data.workPattern);put('experience',data.experience);put('employmentStartDate',data.employmentStartDate);put('employmentEndDate',data.employmentEndDate);
-    put('additionalProfessions',(data.professions||[]).slice(1));put('qualifications',data.credentials?[data.credentials]:[]);
-    Object.keys(S).forEach(function(k){put(k,S[k])});put('payload',payload);
-    if(files.cv)fd.append('cv',files.cv,files.cv.name);
-    files.cv_documents.forEach(function(x){fd.append('cv_documents',x,x.name)});
-    if(files.application_letter)fd.append('application_letter',files.application_letter,files.application_letter.name);
-    files.application_documents.forEach(function(x){fd.append('application_documents',x,x.name)});
-    if(files.photo)fd.append('photo',files.photo,files.photo.name);
-    var x=new XMLHttpRequest();x.open('POST',URLB()+'/functions/v1/scl-worker-api');
-    var h=headers();Object.keys(h).forEach(function(k){x.setRequestHeader(k,h[k])});
-    x.timeout=180000;
-    x.upload.onprogress=function(ev){if(ev.lengthComputable)U.mark(f,files,'uploading',Math.round(ev.loaded/ev.total*100))};
-    function fb(m){var e=new Error(m);e.fallback=true;rej(e)}
-    x.onerror=function(){fb('Network error while uploading.')};x.ontimeout=function(){fb('The upload timed out.')};
-    x.onload=function(){var d=null;try{d=JSON.parse(x.responseText)}catch(e){}
-      if(x.status>=200&&x.status<300&&!(d&&d.error)){var r=(d&&d.result&&typeof d.result==='object')?Object.assign({},d,d.result):(d||{});r.ref=r.ref||r.public_ref||r.application_ref||r.application_id||r.id||'';res(r)}
-      else{var m=(d&&(d.error||d.message))||('Upload failed ('+x.status+').');if(typeof m!=='string')m=JSON.stringify(m);var e=new Error(m);if([404,405,500,502,503,504].indexOf(x.status)>-1)e.fallback=true;rej(e)}};
-    x.send(fd)})}
-  function viaLegacy(){
-    var id=uuid(),docs={},photoPath=null,jobs=[];
-    function safe(k,n){return(k+'-'+n).replace(/[^A-Za-z0-9_.-]/g,'_').slice(-70)}
-    function add(slot,file,i){jobs.push(upload('staff-documents','incoming/'+id+'/'+safe(slot+(i==null?'':i),file.name),file).then(function(p){if(i==null)docs[slot]=p;else(docs[slot]=docs[slot]||[])[i]=p}))}
-    if(files.cv)add('cv',files.cv);if(files.application_letter)add('application_letter',files.application_letter);
-    files.cv_documents.forEach(function(x,i){add('cv_documents',x,i)});files.application_documents.forEach(function(x,i){add('application_documents',x,i)});
-    if(files.photo){var ext={'image/jpeg':'jpg','image/png':'png','image/webp':'webp'}[files.photo.type]||'jpg';jobs.push(upload('staff-photos','incoming/'+id+'/photo.'+ext,files.photo).then(function(p){photoPath=p}))}
-    return Promise.all(jobs).then(function(){
-      if(docs.application_letter)docs.applicationLetter=docs.application_letter;
-      var sup=(docs.cv_documents||[])[0]||docs.cv;if(sup)docs.proof=sup;
-      payload.document_paths=docs;
-      return rpc('scl_submit_staff_application',{p:Object.assign({},S,{full_name:data.fullName,email:data.email,phone:data.phone,position:data.role,payload:payload,documents:docs,photo_path:photoPath,submit_token:token})})
-    }).then(function(r){r=r||{};r.viaLegacy=true;r.documents=Object.assign({},r.documents||{},docs);if(photoPath)r.photo_path=photoPath;return r})}
-  f.__sclBusy=viaWorkerApi().catch(function(e){if(e&&e.fallback){console.warn('scl-worker-api unavailable, using the standard registration route:',e.message);return viaLegacy()}throw e})
-   .then(function(r){f.__sclBusy=null;f.__sclToken=null;if(btn){btn.disabled=false;btn.textContent=btnTxt}
-     try{U.commit(f,data,files,r)}catch(e){console.warn(e)}
-     try{window.dispatchEvent(new Event('scl:staff-directory-refresh'))}catch(e){}return r},
-    function(e){f.__sclBusy=null;if(btn){btn.disabled=false;btn.textContent=btnTxt}U.mark(f,files,'error',e&&e.message);throw e});
-  return f.__sclBusy};
-window.sclWorkerHeading=function(r){if(!r||r.error)return'Could not reach the school records.';if(r.result==='already_verified')return'You are already verified.';
-  if(r.status==='incomplete')return'Account already created, but not complete.';if(r.result==='resumed')return'Your existing application was updated.';return'Verification Submitted.'};
-window.sclWorkerResultText=function(r){if(!r)return'';if(r.error)return' '+esc(r.error)+' Your record is retained on this device.';
-  var t=' '+esc(r.message||'')+' Reference: <b>'+esc(r.ref||'')+'</b>.';
-  var miss=window.sclUploads?window.sclUploads.filterMissing(r.missing):r.missing;if(r.viaLegacy)t+='<br><small>Saved using the standard registration route.</small>';
-  if(miss&&miss.length)t+='<br><br><b>Still required:</b> '+miss.map(esc).join(', ')+'. Open this form again with the same email and add only these items; no new record is created.';
-  if(r.attempts>1)t+='<br><small>Attempt '+esc(r.attempts)+'.</small>';return t};
 
 /* ===== sign-in after approval: activate the role granted by the approved application ===== */
 (function(){var tries=0,done=false,iv=setInterval(function(){if(done||++tries>40){clearInterval(iv);return}var s=sess();if(!(s&&s.accessToken&&s.user))return;done=true;clearInterval(iv);
@@ -10932,33 +10421,7 @@ function load(host){
 window.sclLoadMyAssignments=function(host){load(host)};
 })();
 </script>
-<script id="scl-staff-edit-v7">
-(function(){'use strict';
-var D=document;
-function sUser(){try{var a=JSON.parse(sessionStorage.getItem('sclAuthSession')||'null');if(!a||!a.user)return null;var md=a.user.user_metadata||{};return{email:String(a.user.email||'').trim().toLowerCase(),name:String(md.full_name||md.name||'').trim()}}catch(e){return null}}
-function records(){try{return JSON.parse(localStorage.getItem('sclWorkerRecords')||'[]')}catch(e){return[]}}
-function fromAssign(r,u){
- var rows=(r&&r.assignments)||[],prim=rows.filter(function(a){return a.assignment_type==='primary_class_teacher'}),sec=rows.filter(function(a){return a.assignment_type!=='primary_class_teacher'}),classes=[],subjects={};
- sec.forEach(function(a){if(classes.indexOf(a.class_name)<0)classes.push(a.class_name);(subjects[a.class_name]=subjects[a.class_name]||[]).push(a.subject)});
- var level=prim.length&&!sec.length?'Primary':'Secondary';if(level==='Primary')classes=prim.map(function(a){return a.class_name});
- return{mode:'staff',role:rows.length?'Teacher':((r&&r.duties&&r.duties[0])||'Teacher'),email:u?u.email:'',fullName:u?u.name:'',teaching:rows.length?{level:level,classes:classes,subjects:subjects,delivery:'In school',slots:[]}:null,__partial:true}}
-window.sclOpenStaffEdit=function(seed){
- if(!seed||typeof openWorkers!=='function'){return}
- window.__sclEdit=seed;window.__sclEditKeep=true;
- try{openWorkers();startWorkerFlow('staff');
-  var btns=[].slice.call(D.querySelectorAll('.role-btn')),role=seed.role||'Teacher';
-  var b=btns.filter(function(x){return(x.getAttribute('onclick')||'').indexOf("'"+role+"'")>-1})[0];
-  selectWorkerRole(b||btns[0],b?role:'Teacher');
-  var m=D.getElementById('workersModal');if(m){m.style.zIndex='10120';m.scrollTop=0}
- }finally{window.__sclEditKeep=false}
-};
-window.sclEditFromRecord=function(i){var r=records()[i];if(r&&r.mode==='staff')window.sclOpenStaffEdit(r)};
-window.sclEditMyStaff=function(){
- var u=sUser(),mine=records().filter(function(r){return r.mode==='staff'&&u&&String(r.email||'').trim().toLowerCase()===u.email})[0];
- window.sclOpenStaffEdit(mine||fromAssign(window.__sclLastAssign,u))};
-if(typeof openWorkers==='function'&&!openWorkers.__v7){var o=openWorkers;var w=function(){if(!window.__sclEditKeep)window.__sclEdit=null;return o.apply(this,arguments)};w.__v7=1;openWorkers=w}
-})();
-</script>
+
 
 
 <script id="scl-alerts-v1">
@@ -12920,35 +12383,7 @@ html{background:transparent!important;background-color:transparent!important}bod
 #sclTabs button:focus-visible,.bottom button:focus-visible{outline:3px solid var(--scl-tab,#e6b83f)!important;outline-offset:2px}
 @media(prefers-reduced-motion:reduce){#sclLiveBackground{opacity:.45}}
 </style>
-<script id="scl-device-notification-and-profile-repair-v2">
-(function(){'use strict';
-  // Make the selected staff schedule resilient to older saved field names during profile editing/reapplication.
-  function restoreStaffWorkPattern(){
-    var f=document.getElementById('workerForm'),e=window.__sclEdit;if(!f||!e)return;
-    var raw=e.workPattern||e.work_pattern||e.employment_type||e.employmentType||(e.structured&&(e.structured.work_pattern||e.structured.employment_type))||'';
-    var t=String(raw).toLowerCase().replace(/[^a-z]+/g,' ').trim();if(!t)return;
-    var v=/^full( time)?$/.test(t)||/full time/.test(t)?'Full-Time':/half/.test(t)?'Half-Day Part-Time':/full day/.test(t)?'Full-Day Part-Time':/part|sched/.test(t)?'Scheduled Part-Time':'';
-    if(!v)return;var r=f.querySelector('input[name="workPattern"][value="'+v+'"]');if(r&&!r.checked){r.checked=true;r.dispatchEvent(new Event('change',{bubbles:true}))}
-  }
-  var mo=new MutationObserver(function(){restoreStaffWorkPattern()});
-  if(document.documentElement)mo.observe(document.documentElement,{childList:true,subtree:true});
-  // OCR-assisted staff credential entry. Uploaded original remains the source document; OCR text is only a draft.
-  var ocrPromise=null;
-  function loadOCR(){if(window.Tesseract)return Promise.resolve(window.Tesseract);if(ocrPromise)return ocrPromise;ocrPromise=new Promise(function(resolve,reject){var sc=document.createElement('script');sc.src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';sc.async=true;sc.onload=function(){window.Tesseract?resolve(window.Tesseract):reject(Error('Text scanner did not load'))};sc.onerror=function(){reject(Error('Could not load text scanner. Check your internet connection.'))};document.head.appendChild(sc)});return ocrPromise}
-  async function scanCredential(file,form,status){
-    if(!file)return;if(!/^image\//i.test(file.type)){status.textContent='For automatic reading, choose or photograph a clear image (JPG, PNG or WEBP). You can still upload a PDF normally.';return}
-    if(file.size>8*1024*1024){status.textContent='Image is larger than 8 MB. Choose a smaller image.';return}
-    status.textContent='Reading the document… keep this page open.';
-    try{var T=await loadOCR(),res=await T.recognize(file,'eng'),txt=String(res&&res.data&&res.data.text||'').replace(/[ \t]+/g,' ').replace(/\n{3,}/g,'\n\n').trim();if(!txt)throw Error('No readable text found. Try a brighter, sharper photo.');
-      var cred=form.elements.credentials;if(cred){var lines=txt.split(/\n+/).map(function(x){return x.trim()}).filter(Boolean);var useful=lines.filter(function(x){return /degree|diploma|certificate|nce|b\.ed|bsc|b\.sc|m\.ed|m\.sc|trcn|qualification|education|university|college|professional|teaching/i.test(x)});var draft=(useful.length?useful:lines).slice(0,8).join(' · ').slice(0,500);if(!cred.value.trim()||confirm('Replace the current qualification text with the details read from this document?'))cred.value=draft;cred.dispatchEvent(new Event('input',{bubbles:true}));}
-      var sup=form.elements.cvSupporting;if(sup&&typeof DataTransfer!=='undefined'){try{var current=[].slice.call(sup.files||[]);if(current.length<5){var dt=new DataTransfer();current.forEach(function(f){dt.items.add(f)});dt.items.add(file);sup.files=dt.files;sup.dispatchEvent(new Event('change',{bubbles:true}));}}catch(_){}}
-      status.textContent='Text extracted as a draft. Check the qualification field and confirm the original document was added to Supporting Documents before saving.';
-    }catch(err){status.textContent=(err&&err.message)||'Could not read this document. You can still upload it and type the qualification manually.'}
-  }
-  function mountScanner(){var f=document.getElementById('workerForm');if(!f||f.dataset.sclOcrReady)return;var cred=f.elements.credentials;if(!cred)return;f.dataset.sclOcrReady='1';var wrap=document.createElement('div');wrap.className='field full scl-credential-scan';wrap.innerHTML='<label>Read a qualification document (optional)</label><div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><input type="file" accept="image/*" capture="environment" id="sclCredentialScanFile" style="max-width:100%"><button type="button" id="sclCredentialScanButton" class="btn outline">📄 Scan &amp; suggest details</button></div><small>Use a clear photo of a certificate. Text is only a suggestion; check it before saving. The original image can be attached to your supporting documents.</small><div id="sclCredentialScanStatus" role="status" aria-live="polite" style="font-size:12px;margin-top:6px"></div>';var field=cred.closest('.field');if(field&&field.parentNode)field.parentNode.insertBefore(wrap,field.nextSibling);var input=wrap.querySelector('#sclCredentialScanFile'),btn=wrap.querySelector('#sclCredentialScanButton'),status=wrap.querySelector('#sclCredentialScanStatus');btn.addEventListener('click',function(){scanCredential(input.files&&input.files[0],f,status)});input.addEventListener('change',function(){if(input.files&&input.files[0])scanCredential(input.files[0],f,status)});}
-  var wmo=new MutationObserver(function(){mountScanner()});if(document.documentElement)wmo.observe(document.documentElement,{childList:true,subtree:true});document.addEventListener('change',function(e){if(e.target&&e.target.id==='sclCredentialScanFile'){var f=document.getElementById('workerForm');if(f)mountScanner()}});
-})();
-</script>
+
 
 \n<!-- SCL v105: registration visibility and student-verification reconciliation panel -->
 <script id="scl-registration-attendance-reconciliation-v105">
@@ -12984,32 +12419,624 @@ html{background:transparent!important;background-color:transparent!important}bod
 })();
 </script>
 
-<script id="scl-clean-restart-google-only">
-/* SCL clean restart: retire legacy school registration/verification UI while preserving Google OAuth sign-in. */
-(function(){
- 'use strict';
- var blocked=/\b(register (teacher|staff|worker)|staff registration|teacher registration|verify student|verify teacher|verify staff|student verification|staff verification|teacher verification|registration form|registration recovery|registration draft|reappeal|staff application|worker application)\b/i;
- var allowGoogle=/google|sign in with google|continue with google|google sign[- ]?in/i;
- function isGoogle(el){return allowGoogle.test((el.innerText||el.textContent||'')+' '+(el.getAttribute('aria-label')||''));}
- function retire(){
-  document.querySelectorAll('button,a,[role="button"],input[type="button"],input[type="submit"]').forEach(function(el){
-   if(isGoogle(el)) return;
-   var label=[el.innerText,el.textContent,el.getAttribute('aria-label'),el.value,el.id,el.getAttribute('data-action')].filter(Boolean).join(' ');
-   if(blocked.test(label)){el.style.setProperty('display','none','important');el.setAttribute('aria-hidden','true');el.setAttribute('data-scl-retired','registration');}
-  });
-  document.querySelectorAll('form,[role="dialog"],dialog,.modal,[class*="registration" i],[id*="registration" i],[class*="verification" i],[id*="verification" i]').forEach(function(el){
-   var label=(el.id||'')+' '+(el.className&&String(el.className)||'')+' '+(el.getAttribute('aria-label')||'')+' '+(el.innerText||el.textContent||'').slice(0,1200);
-   if(!blocked.test(label)) return;
-   if(el.querySelector('button,a,[role="button"]')&&Array.from(el.querySelectorAll('button,a,[role="button"]')).some(isGoogle)) return;
-   el.style.setProperty('display','none','important');el.setAttribute('aria-hidden','true');el.setAttribute('data-scl-retired','registration');
-  });
- }
- if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',retire); else retire();
- new MutationObserver(retire).observe(document.documentElement,{childList:true,subtree:true});
- document.addEventListener('click',function(ev){var el=ev.target&&ev.target.closest&&ev.target.closest('button,a,[role="button"]');if(!el||isGoogle(el))return;var label=[el.innerText,el.textContent,el.getAttribute('aria-label'),el.id].filter(Boolean).join(' ');if(blocked.test(label)){ev.preventDefault();ev.stopImmediatePropagation();}},true);
-})();
-</script>
 
+
+<script type="text/plain" id="scl-register-css">:host{all:initial;position:fixed;inset:0;z-index:2147483200;display:block}
+:host([hidden]){display:none}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+.sr{--m:#6b0f1f;--m2:#3d0812;--g:#e3b23c;--g2:#c99a22;--ink:#2a0a10;--mu:#6a5a50;--ln:#ead5b6;--bg:#fffaf0;--er:#b3261e;--ok:#146c2e;
+ position:absolute;inset:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Atkinson Hyperlegible",Figtree,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;display:flex;flex-direction:column;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+.top{display:flex;align-items:center;gap:12px;padding:12px 16px;background:linear-gradient(135deg,var(--m),var(--m2));color:#fff}
+.logo{width:38px;height:38px;border-radius:50%;background:var(--g);color:var(--m2);display:grid;place-items:center;font-weight:800;flex:none}
+.ttl{flex:1;min-width:0}.ttl b{display:block;font-size:17px;line-height:1.2}.ttl small{display:block;color:#f6dfa4;font-size:13px}
+.x{border:1px solid rgba(255,255,255,.4);background:transparent;color:#fff;border-radius:10px;min-height:44px;padding:0 14px;font:inherit;cursor:pointer}
+.x:disabled{opacity:.5;cursor:not-allowed}
+.prog{padding:10px 16px 0;max-width:640px;width:100%;margin:0 auto}
+.prog small{color:var(--mu);font-size:13px}
+.bar{height:6px;border-radius:99px;background:#f1e3c7;overflow:hidden;margin-top:6px}.bar i{display:block;height:100%;background:var(--g);transition:width .25s}
+.main{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:16px;max-width:640px;width:100%;margin:0 auto;outline:0}
+h2{margin:4px 0 4px;font-size:22px;color:var(--m);line-height:1.25}
+.sub{margin:0 0 16px;color:var(--mu)}
+.tiles{display:grid;gap:12px}
+.tile{display:flex;gap:14px;align-items:center;text-align:left;width:100%;border:2px solid var(--ln);background:#fff;border-radius:16px;padding:16px;font:inherit;color:inherit;cursor:pointer;min-height:68px}
+.tile:hover{border-color:var(--g)}.tile[aria-checked=true]{border-color:var(--m);background:#fff3e6}
+.tile .ic{font-size:28px;flex:none}.tile b{display:block;font-size:17px}.tile span{color:var(--mu);font-size:14px}
+.f{display:block;margin:0 0 14px}.f>span{display:block;font-weight:700;font-size:14px;margin-bottom:4px}.f>span em{color:var(--er);font-style:normal}
+input[type=text],input[type=email],input[type=tel],input[type=password],input[type=date],select,textarea{width:100%;min-height:48px;border:1.5px solid #cdbb9a;border-radius:12px;padding:10px 12px;font:inherit;background:#fff;color:var(--ink)}
+textarea{min-height:88px;resize:vertical}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible,.file:focus-within{outline:3px solid #1a56db;outline-offset:2px}
+[aria-invalid=true]{border-color:var(--er)!important;background:#fff6f5}
+.err{display:block;color:var(--er);font-size:13px;margin-top:4px;min-height:0}
+.hint{display:block;color:var(--mu);font-size:13px;margin-top:4px}
+.row2{display:grid;gap:12px;grid-template-columns:1fr}
+@media(min-width:520px){.row2{grid-template-columns:1fr 1fr}}
+.pw{position:relative}.pw input{padding-right:78px}.pw button{position:absolute;right:6px;top:6px;min-height:36px;border:0;background:#f4e8d0;border-radius:8px;padding:0 10px;font:inherit;font-size:13px;cursor:pointer}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1.5px solid #cdbb9a;background:#fff;border-radius:99px;min-height:44px;padding:0 16px;font:inherit;color:inherit;cursor:pointer}
+.chip[aria-pressed=true],.chip[aria-checked=true]{background:var(--m);border-color:var(--m);color:#fff}
+.chip:disabled{opacity:.4;cursor:not-allowed}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.card{background:#fff;border:1px solid var(--ln);border-radius:16px;padding:14px;margin:0 0 14px}
+.card h3{margin:0 0 8px;font-size:16px;color:var(--m)}
+.file{display:flex;align-items:center;gap:10px;border:1.5px dashed #cdbb9a;border-radius:12px;padding:10px 12px;background:#fff;min-height:52px;cursor:pointer}
+.file.got{border-style:solid;border-color:var(--ok);background:#f2faf4}
+.file input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.file b{font-size:14px}.file small{display:block;color:var(--mu);font-size:12px;word-break:break-all}
+.file img{width:44px;height:44px;border-radius:50%;object-fit:cover}
+.chk{display:flex;gap:10px;align-items:flex-start;margin:6px 0 14px}.chk input{width:22px;height:22px;margin-top:2px;flex:none}
+.note{border-radius:12px;padding:12px 14px;margin:0 0 14px;font-size:14px;background:#fff3d6;border:1px solid #f0d58a}
+.note.bad{background:#fdecea;border-color:#f3b4ae;color:#7a1610}.note.good{background:#e9f7ee;border-color:#a9d9b8;color:#0f4d21}
+.foot{display:flex;gap:10px;justify-content:space-between;padding:12px 16px;background:#fff;border-top:1px solid var(--ln)}
+.foot>div{max-width:640px;width:100%;margin:0 auto;display:flex;gap:10px;justify-content:space-between}
+.btn{min-height:48px;border-radius:12px;border:2px solid var(--m);background:#fff;color:var(--m);font:inherit;font-weight:700;padding:0 20px;cursor:pointer}
+.btn.pri{background:linear-gradient(135deg,var(--g),var(--g2));border-color:var(--g2);color:var(--m2)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.btn[aria-busy=true]::after{content:"";display:inline-block;width:14px;height:14px;margin-left:10px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;vertical-align:-2px;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.done{text-align:center;padding:24px 8px}.done .big{font-size:56px}.done h2{margin-top:8px}
+.ref{display:inline-block;background:#f4e8d0;border-radius:8px;padding:2px 10px;font-weight:700;letter-spacing:.5px}
+.live{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</script>
+<script id="scl-register">
+/* SCL Registration — the ONE registration flow for parents/guardians, teachers and staff (existing staff and job applicants).
+ *
+ * Replaces: the access-gate register wizard, the Workers/Vacancy form and its 6 patch layers, the quick sign-up, and the
+ * old sign-up modal handlers. Student admissions live in SCLAdmissions (separate, untouched).
+ *
+ * Contract with the rest of the site (nothing else is touched):
+ *   identity   window.sclSupabase (the site's single Supabase client)         -> sign-up / session
+ *   profile    POST  /functions/v1/scl-auth-api   {action:'sync_account'}       (unchanged server contract)
+ *   staff      POST  /functions/v1/scl-worker-api (multipart)                   (unchanged server contract)
+ *              fallback: storage buckets staff-documents/staff-photos + RPC scl_submit_staff_application
+ *   after      window.sclConvertQuickAccountToRole (if present), localStorage 'sclWorkerRecords' (read by timetable/salary)
+ * To point at a different backend later, change ONLY the `API` object below.
+ * Public: window.SCLRegister.open({role,mode,edit}) / close();  legacy names kept as thin aliases at the bottom.
+ */
+(function () {
+  'use strict';
+  var W = window, D = document;
+  if (W.SCLRegister) return;
+
+  /* ============================== configuration (the only place backend names live) */
+  var API = {
+    base: function () { return String(W.SCL_SUPABASE_URL || '').replace(/\/$/, ''); },
+    key: function () { return W.SCL_SUPABASE_PUBLISHABLE_KEY || W.SCL_SUPABASE_ANON_KEY || ''; },
+    syncAccount: '/functions/v1/scl-auth-api',
+    workerApi: '/functions/v1/scl-worker-api',
+    submitRpc: '/rest/v1/rpc/scl_submit_staff_application',
+    docBucket: 'staff-documents',
+    photoBucket: 'staff-photos'
+  };
+  var DRAFT_KEY = 'sclRegDraft', DRAFT_DAYS = 14, MAXB = 8 * 1024 * 1024, MAX_SUPPORT = 5;
+  var LEVELS = {
+    'Early years': ['Daycare', 'Nursery 1', 'Nursery 2', 'Reception'],
+    'Primary': ['Primary 1', 'Primary 2', 'Primary 3', 'Primary 4', 'Primary 5'],
+    'JSS': ['JSS 1', 'JSS 2', 'JSS 3'],
+    'SSS': ['SSS 1', 'SSS 2', 'SSS 3']
+  };
+  var STAFF_PROFS = ['Cleaner / Janitor', 'Driver', 'Principal / Director', 'Administrative Officer'];
+  var ALL_PROFS = ['Teacher'].concat(STAFF_PROFS);
+  var PATTERNS = ['Full-Time', 'Half-Day Part-Time', 'Full-Day Part-Time', 'Scheduled Part-Time'];
+  var ROLES = {
+    parent: { ic: '👪', label: 'Parent / Guardian', blurb: 'Follow your child’s admission, fees and progress.' },
+    teacher: { ic: '👩‍🏫', label: 'Teacher', blurb: 'Already teaching with us, or applying for a teaching vacancy.' },
+    staff: { ic: '🧰', label: 'Staff / Worker', blurb: 'Administration, driver, cleaner and other school staff.' }
+  };
+
+  /* ============================== state */
+  var S = null, host = null, root = null, shadow = null, lastFocus = null, prevOverflow = '';
+  function fresh() {
+    return { role: '', preset: false, step: 'who', user: null, busy: false, errs: {}, banner: null, edit: false, result: null,
+      token: uuid(), files: { photo: null, cv: null, letter: null, support: [] }, photoUrl: '',
+      d: { surname: '', first: '', other: '', phone: '', email: '', password: '', agree: false, rel: 'Father',
+        mode: 'staff', profession: '', otherProf: '', also: [], qual: '', start: '', exp: '', pattern: '', patternDetail: '',
+        levels: [], classes: [], subjects: '', delivery: 'In school', notes: '' } };
+  }
+
+  /* ============================== small helpers */
+  function esc(v) { return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function q(s, r) { return (r || root).querySelector(s); }
+  function qa(s, r) { return Array.prototype.slice.call((r || root).querySelectorAll(s)); }
+  function uuid() { if (W.crypto && crypto.randomUUID) return crypto.randomUUID(); var h = '0123456789abcdef', s = ''; for (var i = 0; i < 36; i++) s += (i === 8 || i === 13 || i === 18 || i === 23) ? '-' : h[Math.floor(Math.random() * 16)]; return s; }
+  function client() { var c = W.sclSupabase; return c && c.auth ? c : null; }
+  function session() { var c = client(); if (!c) return Promise.resolve(null); return c.auth.getSession().then(function (r) { return (r && r.data && r.data.session) || null; }, function () { return null; }); }
+  function clean(v) { return String(v || '').trim().replace(/\s{2,}/g, ' '); }
+  function uniq(a) { return a.filter(function (x, i) { return x && a.indexOf(x) === i; }); }
+  function today() { try { return new Date().toLocaleDateString('en-CA', { timeZone: 'Africa/Lagos' }); } catch (e) { return new Date().toISOString().slice(0, 10); } }
+  function kb(n) { return n >= 1048576 ? (n / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(n / 1024)) + ' KB'; }
+  function say(m) { var l = q('.live'); if (l) { l.textContent = ''; setTimeout(function () { l.textContent = m; }, 30); } }
+  function isConnErr(e) { return e && (e.name === 'TypeError' || /network|failed to fetch|load failed/i.test(e.message || '')); }
+  function friendly(e) {
+    var m = (e && (e.message || e.error_description || e.msg)) || String(e || '');
+    if (/already (been )?registered|already exists|User already/i.test(m)) return 'This email already has an account. Close this and use Sign in, or “Forgot password”.';
+    if (/rate limit|too many/i.test(m)) return 'Too many attempts. Please wait a few minutes and try again.';
+    if (/password/i.test(m) && /(short|weak|least|characters)/i.test(m)) return 'Choose a stronger password (at least 8 characters).';
+    if (/invalid.*email|email.*invalid/i.test(m)) return 'That email address does not look right.';
+    if (isConnErr(e)) return 'Network problem. Check your connection and try again. Nothing was lost.';
+    return m || 'Something went wrong. Please try again.';
+  }
+  function splitName(full) { var p = clean(full).split(' ').filter(Boolean); return { surname: p[0] || '', first: p[1] || '', other: p.slice(2).join(' ') }; }
+  function validPhone(v) { var n = String(v || '').replace(/\D/g, ''); return n.length >= 10 && n.length <= 15; }
+  function validEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v); }
+
+  /* ============================== draft (text only: never passwords or files) */
+  function saveDraft() {
+    if (!S || !S.role) return;
+    var d = Object.assign({}, S.d); delete d.password; delete d.agree;
+    try { localStorage.setItem(DRAFT_KEY, JSON.stringify({ at: Date.now(), role: S.role, step: S.step, d: d })); } catch (e) { }
+  }
+  function loadDraft() {
+    try { var x = JSON.parse(localStorage.getItem(DRAFT_KEY) || 'null'); if (!x || Date.now() - x.at > DRAFT_DAYS * 864e5) { clearDraft(); return null; } return x; } catch (e) { return null; }
+  }
+  function clearDraft() { try { localStorage.removeItem(DRAFT_KEY); } catch (e) { } }
+
+  /* ============================== flow */
+  function flow() {
+    var f = [];
+    if (!S.preset) f.push('who');
+    if (S.role === 'parent') { f.push('you'); return f; }
+    var known = S.user && S.d.surname && S.d.first && validPhone(S.d.phone);
+    if (!known) f.push('you');
+    f.push('work');
+    return f;
+  }
+  function goto(step) { S.step = step; S.errs = {}; S.banner = null; render(); saveDraft(); var m = q('.main'); if (m) { m.scrollTop = 0; m.focus(); } }
+  function next() { var f = flow(), i = f.indexOf(S.step); if (i >= 0 && i < f.length - 1) goto(f[i + 1]); }
+  function back() { var f = flow(), i = f.indexOf(S.step); if (i > 0) goto(f[i - 1]); else close(); }
+
+  /* ============================== rendering */
+  function field(id, label, input, o) {
+    o = o || {}; var e = S.errs[id];
+    return '<label class="f" for="f-' + id + '"><span>' + label + (o.req ? ' <em aria-hidden="true">*</em>' : '') + '</span>' + input +
+      (o.hint ? '<small class="hint">' + o.hint + '</small>' : '') + '<small class="err" id="e-' + id + '" role="alert">' + (e ? esc(e) : '') + '</small></label>';
+  }
+  function inp(id, type, val, extra) {
+    var bad = S.errs[id] ? ' aria-invalid="true" aria-describedby="e-' + id + '"' : '';
+    return '<input id="f-' + id + '" data-f="' + id + '" type="' + type + '" value="' + esc(val) + '" ' + (extra || '') + bad + '>';
+  }
+  function chips(name, list, sel, multi, max) {
+    return '<div class="chips" role="' + (multi ? 'group' : 'radiogroup') + '">' + list.map(function (x) {
+      var on = multi ? sel.indexOf(x) > -1 : sel === x, dis = multi && !on && max && sel.length >= max;
+      return '<button type="button" class="chip" data-chip="' + name + '" data-v="' + esc(x) + '" ' + (multi ? 'aria-pressed' : 'aria-checked') + '="' + on + '"' + (multi ? '' : ' role="radio"') + (dis ? ' disabled' : '') + '>' + esc(x) + '</button>';
+    }).join('') + '</div>';
+  }
+  function fileBox(slot, label, hint, accept, multi) {
+    var f = S.files[slot], names = multi ? f.map(function (x) { return x.name + ' (' + kb(x.size) + ')'; }).join(', ') : (f ? f.name + ' (' + kb(f.size) + ')' : '');
+    var got = multi ? f.length > 0 : !!f, e = S.errs['file-' + slot];
+    return '<div class="f"><span>' + label + '</span><label class="file' + (got ? ' got' : '') + '">' +
+      (slot === 'photo' && S.photoUrl ? '<img alt="" src="' + esc(S.photoUrl) + '">' : '<span aria-hidden="true">📎</span>') +
+      '<span><b>' + (got ? 'Selected' : 'Choose file') + '</b><small>' + esc(got ? names : hint) + '</small></span>' +
+      '<input type="file" data-file="' + slot + '" accept="' + accept + '"' + (multi ? ' multiple' : '') + '></label>' +
+      '<small class="err" role="alert">' + (e ? esc(e) : '') + '</small></div>';
+  }
+
+  function viewWho() {
+    return '<h2>Who is registering?</h2><p class="sub">Choose one. It takes about two minutes.</p><div class="tiles" role="radiogroup" aria-label="I am a">' +
+      Object.keys(ROLES).map(function (k) { var r = ROLES[k]; return '<button type="button" class="tile" role="radio" aria-checked="' + (S.role === k) + '" data-role="' + k + '"><span class="ic" aria-hidden="true">' + r.ic + '</span><span><b>' + r.label + '</b><span>' + r.blurb + '</span></span></button>'; }).join('') + '</div>';
+  }
+  function viewYou() {
+    var d = S.d, signed = !!S.user, h = '<h2>' + (signed ? 'Confirm your details' : 'Your details') + '</h2><p class="sub">' +
+      (signed ? 'Signed in as <b>' + esc(S.user.email) + '</b>.' : 'This creates your SCL account. You can also close this and use “Continue with Google” on the sign-in screen.') + '</p>';
+    if (S.banner) h += banner();
+    h += '<div class="row2">' + field('surname', 'Surname', inp('surname', 'text', d.surname, 'autocomplete="family-name" maxlength="60"'), { req: 1 }) +
+      field('first', 'First name', inp('first', 'text', d.first, 'autocomplete="given-name" maxlength="60"'), { req: 1 }) + '</div>' +
+      field('other', 'Other names', inp('other', 'text', d.other, 'autocomplete="additional-name" maxlength="60"')) +
+      field('phone', 'Phone number (WhatsApp)', inp('phone', 'tel', d.phone, 'autocomplete="tel" inputmode="tel" maxlength="20" placeholder="080…"'), { req: 1 });
+    if (S.role === 'parent') h += '<div class="f"><span>I am the</span>' + chips('rel', ['Father', 'Mother', 'Guardian'], d.rel, false) + '</div>';
+    if (!signed) {
+      h += field('email', 'Email address', inp('email', 'email', d.email, 'autocomplete="email" inputmode="email" autocapitalize="none" spellcheck="false" maxlength="120"'), { req: 1 }) +
+        field('password', 'Create a password', '<div class="pw">' + inp('password', 'password', d.password, 'autocomplete="new-password" minlength="8" maxlength="72"') + '<button type="button" data-act="showpw" aria-pressed="false">Show</button></div>', { req: 1, hint: 'At least 8 characters.' }) +
+        '<label class="chk"><input type="checkbox" data-f="agree"' + (d.agree ? ' checked' : '') + '><span>I agree to the school’s terms and privacy policy.</span></label><small class="err" id="e-agree" role="alert">' + esc(S.errs.agree || '') + '</small>';
+    }
+    return h;
+  }
+  function workMode() { return S.d.mode === 'vacancy' ? 'vacancy' : 'staff'; }
+  function viewWork() {
+    var d = S.d, isT = S.role === 'teacher', vac = workMode() === 'vacancy', h = '<h2>' + (S.edit ? 'Update my staff details' : 'Work details') + '</h2><p class="sub">' + (vac ? 'Tell us about yourself for the vacancy.' : 'For people already working with the school.') + '</p>';
+    if (S.banner) h += banner();
+    h += '<div class="f"><span>Are you working at SCL now?</span><div class="seg" role="radiogroup">' +
+      '<button type="button" class="chip" role="radio" data-chip="mode" data-v="staff" aria-checked="' + !vac + '">Yes, I work here</button>' +
+      '<button type="button" class="chip" role="radio" data-chip="mode" data-v="vacancy" aria-checked="' + vac + '">No, I’m applying</button></div></div>';
+    if (isT) h += '<p class="note">Profession: <b>Teacher</b></p>';
+    else {
+      h += field('profession', 'Your profession', '<select id="f-profession" data-f="profession"' + (S.errs.profession ? ' aria-invalid="true"' : '') + '><option value="">Select</option>' + STAFF_PROFS.map(function (p) { return '<option' + (d.profession === p ? ' selected' : '') + '>' + esc(p) + '</option>'; }).join('') + '<option value="__other"' + (d.profession === '__other' ? ' selected' : '') + '>Other (type it)</option></select>', { req: 1 });
+      if (d.profession === '__other') h += field('otherProf', 'Type your profession', inp('otherProf', 'text', d.otherProf, 'maxlength="60" placeholder="e.g. Plumber, Security, Cook"'), { req: 1 });
+    }
+    var primary = primaryProfession(), alsoList = ALL_PROFS.filter(function (p) { return p !== primary; });
+    h += '<div class="f"><span>Also works as <small style="font-weight:400">(optional, up to 2)</small></span>' + chips('also', alsoList, d.also, true, 2) + '</div>';
+    h += field('qual', 'Main qualification', inp('qual', 'text', d.qual, 'maxlength="160" placeholder="e.g. B.Ed English, NCE, SSCE"'), { req: 1 });
+    h += vac ? field('exp', 'Years of relevant experience', inp('exp', 'text', d.exp, 'maxlength="40" placeholder="e.g. 3 years"'), { req: 1 })
+      : field('start', 'Date you started working here', inp('start', 'date', d.start, 'max="' + today() + '"'), { req: 1 });
+    h += '<div class="f"><span>Work pattern <em aria-hidden="true">*</em></span>' + chips('pattern', PATTERNS, d.pattern, false) + '<small class="err" id="e-pattern" role="alert">' + esc(S.errs.pattern || '') + '</small></div>';
+    if (d.pattern && d.pattern !== 'Full-Time') h += field('patternDetail', 'Your days and hours', inp('patternDetail', 'text', d.patternDetail, 'maxlength="160" placeholder="e.g. Mon, Wed, Fri 8am–1pm"'), { req: 1 });
+    if (isT) h += viewTeaching();
+    h += '<div class="card"><h3>Documents</h3>' + fileBox('photo', 'Passport photograph *', 'JPG, PNG or WEBP · up to 8 MB', 'image/jpeg,image/png,image/webp');
+    if (vac) h += fileBox('cv', 'CV *', 'PDF · up to 8 MB', 'application/pdf') + fileBox('letter', 'Application letter *', 'PDF · up to 8 MB', 'application/pdf') +
+      fileBox('support', 'Certificates / qualifications * (up to ' + MAX_SUPPORT + ')', 'PDF, JPG, PNG or WEBP', 'application/pdf,image/jpeg,image/png,image/webp', true);
+    else h += '<small class="hint">Existing staff only need a photograph now. You can add your CV and certificates later from your dashboard.</small>';
+    h += '</div>' + field('notes', 'Anything else we should know? (optional)', '<textarea id="f-notes" data-f="notes" maxlength="1000" rows="3">' + esc(d.notes) + '</textarea>');
+    return h;
+  }
+  function viewTeaching() {
+    var d = S.d, list = [];
+    d.levels.forEach(function (l) { list = list.concat(LEVELS[l]); });
+    var needSubjects = d.classes.some(function (c) { return LEVELS.JSS.indexOf(c) > -1 || LEVELS.SSS.indexOf(c) > -1; });
+    return '<div class="card"><h3>Teaching</h3><div class="f"><span>Levels you teach <em aria-hidden="true">*</em></span>' + chips('levels', Object.keys(LEVELS), d.levels, true) + '</div>' +
+      (list.length ? '<div class="f"><span>Classes <em aria-hidden="true">*</em></span>' + chips('classes', list, d.classes, true) + '<small class="err" id="e-classes" role="alert">' + esc(S.errs.classes || '') + '</small></div>' : '<small class="err" id="e-classes" role="alert">' + esc(S.errs.classes || '') + '</small>') +
+      (needSubjects ? field('subjects', 'Subjects you teach', inp('subjects', 'text', d.subjects, 'maxlength="200" placeholder="e.g. Mathematics, Physics"'), { req: 1, hint: 'Separate with commas.' }) : '') +
+      field('delivery', 'Teaching mode', '<select id="f-delivery" data-f="delivery">' + ['In school', 'Online', 'In school and online'].map(function (x) { return '<option' + (d.delivery === x ? ' selected' : '') + '>' + x + '</option>'; }).join('') + '</select>') +
+      '<small class="hint">The school confirms your final classes and timetable after approval.</small></div>';
+  }
+  function banner() { var b = S.banner; return '<div class="note ' + (b.kind || '') + '" role="' + (b.kind === 'bad' ? 'alert' : 'status') + '">' + (b.html || esc(b.text)) + '</div>'; }
+  function viewDone() {
+    var r = S.result || {}, role = S.role, h;
+    if (role === 'parent' || !r.kind) {
+      var already = r.already;
+      h = '<div class="done"><div class="big" aria-hidden="true">✅</div><h2>' + (already ? 'You’re already registered' : 'Welcome to SCL!') + '</h2><p class="sub">' +
+        (r.confirm ? 'Check your email and tap the confirmation link, then sign in. ' : '') + 'Your parent account is ready. Next, start your child’s admission. You can save and finish later.</p></div>';
+    } else {
+      var miss = (r.missing || []).filter(Boolean);
+      h = '<div class="done"><div class="big" aria-hidden="true">📨</div><h2>' + esc(r.heading) + '</h2><p class="sub">' + esc(r.message || 'The school will review your details and contact you.') + '</p>' +
+        (r.ref ? '<p>Reference: <span class="ref">' + esc(r.ref) + '</span></p>' : '') + '</div>' +
+        (miss.length ? '<div class="note">Still needed: <b>' + miss.map(esc).join(', ') + '</b>. Open Staff / Worker registration again with the same email and add only these.</div>' : '') +
+        '<div class="note good">Once the school approves you, sign in again and your role is activated automatically.</div>';
+    }
+    return h;
+  }
+  function foot() {
+    var st = S.step, b = '', f = flow(), i = f.indexOf(st);
+    if (st === 'done') {
+      b = (S.role === 'parent' ? '<button class="btn" data-act="close">Close</button><button class="btn pri" data-act="admission">Start child’s admission</button>' : '<button class="btn" data-act="support">Contact the school</button><button class="btn pri" data-act="close">Done</button>');
+    } else if (st === 'who') b = '<button class="btn" data-act="close">Cancel</button><button class="btn pri" data-act="next"' + (S.role ? '' : ' disabled') + '>Continue</button>';
+    else {
+      var last = i === f.length - 1;
+      b = '<button class="btn" data-act="back"' + (S.busy ? ' disabled' : '') + '>' + (i > 0 ? 'Back' : 'Cancel') + '</button>' +
+        '<button class="btn pri" data-act="' + (last ? 'submit' : 'next') + '"' + (S.busy ? ' aria-busy="true" disabled' : '') + '>' + submitLabel(last) + '</button>';
+    }
+    return '<div>' + b + '</div>';
+  }
+  function submitLabel(last) {
+    if (S.busy) return S.step === 'work' ? 'Sending…' : 'Creating…';
+    if (S.step === 'you') return S.role === 'parent' ? (S.user ? 'Save' : 'Create my account') : (S.user ? 'Continue' : 'Create account & continue');
+    if (S.step === 'work') return S.edit ? 'Save changes' : (workMode() === 'vacancy' ? 'Submit application' : 'Submit registration');
+    return last ? 'Submit' : 'Continue';
+  }
+  function render() {
+    if (!root) return;
+    var f = flow(), i = Math.max(0, f.indexOf(S.step)), body = ({ who: viewWho, you: viewYou, work: viewWork, done: viewDone })[S.step]();
+    var prog = S.step === 'done' ? '' : '<small>Step ' + (i + 1) + ' of ' + f.length + '</small><div class="bar"><i style="width:' + Math.round((i + 1) / f.length * 100) + '%"></i></div>';
+    q('.prog').innerHTML = prog; q('.prog').hidden = !prog;
+    q('.main').innerHTML = body; q('.foot').innerHTML = foot();
+    q('.x').disabled = !!S.busy;
+    q('.ttl small').textContent = S.edit ? 'Update my staff details' : 'Register a new account';
+  }
+
+  /* ============================== reading & validating the form */
+  function primaryProfession() { var d = S.d; if (S.role === 'teacher') return 'Teacher'; if (d.profession === '__other') return clean(d.otherProf); return d.profession; }
+  function setErr(id, m) { S.errs[id] = m; return false; }
+  function validate(step) {
+    S.errs = {}; var d = S.d, ok = true;
+    if (step === 'you') {
+      if (clean(d.surname).length < 2) ok = setErr('surname', 'Enter your surname.');
+      if (clean(d.first).length < 2) ok = setErr('first', 'Enter your first name.');
+      if (!validPhone(d.phone)) ok = setErr('phone', 'Enter a valid phone number.');
+      if (!S.user) {
+        if (!validEmail(clean(d.email))) ok = setErr('email', 'Enter a valid email address.');
+        if (String(d.password).length < 8) ok = setErr('password', 'Use at least 8 characters.');
+        if (!d.agree) ok = setErr('agree', 'Please tick the agreement to continue.');
+      }
+    } else if (step === 'work') {
+      var vac = workMode() === 'vacancy';
+      if (S.role === 'staff') { if (!d.profession) ok = setErr('profession', 'Choose your profession.'); else if (d.profession === '__other' && clean(d.otherProf).length < 2) ok = setErr('otherProf', 'Type your profession.'); }
+      if (clean(d.qual).length < 2) ok = setErr('qual', 'Enter your main qualification.');
+      if (vac) { if (!clean(d.exp)) ok = setErr('exp', 'Enter your years of experience.'); }
+      else { if (!d.start) ok = setErr('start', 'Enter your start date.'); else if (d.start > today()) ok = setErr('start', 'The start date cannot be in the future.'); }
+      if (!d.pattern) ok = setErr('pattern', 'Choose a work pattern.');
+      else if (d.pattern !== 'Full-Time' && clean(d.patternDetail).length < 3) ok = setErr('patternDetail', 'Tell us your days and hours.');
+      if (S.role === 'teacher') {
+        if (!d.classes.length) ok = setErr('classes', 'Choose at least one class.');
+        var needSub = d.classes.some(function (c) { return LEVELS.JSS.indexOf(c) > -1 || LEVELS.SSS.indexOf(c) > -1; });
+        if (needSub && !clean(d.subjects)) ok = setErr('subjects', 'Enter the subjects you teach.');
+      }
+      if (!S.files.photo) ok = setErr('file-photo', 'Please add your passport photograph.');
+      if (vac) {
+        if (!S.files.cv) ok = setErr('file-cv', 'Please add your CV (PDF).');
+        if (!S.files.letter) ok = setErr('file-letter', 'Please add your application letter (PDF).');
+        if (!S.files.support.length) ok = setErr('file-support', 'Add at least one certificate or qualification.');
+      }
+    }
+    return ok;
+  }
+  function showErrors() {
+    render();
+    var first = q('[aria-invalid="true"]') || q('.err:not(:empty)');
+    if (first) { var t = first.closest('label,.f') || first; try { (first.focus ? first : t).focus(); } catch (e) { } if (first.scrollIntoView) first.scrollIntoView({ block: 'center' }); }
+    say('Please fix the highlighted fields.');
+  }
+  function checkFile(slot, f) {
+    var types = slot === 'photo' ? ['image/jpeg', 'image/png', 'image/webp'] : (slot === 'cv' || slot === 'letter') ? ['application/pdf'] : ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'];
+    var t = f.type || ({ pdf: 'application/pdf', jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', webp: 'image/webp' })[(/\.([a-z0-9]+)$/i.exec(f.name) || [])[1] && (/\.([a-z0-9]+)$/i.exec(f.name)[1].toLowerCase())] || '';
+    if (types.indexOf(t) < 0) return '“' + f.name + '” is not an allowed file type.';
+    if (!f.size) return '“' + f.name + '” is empty.';
+    if (f.size > MAXB) return '“' + f.name + '” is ' + kb(f.size) + '. The limit is 8 MB.';
+    return '';
+  }
+  function shrinkPhoto(file) {
+    return new Promise(function (res) {
+      var u = URL.createObjectURL(file), img = new Image();
+      img.onload = function () { var s = Math.min(1, 900 / Math.max(img.width, img.height)), c = D.createElement('canvas'); c.width = Math.max(1, Math.round(img.width * s)); c.height = Math.max(1, Math.round(img.height * s)); c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(u); c.toBlob(function (b) { res(b && b.size < file.size ? new File([b], (file.name || 'photo').replace(/\.\w+$/, '') + '.jpg', { type: 'image/jpeg' }) : file); }, 'image/jpeg', .85); };
+      img.onerror = function () { URL.revokeObjectURL(u); res(file); }; img.src = u;
+    });
+  }
+  async function onFile(slot, list) {
+    var files = Array.prototype.slice.call(list || []); delete S.errs['file-' + slot]; if (!files.length) return;
+    if (slot !== 'support') files = files.slice(0, 1);
+    for (var i = 0; i < files.length; i++) { var e = checkFile(slot, files[i]); if (e) { S.errs['file-' + slot] = e; render(); return; } }
+    if (slot === 'support') {
+      var all = S.files.support.concat(files), seen = {}; all = all.filter(function (f) { var k = f.name + '|' + f.size; if (seen[k]) return false; seen[k] = 1; return true; });
+      if (all.length > MAX_SUPPORT) { S.errs['file-support'] = 'You can add at most ' + MAX_SUPPORT + ' files.'; render(); return; }
+      S.files.support = all;
+    } else if (slot === 'photo') {
+      var p = await shrinkPhoto(files[0]); S.files.photo = p; S.photoUrl = URL.createObjectURL(p);
+    } else S.files[slot] = files[0];
+    keepFormValues(); render();
+  }
+
+  /* ============================== server calls (unchanged contracts) */
+  function hdrs(token, json) { var h = { apikey: API.key() }; if (token) h.Authorization = 'Bearer ' + token; if (json) h['Content-Type'] = 'application/json'; return h; }
+  async function readJson(r) { var t = await r.text(), d = null; try { d = t ? JSON.parse(t) : null; } catch (e) { } return d || {}; }
+  function setSyncFlag(v) { try { if (v) localStorage.setItem('sclAccountSyncPending', v); else localStorage.removeItem('sclAccountSyncPending'); } catch (e) { } }
+
+  /* Step "you": create the account (if needed) and sync the person profile. Returns the session, or null when the email must be confirmed first. */
+  async function ensureAccount() {
+    var c = client(); if (!c) throw new Error('The sign-in service is still loading. Check your connection and try again in a moment.');
+    var d = S.d, s = await session(), full = [clean(d.surname), clean(d.first), clean(d.other)].filter(Boolean).join(' ');
+    var purpose = S.role === 'parent' ? (d.rel === 'Guardian' ? 'guardian' : 'parent') : 'visitor';
+    if (!s) {
+      var md = { full_name: full, surname: clean(d.surname), real_name: clean(d.first), last_name: clean(d.other), preferred_name: clean(d.first), phone: clean(d.phone), account_purpose: purpose,
+        admin_role: '', affairs_type: '', account_source: 'scl_register_v2', reg_role: S.role, gate_role: S.role === 'parent' ? (d.rel === 'Guardian' ? 'guardian' : 'parent') : S.role, gate_details: S.role === 'parent' ? { rel: d.rel } : {} };
+      setSyncFlag('signup_in_progress');
+      var r = await c.auth.signUp({ email: clean(d.email).toLowerCase(), password: d.password, options: { data: md, emailRedirectTo: location.href.split('#')[0] } });
+      if (r.error) { setSyncFlag(''); throw r.error; }
+      var u = r.data && r.data.user;
+      if (u && u.identities && u.identities.length === 0) { setSyncFlag(''); throw new Error('This email already has an account. Close this and use Sign in, or “Forgot password”.'); }
+      if (!r.data || !r.data.session) { setSyncFlag('signup_confirmation'); return null; }
+      s = r.data.session; setSyncFlag('signup_syncing');
+    }
+    var res = await fetch(API.base() + API.syncAccount, { method: 'POST', headers: hdrs(s.access_token, true), body: JSON.stringify({ action: 'sync_account', full_name: full, phone: clean(d.phone), surname: clean(d.surname), real_name: clean(d.first), last_name: clean(d.other), account_purpose: purpose, admin_role: '', affairs_type: '', photo_data_url: '' }) });
+    var j = await readJson(res);
+    if (!res.ok || j.error) throw new Error(j.error || 'Your account was created, but your profile could not be set up. Please contact school support.');
+    setSyncFlag('');
+    return s;
+  }
+
+  /* ---- staff / vacancy application payload ---- */
+  function buildApplication() {
+    var d = S.d, vac = workMode() === 'vacancy', primary = primaryProfession(), isT = S.role === 'teacher';
+    var profs = uniq([primary].concat(d.also)).slice(0, 3);
+    var primaryLevel = !d.classes.some(function (c) { return LEVELS.JSS.indexOf(c) > -1 || LEVELS.SSS.indexOf(c) > -1; });
+    var subs = clean(d.subjects).split(',').map(clean).filter(Boolean), clsA = [], subA = [];
+    if (isT) d.classes.forEach(function (c) {
+      var sec = LEVELS.JSS.indexOf(c) > -1 || LEVELS.SSS.indexOf(c) > -1;
+      clsA.push({ class_name: c, assignment_type: sec ? 'subject_teacher' : 'primary_class_teacher' });
+      if (sec) subs.forEach(function (s) { subA.push({ class_name: c, subject: s }); });
+    });
+    var notes = clean(d.notes);
+    if (isT) {
+      var subLine = primaryLevel ? '' : '; Subjects: ' + d.classes.filter(function (c) { return LEVELS.JSS.indexOf(c) > -1 || LEVELS.SSS.indexOf(c) > -1; }).map(function (c) { return c + ' = ' + subs.join(', '); }).join(' | ');
+      notes = '[TEACHING ASSIGNMENT] Level: ' + (primaryLevel ? 'Primary' : 'Secondary') + '; Classes: ' + (d.classes.join(', ') || 'none') + '; Delivery: ' + d.delivery + subLine + ' [/TEACHING ASSIGNMENT]' + (notes ? '\n' + notes : '');
+    }
+    var tm = { 'In school': 'in_school', 'Online': 'online', 'In school and online': 'both' };
+    var wp = d.pattern, detail = d.pattern !== 'Full-Time' ? clean(d.patternDetail) : wp;
+    var st = {
+      surname: clean(d.surname), first_name: clean(d.first), other_names: clean(d.other),
+      employment_start_date: vac ? null : d.start, employment_end_date: null,
+      employment_type: wp === 'Full-Time' ? 'full_time' : 'part_time', work_pattern: wp, work_pattern_detail: detail,
+      teaching_mode: isT ? (tm[d.delivery] || '') : '', primary_profession: primary, additional_professions: profs.slice(1),
+      qualifications: [clean(d.qual)], subject_assignments: subA, class_assignments: clsA, part_time_schedule: [],
+      teaching_level: isT ? (primaryLevel ? 'Primary' : 'Secondary') : '', timetable_slots: []
+    };
+    var full = [st.surname, st.first_name, st.other_names].filter(Boolean).join(' ');
+    var payload = { credentials: clean(d.qual), workPattern: wp, experience: vac ? clean(d.exp) : '', employmentStartDate: vac ? '' : d.start, professions: profs, notes: notes,
+      mode: workMode(), timetableRegistration: null, timetableSlots: [], teaching: isT ? { level: st.teaching_level, classes: d.classes, delivery: d.delivery, subjects: subs } : null };
+    Object.keys(st).forEach(function (k) { payload[k] = st[k]; });
+    payload.profile_payload = { mode: workMode(), experience: payload.experience, notes: notes, workPattern: wp, teaching: payload.teaching, timetableSlots: [] };
+    var email = (S.user && S.user.email) || clean(S.d.email).toLowerCase();
+    return { mode: workMode(), role: primary, full_name: full, email: email, phone: clean(d.phone), professions: profs, structured: st, payload: payload, notes: notes, experience: payload.experience, credentials: clean(d.qual), workPattern: wp, start: vac ? '' : d.start };
+  }
+  function appFiles() {
+    var f = S.files, out = { photo: f.photo, cv: f.cv, application_letter: f.letter, cv_documents: f.support.slice(), application_documents: [] };
+    return out;
+  }
+  function normalize(r) { r = r || {}; if (r.result && typeof r.result === 'object') r = Object.assign({}, r, r.result); r.ref = r.ref || r.public_ref || r.application_ref || r.application_id || r.id || ''; return r; }
+  async function viaWorkerApi(app, files, token) {
+    var fd = new FormData();
+    function put(k, v) { if (v == null || v === '') return; fd.append(k, typeof v === 'object' ? JSON.stringify(v) : String(v)); }
+    put('submit_token', S.token); put('mode', app.mode); put('full_name', app.full_name); put('email', app.email); put('phone', app.phone); put('role', app.role); put('position', app.role);
+    put('surname', app.structured.surname); put('firstName', app.structured.first_name); put('otherNames', app.structured.other_names);
+    put('credentials', app.credentials); put('workPattern', app.workPattern); put('experience', app.experience); put('employmentStartDate', app.start); put('employmentEndDate', '');
+    put('additionalProfessions', app.professions.slice(1)); put('qualifications', [app.credentials]);
+    Object.keys(app.structured).forEach(function (k) { put(k, app.structured[k]); }); put('payload', app.payload);
+    if (files.cv) fd.append('cv', files.cv, files.cv.name);
+    files.cv_documents.forEach(function (x) { fd.append('cv_documents', x, x.name); });
+    if (files.application_letter) fd.append('application_letter', files.application_letter, files.application_letter.name);
+    if (files.photo) fd.append('photo', files.photo, files.photo.name);
+    var r; try { r = await fetch(API.base() + API.workerApi, { method: 'POST', headers: hdrs(token), body: fd }); } catch (e) { var ne = new Error('Network error while sending.'); ne.fallback = true; throw ne; }
+    var d = await readJson(r);
+    if (r.ok && !d.error) return normalize(d);
+    var m = d.error || d.message || ('Request failed (' + r.status + ').'); if (typeof m !== 'string') m = JSON.stringify(m);
+    var e = new Error(m); if ([404, 405, 500, 502, 503, 504].indexOf(r.status) > -1) e.fallback = true; throw e;
+  }
+  async function putObject(bucket, path, file, token) {
+    var r = await fetch(API.base() + '/storage/v1/object/' + bucket + '/' + path, { method: 'POST', headers: Object.assign(hdrs(token), { 'Content-Type': file.type || 'application/octet-stream', 'x-upsert': 'false' }), body: file });
+    if (!r.ok) { var t = await r.text(); throw new Error('File upload failed (' + r.status + '). ' + t.slice(0, 120)); }
+    return path;
+  }
+  async function viaRpc(app, files, token) {
+    var id = uuid(), docs = {}, photoPath = null, jobs = [];
+    function safe(k, n) { return (k + '-' + n).replace(/[^A-Za-z0-9_.-]/g, '_').slice(-70); }
+    function add(slot, file, i) { jobs.push(putObject(API.docBucket, 'incoming/' + id + '/' + safe(slot + (i == null ? '' : i), file.name), file, token).then(function (p) { if (i == null) docs[slot] = p; else (docs[slot] = docs[slot] || [])[i] = p; })); }
+    if (files.cv) add('cv', files.cv); if (files.application_letter) add('application_letter', files.application_letter);
+    files.cv_documents.forEach(function (x, i) { add('cv_documents', x, i); });
+    if (files.photo) { var ext = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' }[files.photo.type] || 'jpg'; jobs.push(putObject(API.photoBucket, 'incoming/' + id + '/photo.' + ext, files.photo, token).then(function (p) { photoPath = p; })); }
+    await Promise.all(jobs);
+    if (docs.application_letter) docs.applicationLetter = docs.application_letter;
+    var sup = (docs.cv_documents || [])[0] || docs.cv; if (sup) docs.proof = sup;
+    app.payload.document_paths = docs;
+    var body = { p: Object.assign({}, app.structured, { full_name: app.full_name, email: app.email, phone: app.phone, position: app.role, payload: app.payload, documents: docs, photo_path: photoPath, submit_token: S.token }) };
+    var r = await fetch(API.base() + API.submitRpc, { method: 'POST', cache: 'no-store', headers: hdrs(token, true), body: JSON.stringify(body) });
+    var d = await readJson(r);
+    if (!r.ok) { var m = d.message || d.error || ('Request failed (' + r.status + ')'); if (/does not exist|schema cache/i.test(m)) m = 'The staff registration service is not installed yet. Please contact the school.'; throw new Error(m); }
+    d = normalize(d); d.viaRpc = true; return d;
+  }
+  async function sendApplication() {
+    var s = await session(); if (!s) throw new Error('Please sign in to continue.');
+    var app = buildApplication(), files = appFiles(), res;
+    W.__sclQuiet = true;   /* this module reports its own errors; stop the site-wide request toaster from doubling them */
+    try { try { res = await viaWorkerApi(app, files, s.access_token); } catch (e) { if (e && e.fallback) res = await viaRpc(app, files, s.access_token); else throw e; } }
+    finally { W.__sclQuiet = false; }
+    afterApplication(app, res);
+    return res;
+  }
+  /* Keep the readers of the old local record (timetable, salary table) working. */
+  function afterApplication(app, res) {
+    try {
+      var rec = { id: 'SCL-W-' + Date.now(), mode: app.mode, role: app.role, fullName: app.full_name, email: app.email, phone: app.phone, experience: app.experience, credentials: app.credentials,
+        employmentStartDate: app.start, workPattern: app.workPattern, professions: app.professions, notes: app.notes, timetableRegistration: null, timetableSlots: [], status: 'Verification Submitted',
+        submittedAt: new Date().toISOString(), structured: app.structured, teaching: app.payload.teaching, surname: app.structured.surname, firstName: app.structured.first_name, otherNames: app.structured.other_names, backendApplicationId: res.ref || '' };
+      var list = []; try { list = JSON.parse(localStorage.getItem('sclWorkerRecords') || '[]'); } catch (e) { }
+      list = list.filter(function (x) { return !(x.mode === rec.mode && String(x.email || '').trim().toLowerCase() === rec.email.toLowerCase()); }); list.unshift(rec);
+      localStorage.setItem('sclWorkerRecords', JSON.stringify(list.slice(0, 50)));
+      W.dispatchEvent(new Event('scl:timetable-live-update')); W.dispatchEvent(new Event('scl:staff-directory-refresh'));
+    } catch (e) { }
+    try { if (W.sclConvertQuickAccountToRole) Promise.resolve(W.sclConvertQuickAccountToRole(S.role === 'teacher' ? 'teacher' : 'staff', { fullName: app.full_name, email: app.email, phone: app.phone, role: app.role })).catch(function () { }); } catch (e) { }
+  }
+  var MISSING = { cv: 'CV', application_letter: 'application letter', applicationLetter: 'application letter', proof: 'certificates', photo: 'passport photograph', cv_documents: 'certificates' };
+  function headingFor(r) { if (r.result === 'already_verified') return 'You are already verified'; if (r.status === 'incomplete') return 'Saved, but not complete yet'; if (r.result === 'resumed') return 'Your application was updated'; return workMode() === 'vacancy' ? 'Application submitted' : 'Registration submitted'; }
+
+  /* ============================== actions */
+  function keepFormValues() {
+    if (!root) return;
+    qa('[data-f]').forEach(function (el) { var k = el.dataset.f; if (el.type === 'checkbox') S.d[k] = el.checked; else if (k in S.d) S.d[k] = el.value; });
+  }
+  async function doYou(btn) {
+    keepFormValues(); if (!validate('you')) return showErrors();
+    S.busy = true; S.banner = null; render();
+    try {
+      var s = await ensureAccount();
+      if (!s) { S.busy = false; saveDraft(); S.result = { confirm: true }; if (S.role === 'parent') { clearDraft(); goto('done'); } else { S.banner = { kind: '', html: '<b>Check your email.</b> Tap the confirmation link, then sign in. We saved what you typed, so you can finish your work details right after.' }; render(); } return; }
+      S.user = s.user; S.busy = false;
+      if (S.role === 'parent') { clearDraft(); S.result = {}; goto('done'); } else goto('work');
+    } catch (e) { if (W.console) console.warn('[SCLRegister]', e); S.busy = false; S.banner = { kind: 'bad', text: friendly(e) }; render(); }
+  }
+  async function doWork() {
+    keepFormValues(); if (!validate('work')) return showErrors();
+    S.busy = true; S.banner = null; render();
+    try {
+      var r = await sendApplication(); S.busy = false;
+      S.result = { kind: 'app', ref: r.ref, message: r.message, missing: (r.missing || []).map(function (m) { return MISSING[m] || m; }), heading: headingFor(r) };
+      clearDraft(); S.step = 'done'; render(); var m = q('.main'); if (m) { m.scrollTop = 0; m.focus(); }
+    } catch (e) { S.busy = false; S.banner = { kind: 'bad', html: '<b>Not submitted.</b> ' + esc(friendly(e)) + '<br><small>Your details are still here. Fix the issue and try again.</small>' }; render(); var mm = q('.main'); if (mm) mm.scrollTop = 0; }
+  }
+  var ACT = {
+    close: function () { close(); }, back: back, next: function (b) { if (S.busy) return; if (S.step === 'who') { if (!S.role) return; } if (S.step === 'you') { doYou(b); return; } next(); },
+    submit: function (b) { if (S.busy) return; if (S.step === 'you') doYou(b); else doWork(); },
+    showpw: function (b) { var i = q('#f-password'); if (!i) return; var show = i.type === 'password'; i.type = show ? 'text' : 'password'; b.textContent = show ? 'Hide' : 'Show'; b.setAttribute('aria-pressed', show); },
+    admission: function () { close(); if (W.SCLAdmissions && W.SCLAdmissions.open) W.SCLAdmissions.open(); },
+    support: function () { if (typeof W.openWhatsAppChoices === 'function') W.openWhatsAppChoices(); }
+  };
+  function onClick(e) {
+    var t = e.target.closest('[data-act],[data-role],[data-chip]'); if (!t || !root.contains(t)) return;
+    if (t.dataset.act && ACT[t.dataset.act]) { ACT[t.dataset.act](t); return; }
+    if (t.dataset.role) { keepFormValues(); S.role = t.dataset.role; if (S.role !== 'teacher' && S.d.profession === '' ) { } S.d.also = []; saveDraft(); if (S.role === 'parent' && S.user) { S.result = { already: true }; goto('done'); return; } next(); return; }
+    if (t.dataset.chip) {
+      keepFormValues(); var k = t.dataset.chip, v = t.dataset.v, d = S.d;
+      if (k === 'also') { var i = d.also.indexOf(v); if (i > -1) d.also.splice(i, 1); else if (d.also.length < 2) d.also.push(v); }
+      else if (k === 'levels') { var j = d.levels.indexOf(v); if (j > -1) { d.levels.splice(j, 1); var rm = LEVELS[v]; d.classes = d.classes.filter(function (c) { return rm.indexOf(c) < 0; }); } else d.levels.push(v); }
+      else if (k === 'classes') { var c = d.classes.indexOf(v); if (c > -1) d.classes.splice(c, 1); else d.classes.push(v); }
+      else if (k === 'mode') { d.mode = v; } else d[k] = v;
+      delete S.errs[k]; saveDraft(); render();
+      var again = q('[data-chip="' + k + '"][data-v="' + (v || '').replace(/"/g, '') + '"]'); if (again) again.focus();
+    }
+  }
+  var typing;
+  function onInput(e) {
+    var el = e.target; if (el.dataset && el.dataset.file) return;
+    var k = el.dataset && el.dataset.f; if (!k) return;
+    S.d[k] = el.type === 'checkbox' ? el.checked : el.value;
+    if (S.errs[k]) { delete S.errs[k]; el.removeAttribute('aria-invalid'); var er = q('#e-' + k); if (er) er.textContent = ''; }
+    clearTimeout(typing); typing = setTimeout(saveDraft, 400);
+  }
+  function onChange(e) {
+    var el = e.target;
+    if (el.dataset && el.dataset.file) { onFile(el.dataset.file, el.files); return; }
+    if (el.dataset && el.dataset.f === 'profession') { keepFormValues(); S.d.also = S.d.also.filter(function (a) { return a !== primaryProfession(); }); saveDraft(); render(); var p = q('#f-profession'); if (p) p.focus(); }
+  }
+  function onKey(e) {
+    if (e.key === 'Escape') { if (S && !S.busy) { e.stopPropagation(); close(); } return; }
+    if (e.key === 'Enter' && e.target.matches && e.target.matches('input:not([type=checkbox]):not([type=file])')) { e.preventDefault(); if (S.step === 'you' || S.step === 'work') ACT.submit(); return; }
+    if (e.key !== 'Tab') return;
+    var f = qa('button:not([disabled]),input:not([disabled]):not([type=file]),select,textarea,[tabindex="0"]').filter(function (x) { return x.offsetParent !== null || x === shadow.activeElement; });
+    if (!f.length) return; var a = f[0], z = f[f.length - 1];
+    if (e.shiftKey && shadow.activeElement === a) { e.preventDefault(); z.focus(); } else if (!e.shiftKey && shadow.activeElement === z) { e.preventDefault(); a.focus(); }
+  }
+
+  /* ============================== shell + open/close */
+  function build() {
+    host = D.createElement('div'); host.id = 'scl-register-host'; host.hidden = true; host.setAttribute('data-ag-allow', '');
+    shadow = host.attachShadow({ mode: 'open' });
+    var st = D.createElement('style'); st.textContent = (D.getElementById('scl-register-css') || {}).textContent || ''; shadow.appendChild(st);
+    root = D.createElement('div'); root.className = 'sr'; root.setAttribute('role', 'dialog'); root.setAttribute('aria-modal', 'true'); root.setAttribute('aria-label', 'Register a new account');
+    root.innerHTML = '<div class="top"><div class="logo" aria-hidden="true">S</div><div class="ttl"><b>Shining Child Leaders School</b><small></small></div><button type="button" class="x" data-act="close">Close</button></div>' +
+      '<div class="prog" hidden></div><main class="main" tabindex="-1"></main><div class="foot"></div><div class="live" role="status" aria-live="polite"></div>';
+    shadow.appendChild(root); D.body.appendChild(host);
+    root.addEventListener('click', onClick); root.addEventListener('input', onInput); root.addEventListener('change', onChange); root.addEventListener('keydown', onKey);
+  }
+  async function open(opts) {
+    opts = opts || {};
+    if (!root) build();
+    S = fresh(); S.edit = !!opts.edit;
+    var s = await session(); S.user = s ? s.user : null;
+    var md = (S.user && S.user.user_metadata) || {};
+    if (S.user) {
+      var nm = md.surname ? { surname: md.surname, first: md.real_name || '', other: md.last_name || '' } : splitName(md.full_name || md.name || '');
+      S.d.surname = nm.surname; S.d.first = nm.first; S.d.other = nm.other; S.d.phone = md.phone || ''; S.d.email = S.user.email || '';
+    }
+    var draft = loadDraft();
+    if (draft && (!opts.role || opts.role === draft.role || draft.role !== 'parent')) { S.d = Object.assign(S.d, draft.d, S.user ? { email: S.user.email, surname: S.d.surname || draft.d.surname, first: S.d.first || draft.d.first, phone: S.d.phone || draft.d.phone } : {}); S.role = draft.role; S.resumed = true; }
+    if (opts.mode === 'vacancy' || opts.mode === 'staff') S.d.mode = opts.mode;
+    if (opts.edit) {
+      var rec = null; try { rec = JSON.parse(localStorage.getItem('sclWorkerRecords') || '[]').filter(function (r) { return r.mode === 'staff' && S.user && String(r.email).toLowerCase() === String(S.user.email).toLowerCase(); })[0]; } catch (e) { }
+      if (rec) { S.role = rec.role === 'Teacher' ? 'teacher' : 'staff'; var st = rec.structured || {}; S.d.surname = st.surname || S.d.surname; S.d.first = st.first_name || S.d.first; S.d.other = st.other_names || ''; S.d.phone = rec.phone || S.d.phone; S.d.qual = rec.credentials || ''; S.d.start = rec.employmentStartDate || ''; S.d.pattern = rec.workPattern || ''; S.d.also = (rec.professions || []).slice(1); S.d.profession = S.role === 'staff' ? (STAFF_PROFS.indexOf(rec.role) > -1 ? rec.role : '__other') : ''; if (S.d.profession === '__other') S.d.otherProf = rec.role; var t = rec.teaching; if (t) { S.d.classes = t.classes || []; S.d.levels = Object.keys(LEVELS).filter(function (l) { return LEVELS[l].some(function (c) { return S.d.classes.indexOf(c) > -1; }); }); S.d.delivery = t.delivery || 'In school'; } }
+      else if (!S.role) S.role = 'staff';
+      S.d.mode = 'staff';
+    }
+    if (opts.role && ROLES[opts.role]) { S.role = opts.role; S.preset = true; }
+    else if (S.edit) S.preset = true;
+    else if (S.resumed && S.role && S.role !== 'parent' && S.user) S.preset = true;
+    if (S.role === 'parent' && S.user && !S.edit) { S.result = { already: true }; S.step = 'done'; }
+    else { var f = flow(); S.step = S.role ? f[0] : 'who'; if (S.resumed && S.user && S.role !== 'parent') S.step = 'work'; }
+    lastFocus = D.activeElement; host.hidden = false; host.removeAttribute('inert'); prevOverflow = D.body.style.overflow; D.body.style.overflow = 'hidden';
+    render(); var m = q('.main'); if (m) m.focus();
+  }
+  function close() {
+    if (!host || host.hidden || (S && S.busy)) return;
+    host.hidden = true; D.body.style.overflow = prevOverflow || '';
+    if (lastFocus && lastFocus.focus) { try { lastFocus.focus(); } catch (e) { } }
+  }
+
+  W.SCLRegister = Object.freeze({ open: open, close: close, version: '2.0.0' });
+  /* Thin aliases so existing buttons, shortcuts, hash links and admin tiles keep working without edits. */
+  W.openWorkers = function () { return open({ role: 'staff' }); };
+  W.startWorkerFlow = function (mode) { return open({ role: 'staff', mode: mode === 'vacancy' ? 'vacancy' : 'staff' }); };
+  W.sclOpenStaffEdit = W.sclEditFromRecord = W.sclEditMyStaff = function () { return open({ edit: true }); };
+  /* Close if the user signs out while the form is open. */
+  (function hook() { var c = client(); if (!c || !c.auth.onAuthStateChange) { if (!hook.n || hook.n < 40) { hook.n = (hook.n || 0) + 1; setTimeout(hook, 500); } return; } c.auth.onAuthStateChange(function (ev) { if (ev === 'SIGNED_OUT' && host && !host.hidden && S && !S.busy) { clearDraft(); close(); } }); })();
+})();
+
+</script>
 <script type="text/plain" id="scl-adm-css">
 :host{all:initial;position:fixed;inset:0;z-index:2147483000;display:block}
 :host([hidden]){display:none}
