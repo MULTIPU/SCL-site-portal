@@ -1544,7 +1544,7 @@ setTimeout(()=>{try{window.renderSclGateCalendar?.()}catch(_){ }},700);
 function openM(id){const m=document.getElementById(id);if(!m){if(typeof toast==='function')toast('This section is not available yet. Please try again later or contact the school.');return}m.classList.add('open');m.style.display='flex';m.setAttribute('aria-hidden','false');document.body.classList.add('modal-open')}function closeM(id){const m=document.getElementById(id);if(!m)return;m.classList.remove('open');m.style.display='none';m.setAttribute('aria-hidden','true');if(!document.querySelector('.modal.open'))document.body.classList.remove('modal-open')}
 function openLogoGallery(){const m=document.getElementById('logoGallery');m.classList.add('open');m.setAttribute('aria-hidden','false');document.getElementById('galleryCard').classList.add('gallery-open')}
 function closeLogoGallery(){const m=document.getElementById('logoGallery');m.classList.remove('open');m.setAttribute('aria-hidden','true');document.getElementById('galleryCard').classList.remove('gallery-open')}
-let pickerMode='registration';function renderPickerMode(){const m=document.getElementById('picker');const t=document.getElementById('sclPickerTitle');const n=document.getElementById('sclPickerNote');if(!m)return;m.classList.toggle('scl-picker-payment',pickerMode==='fees');m.classList.toggle('scl-picker-registration',pickerMode!=='fees');if(t)t.textContent=pickerMode==='fees'?'Select a Class for Payment':'Select a Class for Registration';if(n)n.textContent=pickerMode==='fees'?'💳 Payment mode — choose the class whose fees you want to view or pay.':'Registration mode — choose the class for the child registration.';}function pickRegistration(){pickerMode='registration';renderPickerMode();openM('picker')}function pickFees(){pickerMode='fees';renderPickerMode();openM('picker')}function pick(){if(typeof sclHasLiveSession==='function'&&!sclHasLiveSession()){openM('loginModal');return}pickRegistration()}function login(){if(typeof sclHasLiveSession==='function'&&sclHasLiveSession()){window.sclOpenModernProfile?.();}else openM('loginModal')}function openMaterials(){const m=document.getElementById('materialsModal');if(!m)return;m.classList.add('open');m.style.display='flex';m.setAttribute('aria-hidden','false');document.body.classList.add('modal-open')}
+let pickerMode='registration';function renderPickerMode(){const m=document.getElementById('picker');const t=document.getElementById('sclPickerTitle');const n=document.getElementById('sclPickerNote');if(!m)return;m.classList.toggle('scl-picker-payment',pickerMode==='fees');m.classList.toggle('scl-picker-registration',pickerMode!=='fees');if(t)t.textContent=pickerMode==='fees'?'Select a Class for Payment':'Select a Class for Registration';if(n)n.textContent=pickerMode==='fees'?'💳 Payment mode — choose the class whose fees you want to view or pay.':'Registration mode — choose the class for the child registration.';}function pickFees(){pickerMode='fees';renderPickerMode();openM('picker')}function pick(){if(typeof sclHasLiveSession==='function'&&!sclHasLiveSession()){openM('loginModal');return}pickRegistration()}function login(){if(typeof sclHasLiveSession==='function'&&sclHasLiveSession()){window.sclOpenModernProfile?.();}else openM('loginModal')}function openMaterials(){const m=document.getElementById('materialsModal');if(!m)return;m.classList.add('open');m.style.display='flex';m.setAttribute('aria-hidden','false');document.body.classList.add('modal-open')}
 function choose(c){selectedClass=c;document.getElementById('selected').value=c;closeM('picker');if(pickerMode==='fees')openFees(c);else openM('reg')}
 function money(v){return 'NGN '+Number(v||0).toLocaleString('en-NG')}
 function getAmount(cls,item,session,term){
@@ -2488,61 +2488,7 @@ window.aacChangeMonth=function(n){current.setMonth(current.getMonth()+n);render(
 </ul>
 </details>
 </section>
-<script>
-(function(){
-const sclPages=window.sclPages;
-const aiImg=window.__sclAiImg;
-const schoolLogo="data:image/webp;base64,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";
-let sclSaved=JSON.parse(localStorage.getItem("sclTeachingScheme")||"null");
-function by(id){return document.getElementById(id)}
-window.sclOpenCurriculum=function(){by("sclCurriculum").scrollIntoView({behavior:"smooth",block:"start"})};
-window.sclSaveTeachingSubject=function(){
- const v={className:by("sclCurClass").value,term:by("sclCurTerm").value,subject:by("sclCurSubject").value};
- localStorage.setItem("sclTeachingScheme",JSON.stringify(v));sclSaved=v;sclShowCurriculum();
-};
-window.sclShowCurriculum=function(){
- const c=by("sclCurClass").value,t=by("sclCurTerm").value,s=by("sclCurSubject").value;
- const matches=sclPages.filter(x=>x.class===c&&x.term===t&&x.subject.toLowerCase()===s.toLowerCase());
- const box=by("sclCurriculumResult");
- if(!matches.length){box.innerHTML='<p class="scl-muted">No exact pages were found for this selection in the supplied curriculum document. Please ask the administrator to upload the updated scheme.</p>';return}
- box.innerHTML='<p class="scl-muted"><strong>'+c+' • '+s+' • '+t+'</strong> — '+matches.length+' curriculum page(s) found.</p>'+matches.map(x=>'<article class="scl-result-card"><h4>Page '+x.page+' — '+x.class+' '+x.subject+' ('+x.term+')</h4><p>'+x.text.replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</p></article>').join('');
-};
-window.sclRequestMaterial=function(){
- const item=prompt("Type the extra stationery, practical material or gadget you need:");
- if(!item)return;
- const msg="Hello, I would like to request an extra school material or gadget: "+item;
- by("sclRequestStatus").innerHTML='Request prepared. Please email <a href="mailto:aisalesandmarketinguniverse@gmail.com?subject=Extra%20Material%20Request&body='+encodeURIComponent(msg)+'">aisalesandmarketinguniverse@gmail.com</a>.';
-};
-document.addEventListener("DOMContentLoaded",function(){
- if(sclSaved){by("sclCurClass").value=sclSaved.className;by("sclCurTerm").value=sclSaved.term;by("sclCurSubject").value=sclSaved.subject}
- if(!document.getElementById("sclAiModal")){const modal=document.createElement("div");modal.id="sclAiModal";modal.className="scl-ai-modal";modal.innerHTML='<div class="scl-ai-box"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center"><h3>EDUCATIONAL INTELLIGENCE</h3><button class="scl-btn light" type="button" onclick="document.getElementById(\'sclAiModal\').classList.remove(\'open\')">Close</button></div><p class="scl-muted">Ask for an explanation, learning direction, a social-media suggestion, an AI tool or a YouTube lesson.</p><textarea id="sclAiInput" class="scl-search-box" rows="4" spellcheck="true" lang="en" placeholder="Ask a question, explain a topic, or paste writing you want checked..."></textarea><div class="scl-actions"><button class="scl-btn" type="button" onclick="sclAskAI()">Ask EDUCATIONAL INTELLIGENCE</button><button class="scl-btn alt" type="button" onclick="sclCheckWriting()">Check Writing &amp; Errors</button><button class="scl-btn light" type="button" onclick="sclYouTube()">Find YouTube Lesson</button><button class="scl-btn light" type="button" onclick="sclOfficialYouTube()">Official SCL YouTube</button></div><div id="sclAiResponse" class="scl-ai-response">Your learning assistant is ready.</div></div>';document.body.appendChild(modal);}
-});
-window.sclAskAI=async function(){
- const q=(by("sclAiInput")?.value||"").trim(); if(!q)return;
- const out=by("sclAiResponse"); out.textContent="Thinking…";
- const curriculum=(typeof sclPages!=="undefined"?sclPages:[]);
- let authHeader={};try{const sess=await window.sclSupabase?.auth?.getSession?.();if(sess?.data?.session?.access_token)authHeader={Authorization:"Bearer "+sess.data.session.access_token}}catch{};try{const r=await fetch(window.SCL_EDU_AI_API,{method:"POST",signal:(typeof AbortSignal!=="undefined"&&AbortSignal.timeout?AbortSignal.timeout(50000):undefined),headers:{"Content-Type":"application/json","apikey":window.SCL_SUPABASE_PUBLISHABLE_KEY||"",...authHeader},body:JSON.stringify({question:q,context:curriculum.slice(0,12)})});if(r.ok){const d=await r.json();if(d.answer){out.textContent=d.answer;return;}}else{console.warn("SCL Educational Intelligence backend returned HTTP "+r.status)}}catch(e){console.warn("SCL Educational Intelligence backend unavailable; using local internet dictionary fallback.",e)}
- const oneWord=/^[A-Za-z][A-Za-z'-]{0,79}$/.test(q.trim());
- const term=q.trim().replace(/^(what is|what does|define|meaning of|definition of|explain|the meaning of|tell me about)\s+/i,"").replace(/[?!.]+$/g,"").trim();
- if(oneWord || term!==q.trim()){
-  try{const dr=await fetch("https://api.dictionaryapi.dev/api/v2/entries/en/"+encodeURIComponent(term));if(dr.ok){const data=await dr.json();const defs=[];(data?.[0]?.meanings||[]).forEach(m=>(m.definitions||[]).slice(0,2).forEach(d=>{if(d.definition)defs.push((m.partOfSpeech?"["+m.partOfSpeech+"] ":"")+d.definition+(d.example?"\nExample: "+d.example:""))}));if(defs.length){out.textContent="Meaning of "+(data?.[0]?.word||term)+":\n\n"+defs.slice(0,5).join("\n\n")+"\n\nStudy tip: Try using the word in your own sentence.";return;}}}catch(e){console.warn("Internet dictionary unavailable.",e)}
- }
- const words=q.toLowerCase().split(/\s+/).filter(w=>w.length>1);
- const matches=curriculum.filter(x=>words.some(w=>(String(x.text||"")+" "+String(x.subject||"")+" "+String(x.class||"")).toLowerCase().includes(w))).slice(0,5);
- const dictionary={food:"something that people, animals, or other living things eat or drink to provide energy and nutrients needed for life and growth",water:"a clear liquid that living things need to survive",photosynthesis:"the process by which green plants use light energy to make food from carbon dioxide and water",democracy:"a system in which people participate in choosing representatives or taking part in public decisions",fraction:"a number that represents a part of a whole",ecosystem:"a community of living things interacting with one another and with their physical environment",algorithm:"a clear sequence of steps used to solve a problem or complete a task"};
- const key=words.find(w=>dictionary[w]); let answer="";
- if(key) answer="Simple meaning: "+key.charAt(0).toUpperCase()+key.slice(1)+" means "+dictionary[key]+".\n\nStudy tip: Try using the word in your own sentence.";
- else if(matches.length) answer="Curriculum-based explanation\n\n"+matches.map(x=>String(x.class)+" • "+String(x.subject)+" • "+String(x.term)+"\n"+String(x.text||"").slice(0,1100)).join("\n\n---\n\n")+"\n\nNext step: I can turn this topic into revision questions, flashcards or a simple lesson.";
- else if(/quiz|test|question|revision/i.test(q)) answer="I can build a revision exercise from the SCL curriculum. You do not need to phrase the request perfectly.";
- else if(/write|grammar|essay|spell|correct/i.test(q)) answer="Writing support: paste the writing and I will identify spelling, grammar, sentence structure and clarity issues, then show corrected versions.";
- else answer="I can understand a single word, short phrase, misspelling or full question. Try typing just the word you want defined.";
- out.textContent=answer;
-};
-window.sclOfficialYouTube=function(){window.open("https://www.youtube.com/@SHININGCHILDLEADERS","_blank","noopener")};
-window.sclYouTube=function(){const q=(by("sclAiInput")?.value||"").trim();if(q){window.open("https://www.youtube.com/results?search_query="+encodeURIComponent(q+" educational lesson"),"_blank","noopener");}else{window.sclOfficialYouTube();}};
-
-})();
-</script>
+<!-- Duplicate curriculum/educational-intelligence module removed; canonical implementation is in the curriculum dataset module above. -->
 
 <script id="scl-multiverse-curriculum-integration">
 (function(){
@@ -8346,147 +8292,7 @@ function boot(){setTimeout(addProfileButton,500);setTimeout(addProfileButton,180
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();window.addEventListener('load',boot);setInterval(addProfileButton,2500);
 })();
 </script>
-<div aria-hidden="true" class="modal" id="sclParentChildModal">
-<div class="card scl-parent-claim-card">
-<div class="mh"><div><h3>👨‍👩‍👧 REGISTER YOUR CHILD</h3><small>Your SCL account comes first. Then we connect you to your child.</small></div><button onclick="sclCloseParentChild()" type="button">X</button></div>
-<div class="form">
-<div class="scl-parent-claim-step active" id="sclPCCStep1">
-<p><b>What are you registering as?</b></p>
-<div class="scl-parent-claim-choice">
-<button onclick="sclStartParentChild('Parent')" type="button">👨‍👩‍👦 I am the Parent</button>
-<button onclick="sclStartParentChild('Guardian')" type="button">🧑‍🧒 I am the Guardian</button>
-</div>
-<div class="scl-parent-claim-warning">If the school has already registered your child, you can claim the existing student record instead of creating a duplicate record.</div>
-</div>
-<div class="scl-parent-claim-step" id="sclPCCStep2">
-<div class="scl-parent-claim-warning"><b>Relationship: <span id="sclPCCRelationship"></span></b><br/>First, provide the contact information the school needs for you. This does not create a second account.</div>
-<div class="grid">
-<div class="field"><label>Phone number *</label><input autocomplete="tel" id="sclPCCPhone" required="" type="tel"/></div>
-<div class="field"><label>Contact email</label><input autocomplete="email" id="sclPCCEmail" readonly="" type="email"/></div>
-</div>
-<div class="scl-parent-claim-choice">
-<button onclick="sclShowClaimExisting()" type="button">🔎 My child is already registered by the school</button>
-<button onclick="sclContinueNewChild()" type="button">📝 My child is not yet registered</button>
-</div>
-<div class="scl-parent-claim-actions"><button class="btn outline" onclick="sclPCCBack(1)" type="button">← BACK</button><button class="btn outline" onclick="sclCloseParentChild()" type="button">CANCEL</button></div>
-</div>
-<div class="scl-parent-claim-step" id="sclPCCStep3">
-<p><b>Claim an existing school student</b></p>
-<p class="scl-small">For security, all three details must match the school's record exactly: the child's full name, date of birth and Student ID.</p>
-<div class="grid">
-<div class="field full"><label>Child's full name *</label><input autocomplete="off" id="sclPCCChildName"/></div>
-<div class="field"><label>Child's date of birth *</label><input id="sclPCCDob" type="date"/></div>
-<div class="field"><label>Child's Student ID *</label><input autocomplete="off" id="sclPCCStudentId"/></div>
-</div>
-<div class="statusbox hidden" id="sclPCCSearchStatus"></div>
-<div class="scl-parent-claim-result" hidden="" id="sclPCCMatch"></div>
-<div class="scl-parent-claim-actions"><button class="btn outline" onclick="sclPCCBack(2)" type="button">← BACK</button><button class="btn gold" onclick="sclFindExistingStudent()" type="button">FIND MY CHILD</button></div>
-</div>
-<div class="scl-parent-claim-step" id="sclPCCStep4">
-<p><b>Confirm child claim</b></p>
-<div class="scl-parent-claim-result" id="sclPCCConfirm"></div>
-<p class="scl-small">By confirming, you are asking SCL to link this existing student record to your signed-in account as the selected Parent/Guardian. No duplicate student record will be created.</p>
-<div class="scl-parent-claim-actions"><button class="btn outline" onclick="sclPCCBack(3)" type="button">← BACK</button><button class="btn gold" onclick="sclClaimExistingStudent()" type="button">CLAIM CHILD</button></div>
-</div>
-<div class="scl-parent-claim-step" id="sclPCCStep5">
-<div class="scl-parent-claim-result" id="sclPCCDone"></div>
-<div class="scl-parent-claim-actions"><button class="btn gold" onclick="sclCloseParentChild();window.sclOpenModernProfile?.();" type="button">OPEN MY PROFILE</button></div>
-</div>
-</div>
-</div>
-</div>
-<script id="scl-v91-parent-child-workflow">
-(function(){
-  const escPC=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-  let relationship='Parent', matchedStudent=null;
-  function setStep(n){
-    for(let i=1;i<=5;i++) document.getElementById('sclPCCStep'+i)?.classList.toggle('active',i===n);
-  }
-  window.sclCloseParentChild=function(){try{closeM('sclParentChildModal')}catch(_){const m=document.getElementById('sclParentChildModal');m?.classList.remove('open');}setStep(1);matchedStudent=null;};
-  window.sclPCCBack=function(n){setStep(n);};
-  window.sclStartParentChild=function(rel){
-    relationship=rel||'Parent';
-    document.getElementById('sclPCCRelationship').textContent=relationship;
-    const a=auth?.()||{};
-    const email=a?.user?.email||a?.profile?.email||'';
-    const el=document.getElementById('sclPCCEmail'); if(el) el.value=email;
-    const phone=document.getElementById('sclPCCPhone'); if(phone && !phone.value) phone.value=a?.profile?.phone||a?.user?.user_metadata?.phone||'';
-    setStep(2);
-  };
-  window.sclShowClaimExisting=function(){setStep(3);};
-  window.sclContinueNewChild=function(){
-    const phone=document.getElementById('sclPCCPhone')?.value.trim();
-    if(!phone){alert('Please enter your phone number before continuing.');return;}
-    window.__sclParentChildRelationship=relationship;
-    window.__sclParentChildPhone=phone;
-    window.__sclParentChildEmail=(auth?.()||{}).user?.email||'';
-    sclCloseParentChild();
-    if(typeof window.renderPickerMode==='function'){window.pickerMode='registration';window.renderPickerMode();}
-    if(typeof openM==='function')openM('picker');
-  };
-  async function rpc(name,args){
-    const sb=typeof SB==='function'?SB():null;
-    if(!sb?.rpc) throw new Error('Secure SCL connection is not ready. Please sign in again.');
-    const r=await sb.rpc(name,args);
-    if(r?.error) throw r.error;
-    return r?.data;
-  }
-  window.sclFindExistingStudent=async function(){
-    const name=document.getElementById('sclPCCChildName')?.value.trim();
-    const dob=document.getElementById('sclPCCDob')?.value;
-    const sid=document.getElementById('sclPCCStudentId')?.value.trim();
-    const st=document.getElementById('sclPCCSearchStatus'); const box=document.getElementById('sclPCCMatch');
-    if(!name||!dob||!sid){if(st){st.classList.remove('hidden');st.textContent='Enter the child full name, date of birth and Student ID.';}return;}
-    if(st){st.classList.remove('hidden');st.textContent='Checking the school record securely…';}
-    if(box)box.hidden=true;
-    try{
-      const rows=await rpc('scl_find_unclaimed_student',{p_full_name:name,p_date_of_birth:dob,p_student_id:sid});
-      const row=Array.isArray(rows)?rows[0]:rows;
-      if(!row?.found)throw new Error('No matching student was found. Check all three details and try again.');
-      if(!row.claimable)throw new Error('This student has already been assigned to a parent or guardian. Please contact the school.');
-      matchedStudent=row;
-      if(st)st.classList.add('hidden');
-      if(box){box.hidden=false;box.innerHTML='<b>Student found.</b><br>'+escPC(row.child_name)+'<br><small>Student ID: '+escPC(row.student_id)+' · Class: '+escPC(row.class_name||'Not specified')+'</small><br><br><b>Do you want to claim this child for your SCL account?</b><div class="scl-parent-claim-actions"><button type="button" class="btn gold" onclick="sclConfirmStudentClaim()">YES, CONTINUE</button></div>';}
-    }catch(e){if(st){st.classList.remove('hidden');st.textContent=e?.message||'The student could not be found.';}}
-  };
-  window.sclConfirmStudentClaim=function(){
-    if(!matchedStudent)return;
-    document.getElementById('sclPCCConfirm').innerHTML='<b>'+escPC(matchedStudent.child_name)+'</b><br>Student ID: '+escPC(matchedStudent.student_id)+'<br>Relationship: '+escPC(relationship)+'<br><br>This will link the existing school record to your signed-in account. A duplicate student will not be created.';
-    setStep(4);
-  };
-  window.sclClaimExistingStudent=async function(){
-    if(!matchedStudent)return;
-    const phone=document.getElementById('sclPCCPhone')?.value.trim();
-    const st=document.getElementById('sclPCCConfirm');
-    try{
-      st.innerHTML='<b>Linking the child securely…</b>';
-      const data=await rpc('scl_claim_existing_student',{p_full_name:matchedStudent.child_name,p_date_of_birth:matchedStudent.date_of_birth,p_student_id:matchedStudent.student_id,p_relationship:relationship,p_phone:phone||''});
-      setStep(5);
-      document.getElementById('sclPCCDone').innerHTML='<b>✅ Child successfully linked.</b><br>'+escPC(data?.child_name||matchedStudent.child_name)+' is now connected to your SCL account as '+escPC(data?.relationship||relationship)+'.<br><small>Student ID: '+escPC(data?.student_id||matchedStudent.student_id)+'</small>';
-      try{window.sclRefreshHome?.();}catch(_){}
-    }catch(e){
-      st.innerHTML='<b>Could not complete the claim.</b><br>'+escPC(e?.message||'Please contact the school for assistance.');
-    }
-  };
-  window.sclOpenParentChildWorkflow=function(){
-    const a=auth?.();
-    if(!a?.accessToken){window.__sclRegisterIntent='parent_child';window.sclV88OpenRegister?.();return;}
-    setStep(1);openM('sclParentChildModal');
-  };
-  const oldPick=window.pickRegistration;
-  window.pickRegistration=function(){
-    const a=auth?.();
-    if(!a?.accessToken){window.__sclRegisterIntent='parent_child';window.sclV88OpenRegister?.();return;}
-    window.sclOpenParentChildWorkflow();
-  };
-  // A school/admin can continue using the existing authenticated student registration path.
-  window.sclSchoolRegisterStudent=function(){
-    if(typeof window.sclGateStudentRegistration==='function')return window.sclGateStudentRegistration();
-    if(typeof window.openStudentRegistration==='function')return window.openStudentRegistration();
-    if(typeof window.openRegistration==='function')return window.openRegistration();
-  };
-})();
-</script>
+<!-- legacy parent/child admission workflow removed: replaced by SCLAdmissions -->
 <!-- SCL V91: GLOBAL SCHOOL IDENTITY + SINGLE SCHOOL-WIDE REGISTRATION SEQUENCE -->
 <!-- SCL V91 CORE FAMILY/ROLE COEXISTENCE LAYER -->
 
@@ -8518,10 +8324,12 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
    box.innerHTML='<div class="scl-family-core"><h4>👤 YOUR SCL ACCOUNT</h4><div>This is one permanent account. Your school roles and family relationships can exist together.</div><div class="scl-role-pills">'+(labels.length?labels.map(x=>'<span class="scl-role-pill">'+esc(x)+'</span>').join(''):'<span class="scl-role-pill">normal user</span>')+'</div><div id="sclMyChildrenList" class="scl-child-list"></div></div>';
    await window.sclLoadMyChildren('sclMyChildrenList');
  };
- window.sclAddAnotherChild=function(){
-   if(typeof window.pickRegistration==='function')return window.pickRegistration();
-   if(typeof window.sclOpenParentChildFlow==='function')return window.sclOpenParentChildFlow();
- };
+ /* Canonical admission entry point: never fall back to the removed legacy parent/child flow. */
+  window.sclAddAnotherChild=function(){
+    if(typeof window.pickRegistration==='function')return window.pickRegistration();
+    if(typeof window.toast==='function')window.toast('The admissions module is still loading. Please try again.');
+    return false;
+  };
  document.addEventListener('DOMContentLoaded',()=>setTimeout(async()=>{
    // Non-invasive: add the family summary only when a suitable profile/dashboard host exists.
    const host=document.querySelector('#profileModal .form,#profilePanel .form,.profile-content,.dashboard-content');
@@ -8683,7 +8491,8 @@ window.addEventListener('load',function(){f();setTimeout(f,1500);setTimeout(f,40
 var $=function(s,r){return(r||document).querySelector(s)};
 function call(n){var a=[].slice.call(arguments,1);if(typeof window[n]==='function'){try{return window[n].apply(window,a)}catch(e){console.warn('SCL action failed:',n,e)}}return false}
 /* Fix 1: pick() pointed at a signup modal that no longer exists; restore the class picker. */
-window.pick=window.pickRegistration=function(){try{pickerMode='registration'}catch(e){}call('renderPickerMode');if(!$('#picker'))return false;call('openM','picker');return true};
+// Preserve the original sign-in-gated pick() action; registration has a separate public entry point.
+window.pickRegistration=function(){return window.SCLAdmissions.open()};
 /* Fix 2: bottom bar was wired by button position from an older layout. Bind by role instead. */
 var ICON={comments:'<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/>',activities:'<path d="M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1zM15 9a4 4 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11"/>',profile:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/>',support:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.5"/><path d="M5.6 5.6l3.9 3.9M14.5 14.5l3.9 3.9M18.4 5.6l-3.9 3.9M9.5 14.5l-3.9 3.9"/>',plus:'<path d="M12 5v14M5 12h14"/>'};
 function skin(){var bar=$('.bottom');if(!bar)return;['comments','activities','profile','support','plus'].forEach(function(k){var b=$('.scl-bottom-'+k,bar);if(!b||b.dataset.v1100)return;b.dataset.v1100=1;b.onclick=null;var ic=$('.scl-bottom-icon,.scl-bottom-plus-symbol',b);var svg='<svg viewBox="0 0 24 24" aria-hidden="true">'+ICON[k]+'</svg>';if(ic)ic.outerHTML=svg;else b.insertAdjacentHTML('afterbegin',svg);if(k==='profile')b.insertAdjacentHTML('afterbegin','<svg class="scl-pent" viewBox="0 0 64 64" aria-hidden="true"><polygon points="32,3 61,24 50,60 14,60 3,24"/></svg>')})}
@@ -13179,7 +12988,7 @@ html{background:transparent!important;background-color:transparent!important}bod
 /* SCL clean restart: retire legacy school registration/verification UI while preserving Google OAuth sign-in. */
 (function(){
  'use strict';
- var blocked=/\b(register (your child|child|student|parent|guardian|teacher|staff|worker)|student registration|staff registration|teacher registration|parent registration|guardian registration|verify student|verify teacher|verify staff|student verification|staff verification|teacher verification|registration form|registration recovery|registration draft|reappeal|staff application|worker application)\b/i;
+ var blocked=/\b(register (teacher|staff|worker)|staff registration|teacher registration|verify student|verify teacher|verify staff|student verification|staff verification|teacher verification|registration form|registration recovery|registration draft|reappeal|staff application|worker application)\b/i;
  var allowGoogle=/google|sign in with google|continue with google|google sign[- ]?in/i;
  function isGoogle(el){return allowGoogle.test((el.innerText||el.textContent||'')+' '+(el.getAttribute('aria-label')||''));}
  function retire(){
@@ -13201,5 +13010,249 @@ html{background:transparent!important;background-color:transparent!important}bod
 })();
 </script>
 
+<script type="text/plain" id="scl-adm-css">
+:host{all:initial;position:fixed;inset:0;z-index:2147483000;display:block}
+:host([hidden]){display:none}
+#adm-root{--n:#14284b;--g:#f2a900;--g2:#d89500;--bd:#e3e8f0;--mu:#64748b;position:absolute;inset:0;background:#fffbeb;color:#1e293b;font:16px/1.45 Nunito,system-ui,-apple-system,"Segoe UI",sans-serif;display:flex;flex-direction:column;overflow:hidden;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+#adm-root[hidden],#adm-root [hidden]{display:none!important}
+#adm-root *{box-sizing:border-box}
+#adm-root .adm-top{display:flex;align-items:center;gap:12px;background:var(--n);color:#fff;padding:10px 16px}
+#adm-root .adm-logo{width:36px;height:36px;border-radius:50%;background:var(--g);color:var(--n);display:grid;place-items:center;font-weight:800}
+#adm-root .adm-brand{flex:1;min-width:0;display:flex;flex-direction:column}#adm-root .adm-brand small{color:#fde68a;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#adm-root .adm-tabs{display:flex;gap:6px;overflow-x:auto;padding:8px 16px;background:#fff;border-bottom:1px solid var(--bd)}
+#adm-root .adm-tab{flex:none;border:0;background:#f1f5f9;color:#475569;border-radius:999px;padding:8px 16px;font:700 14px/1.2 Nunito,system-ui,-apple-system,'Segoe UI',sans-serif;cursor:pointer;min-height:40px}
+#adm-root .adm-tab[aria-selected=true]{background:var(--n);color:#fff}
+#adm-root .adm-main{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:16px;max-width:1080px;width:100%;margin:0 auto;outline:0}
+#adm-root .adm-h{margin:0;font-size:20px;font-weight:800;color:var(--n)}#adm-root h3.adm-h{font-size:16px;margin-bottom:10px}
+#adm-root .adm-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:4px 0 14px}
+#adm-root .adm-grid,#adm-root .adm-stats{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr))}
+#adm-root .adm-stats{grid-template-columns:repeat(auto-fit,minmax(130px,1fr));margin-bottom:16px}
+#adm-root .adm-card{background:#fff;border:1px solid #fde8b4;border-radius:16px;padding:16px;margin-bottom:12px}
+#adm-root .adm-grid .adm-card{margin:0}
+#adm-root small{display:block;color:var(--mu);font-size:12px}#adm-root .adm-big{display:block;font-size:26px;color:var(--n)}
+#adm-root .adm-muted{color:var(--mu);font-size:14px}#adm-root .adm-center{text-align:center;padding:24px}#adm-root .adm-empty{text-align:center;color:var(--mu);border-style:dashed}
+#adm-root .adm-btn{border:0;border-radius:12px;background:var(--n);color:#fff;font:800 14px/1.2 Nunito,system-ui,-apple-system,'Segoe UI',sans-serif;padding:11px 18px;min-height:44px;cursor:pointer;transition:transform .12s,opacity .12s}
+#adm-root .adm-btn:hover:not(:disabled){transform:translateY(-1px)}#adm-root .adm-btn:disabled{opacity:.4;cursor:not-allowed}
+#adm-root .adm-btn.gold{background:var(--g);color:var(--n)}#adm-root .adm-btn.ghost{background:rgba(255,255,255,.14);color:inherit}
+#adm-root .adm-sheet-f .adm-btn.ghost{background:#fff;color:var(--n);border:1px solid var(--n)}
+#adm-root .adm-btn.sm{min-height:36px;padding:6px 12px;font-size:12px}#adm-root .adm-btn.ok{background:#059669}#adm-root .adm-btn.bad{background:#fff;color:#b91c1c;border:1px solid #fca5a5}
+#adm-root .adm-link{border:0;background:none;color:var(--n);font:800 14px/1.2 Nunito,system-ui,-apple-system,'Segoe UI',sans-serif;text-decoration:underline;cursor:pointer;margin-top:10px;padding:8px 0;min-height:44px}
+#adm-root button:focus-visible,#adm-root input:focus-visible,#adm-root select:focus-visible,#adm-root textarea:focus-visible,#adm-root label.adm-zone:focus-within{outline:3px solid #2563eb;outline-offset:2px}
+#adm-root input:not(.adm-file),#adm-root select,#adm-root textarea{width:100%;border:1px solid #cbd5e1;border-radius:10px;padding:10px 12px;font:16px/1.3 Nunito,system-ui,-apple-system,'Segoe UI',sans-serif;background:#fff;color:inherit;min-height:44px}
+#adm-root label{display:block;font-size:13px;font-weight:700;color:#334155}#adm-root label input,#adm-root label select{margin-top:4px;font-weight:400}
+#adm-root .adm-form{display:grid;gap:10px;max-width:520px}
+#adm-root .adm-kid{display:flex;align-items:center;gap:12px}#adm-root .adm-grow{flex:1;min-width:0}#adm-root .adm-kid b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#adm-root .adm-kid img,#adm-root .adm-ava{width:52px;height:52px;border-radius:50%;object-fit:cover;flex:none}#adm-root .adm-ava{background:#fef3c7;display:grid;place-items:center;font-weight:800;color:var(--n)}
+#adm-root .adm-pill{display:inline-block;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:800;background:#fef3c7;color:#92400e;white-space:nowrap}
+#adm-root .adm-pill.submitted{background:#e0f2fe;color:#075985}#adm-root .adm-pill.approved{background:#d1fae5;color:#065f46}#adm-root .adm-pill.rejected{background:#fee2e2;color:#991b1b}
+#adm-root .adm-bar{height:8px;background:#e2e8f0;border-radius:99px;overflow:hidden;margin:12px 0 4px}#adm-root .adm-bar i{display:block;height:100%;background:var(--g);transition:width .25s}
+#adm-root .adm-ids{margin-top:10px;background:#ecfdf5;border-radius:10px;padding:10px;font-size:14px}
+#adm-root .adm-line{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid #f1f5f9}#adm-root .adm-line:last-child{border:0}
+#adm-root .adm-note{padding:10px 0;border-bottom:1px solid #f1f5f9}#adm-root .adm-note p{margin:4px 0}
+#adm-root .adm-scroll{overflow-x:auto;padding:8px}#adm-root .adm-table{width:100%;min-width:640px;border-collapse:collapse;font-size:14px}
+#adm-root .adm-table th{text-align:left;font-size:11px;text-transform:uppercase;color:var(--mu);padding:8px}#adm-root .adm-table td{padding:10px 8px;border-top:1px solid #f1f5f9;vertical-align:middle}#adm-root .adm-end{text-align:right;white-space:nowrap}
+#adm-root .adm-modal{position:absolute;inset:0;background:rgba(15,23,42,.55);overflow-y:auto;padding:0}
+#adm-root .adm-sheet{background:#fff;max-width:680px;margin:0 auto;min-height:100%;display:flex;flex-direction:column}
+@media(min-width:700px){#adm-root .adm-modal{padding:24px}#adm-root .adm-sheet{min-height:0;border-radius:18px}}
+#adm-root .adm-sheet-h{display:flex;gap:12px;padding:16px;border-bottom:1px solid var(--bd);position:sticky;top:0;background:#fff;z-index:1;border-radius:inherit}
+#adm-root .adm-sheet-b{padding:16px;display:grid;gap:18px;flex:1}#adm-root .adm-sheet-f{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;padding:14px 16px;border-top:1px solid var(--bd);background:#f8fafc;position:sticky;bottom:0}
+#adm-root fieldset{border:0;margin:0;padding:0;min-width:0}#adm-root legend{padding:0;margin-bottom:8px}
+#adm-root .adm-cols{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}#adm-root .adm-span{grid-column:1/-1}
+#adm-root .adm-x{border:0;background:none;font-size:28px;line-height:1;color:#94a3b8;cursor:pointer;min-width:44px;min-height:44px}
+#adm-root .adm-zone{display:block;border:2px dashed #cbd5e1;border-radius:14px;padding:14px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s}
+#adm-root .adm-zone:hover{border-color:var(--g);background:#fffbeb}#adm-root .adm-zone.got{border-color:#34d399;background:#ecfdf5}#adm-root .adm-zone b{color:var(--n);font-size:14px}
+#adm-root .adm-alert{background:#fef2f2;border:1px solid #fecaca;color:#991b1b;border-radius:10px;padding:10px;font-size:14px}
+#adm-root .adm-sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+#adm-root .adm-toasts{position:absolute;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));display:grid;gap:8px;justify-items:center;pointer-events:none}
+#adm-root .adm-toast{background:#1e293b;color:#fff;border-radius:12px;padding:12px 16px;font-size:14px;max-width:420px;box-shadow:0 8px 24px rgba(0,0,0,.25)}#adm-root .adm-toast.ok{background:#047857}#adm-root .adm-toast.err{background:#b91c1c}
+@media(prefers-reduced-motion:reduce){#adm-root *{transition:none!important}}
+</script>
+<!-- Admissions integration contract:
+     One UI module: #scl-adm-js / window.SCLAdmissions.
+     One Supabase client: window.sclSupabase (defined by the site bootstrap).
+     One registration entry point: pickRegistration() -> SCLAdmissions.open().
+     SQL objects/RPCs must be deployed separately from supabase/adm_schema.sql.
+     Do not reintroduce the legacy parent/child admission modal or a second auth client. -->
+<script id="scl-adm-js">
+/* SCL Admissions & Parent Portal — single module. Uses the site's one Supabase client (window.sclSupabase) and the site's one
+   sign-in gate. No second auth, no second client, no globals except window.SCLAdmissions. All tables/RPCs are prefixed adm_. */
+(function(){'use strict';
+if(window.SCLAdmissions)return;
+var DOCS=[['birth_certificate','Birth certificate','Verifies age'],['report_card','Previous report card','Used for class placement'],['guardian_id','Parent / guardian ID','Valid government ID'],['photo','Passport photograph','Clear face, plain background']];
+var FIELDS=['first_name','last_name','dob','gender','class_applied','guardian_phone'];
+var CLASSES=window.SCL_CLASSES||['Day Care','Nursery 1','Nursery 2','Primary 1','Primary 2','Primary 3','Primary 4','Primary 5','Primary 6','JSS 1','JSS 2','JSS 3','SSS 1','SSS 2','SSS 3'];
+var STATUS={draft:'Draft',submitted:'Pending review',approved:'Approved',rejected:'Rejected'};
+var S={host:null,user:null,admin:false,tab:'kids',kids:[],all:[],cur:null,docs:[],photo:null,root:null,busy:false,opener:null,hooked:false,filter:'submitted'};
+
+/* ---------- helpers ---------- */
+function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function q(s,r){return(r||S.root).querySelector(s)}
+function qa(s,r){return Array.prototype.slice.call((r||S.root).querySelectorAll(s))}
+function sb(){var c=window.sclSupabase;if(!c||!c.auth||!c.from)throw new Error('The school service is still loading. Please try again in a moment.');return c}
+function ok(r){if(r&&r.error)throw r.error;return r?r.data:null}
+function msg(e){var m=(e&&e.message)||String(e||'Something went wrong');return /row-level security|permission denied/i.test(m)?'You do not have permission to do that.':m}
+function digits(v){return String(v||'').replace(/\D/g,'')}
+function fmtDate(d){try{return new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}catch(e){return''}}
+function naira(n){return'₦'+Number(n||0).toLocaleString('en-NG')}
+function completion(s,docs){var f=FIELDS.filter(function(k){return s[k]&&String(s[k]).trim()}).length;var d=DOCS.filter(function(x){return docs.some(function(y){return y.kind===x[0]})}).length;return Math.round((f+d)/(FIELDS.length+DOCS.length)*100)}
+function toast(m,kind){var h=q('.adm-toasts');if(!h)return;var t=document.createElement('div');t.className='adm-toast '+(kind||'');t.textContent=m;h.appendChild(t);setTimeout(function(){t.remove()},4500)}
+function busy(btn,on){S.busy=on;if(btn){btn.disabled=on;btn.setAttribute('aria-busy',on?'true':'false')}}
+function run(btn,fn){if(S.busy)return;busy(btn,true);return Promise.resolve().then(fn).catch(function(e){toast(msg(e),'err')}).then(function(){busy(btn,false)})}
+
+/* ---------- data (all RLS-protected server side; the client is never trusted) ---------- */
+var COLS='id,first_name,last_name,dob,gender,class_applied,previous_school,guardian_phone,status,completion,student_code,school_email,created_at';
+var DB={
+  mine:function(){return sb().from('adm_students').select(COLS+',photo_url,adm_documents(kind,extracted)').eq('guardian_id',S.user.id).order('created_at',{ascending:false}).then(ok)},
+  all:function(){return sb().from('adm_students').select(COLS+',adm_documents(kind)').order('created_at',{ascending:false}).range(0,199).then(ok)},
+  dup:function(f){return sb().rpc('adm_count_duplicates',{p_first:f.first_name,p_last:f.last_name,p_dob:f.dob||null,p_phone:f.guardian_phone,p_exclude:f.id||null}).then(ok)},
+  save:async function(f,docs){
+    var row={};Object.keys(f).forEach(function(k){row[k]=(f[k]===''?null:f[k])});row.completion=completion(f,docs);
+    var id=row.id;delete row.id;var saved;
+    if(!id){row.guardian_id=S.user.id;saved=ok(await sb().from('adm_students').insert(row).select().single())}
+    else saved=ok(await sb().from('adm_students').update(row).eq('id',id).select().single());
+    if(docs.length)ok(await sb().from('adm_documents').upsert(docs.map(function(d){return{student_id:saved.id,kind:d.kind,extracted:d.extracted||{}}}),{onConflict:'student_id,kind'}));
+    return saved},
+  submit:function(id){return sb().rpc('adm_submit',{p_student:id}).then(ok)},
+  decide:function(id,st){return sb().rpc('adm_decide',{p_student:id,p_status:st}).then(ok)},
+  notices:function(){return sb().from('adm_announcements').select('*').order('created_at',{ascending:false}).limit(20).then(ok)},
+  addNotice:function(t,b){return sb().from('adm_announcements').insert({title:t,body:b}).then(ok)},
+  pays:function(){return sb().from('adm_payments').select('*,adm_students(first_name,last_name)').order('paid_at',{ascending:false}).limit(200).then(ok)},
+  addPay:function(p){return sb().from('adm_payments').insert(p).then(ok)},
+  log:function(){return sb().from('adm_audit').select('*').order('at',{ascending:false}).limit(50).then(ok)}
+};
+
+/* ---------- image + OCR (on-device; raw documents are never uploaded) ---------- */
+function compress(file,max,quality){return new Promise(function(res,rej){var img=new Image(),url=URL.createObjectURL(file);
+  img.onload=function(){var r=Math.min(1,max/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=Math.max(1,Math.round(img.width*r));c.height=Math.max(1,Math.round(img.height*r));c.getContext('2d').drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(url);res(c.toDataURL('image/jpeg',quality))};
+  img.onerror=function(){URL.revokeObjectURL(url);rej(new Error('That image could not be read.'))};img.src=url})}
+var tess;function loadOCR(){if(window.Tesseract)return Promise.resolve();return tess||(tess=new Promise(function(res,rej){var s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.1.0/tesseract.min.js';s.onload=res;s.onerror=function(){tess=null;rej(new Error('The reader is unavailable offline'))};document.head.appendChild(s)}))}
+function fields(text){var o={},d=text.match(/\b(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})\b/);
+  if(d){
+    var day=+d[1],month=+d[2],year=+d[3],dt=new Date(Date.UTC(year,month-1,day));
+    /* OCR is advisory: accept only a real DD/MM/YYYY date within the database's supported range. */
+    if(year>=1990&&year<=new Date().getFullYear()&&dt.getUTCFullYear()===year&&dt.getUTCMonth()===month-1&&dt.getUTCDate()===day)
+      o.dob=year+'-'+('0'+month).slice(-2)+'-'+('0'+day).slice(-2);
+  }
+  var n=text.match(/(?:name|child|surname)\s*[:\-]\s*([A-Za-z' -]{3,60})/i);
+  if(n){var p=n[1].trim().split(/\s+/);o.first_name=p[0];o.last_name=p.slice(1).join(' ')}
+  return o}
+async function readDoc(file,onp){await loadOCR();var r=await window.Tesseract.recognize(file,'eng',{logger:function(m){if(m.status==='recognizing text'&&onp)onp(m.progress)}});return fields(r.data.text||'')}
+
+/* ---------- shell ---------- */
+function build(){
+  var host=document.createElement('div');host.id='adm-host';host.hidden=true;var sh=host.attachShadow({mode:'open'});var st=document.createElement('style');st.textContent=document.getElementById('scl-adm-css').textContent;sh.appendChild(st);
+  var r=document.createElement('div');r.id='adm-root';r.setAttribute('role','dialog');r.setAttribute('aria-modal','true');r.setAttribute('aria-label','Admissions and parent portal');
+  r.innerHTML='<div class="adm-top"><div class="adm-logo" aria-hidden="true">S</div><div class="adm-brand"><b>Admissions &amp; Parent Portal</b><small id="adm-who"></small></div><button class="adm-btn ghost" data-act="close">Close</button></div>'+
+   '<nav class="adm-tabs" role="tablist" aria-label="Portal sections"></nav><main class="adm-main" id="adm-main" tabindex="-1"></main><div class="adm-toasts" role="status" aria-live="polite"></div><div class="adm-modal" hidden></div>';
+  sh.appendChild(r);document.body.appendChild(host);S.host=host;S.root=r;S.sh=sh;
+  r.addEventListener('click',function(e){var b=e.target.closest('[data-act]');if(b&&ACT[b.dataset.act])ACT[b.dataset.act](b,e)});
+  r.addEventListener('keydown',function(e){
+    if(e.key!=='Tab')return;var m2=q('.adm-modal'),sc=(m2&&!m2.hidden)?m2:r,f=qa('a[href],button:not([disabled]),input:not([disabled]):not(.adm-file),select,textarea,[tabindex="0"]',sc).filter(function(x){return x.offsetParent!==null});
+    if(!f.length)return;var a=f[0],z=f[f.length-1];if(e.shiftKey&&S.sh.activeElement===a){e.preventDefault();z.focus()}else if(!e.shiftKey&&S.sh.activeElement===z){e.preventDefault();a.focus()}});
+  document.addEventListener('keydown',function(e){if(e.key!=='Escape'||!S.host||S.host.hidden)return;var m=q('.adm-modal');if(m&&!m.hidden)closeForm();else close()});
+  r.addEventListener('input',function(e){if(e.target.closest('.adm-modal')){formState();if(e.target.dataset.f&&/first_name|last_name|dob|guardian_phone/.test(e.target.dataset.f))dupCheck()}});
+  r.addEventListener('change',function(e){var i=e.target;if(i.classList.contains('adm-file')&&i.files[0])handle(i.dataset.k,i.files[0]);if(i.id==='adm-flt'){S.filter=i.value;tab()}});
+  r.addEventListener('dragover',function(e){if(e.target.closest('.adm-zone'))e.preventDefault()});
+  r.addEventListener('drop',function(e){var z=e.target.closest('.adm-zone');if(z){e.preventDefault();var f=e.dataTransfer.files[0];if(f)handle(z.dataset.k,f)}});
+  r.addEventListener('submit',function(e){e.preventDefault();var f=e.target.dataset.form;if(f&&FORMS[f])FORMS[f](e.target)});
+}
+function tabs(){var t=[['kids','My children'],['pays','Payments'],['news','Notices']];if(S.admin)t=[['desk','Admissions desk']].concat(t,[['log','Activity']]);
+  q('.adm-tabs').innerHTML=t.map(function(x){return'<button role="tab" class="adm-tab" data-act="tab" data-t="'+x[0]+'" aria-selected="'+(S.tab===x[0])+'">'+x[1]+'</button>'}).join('')}
+async function tab(){tabs();var m=q('#adm-main');m.innerHTML='<p class="adm-muted">Loading…</p>';
+  try{await VIEWS[S.tab](m)}catch(e){m.innerHTML='<div class="adm-card"><b>We could not load this section.</b><p class="adm-muted">'+esc(msg(e))+'</p><button class="adm-btn" data-act="retry">Try again</button></div>'}}
+
+/* ---------- views ---------- */
+var VIEWS={
+ kids:async function(m){S.kids=await DB.mine();
+  m.innerHTML='<div class="adm-row"><h2 class="adm-h">Your children</h2><button class="adm-btn gold" data-act="new">+ New admission</button></div><div class="adm-grid">'+(S.kids.length?S.kids.map(kidCard).join(''):'<div class="adm-card adm-empty">No admissions yet. Tap <b>New admission</b> to begin. Your progress is saved, so you can finish later.</div>')+'</div>'},
+ pays:async function(m){var p=await DB.pays();var rows=p.length?p.map(function(x){var n=x.adm_students?' · '+esc(x.adm_students.first_name)+' '+esc(x.adm_students.last_name):'';return'<div class="adm-line"><div><b>'+esc(x.description)+'</b><small>'+esc(x.receipt_no)+' · '+fmtDate(x.paid_at)+n+'</small></div><b>'+naira(x.amount)+'</b></div>'}).join(''):'<p class="adm-muted">No payments recorded yet.</p>';
+  var form='';if(S.admin){if(!S.all.length)S.all=await DB.all();form='<form class="adm-card adm-form" data-form="pay"><h3 class="adm-h">Record a payment</h3><select name="student" required aria-label="Student"><option value="">Select student</option>'+S.all.map(function(s){return'<option value="'+esc(s.id)+'">'+esc(s.first_name)+' '+esc(s.last_name)+'</option>'}).join('')+'</select><input name="description" required maxlength="120" placeholder="Description (e.g. Acceptance fee)" aria-label="Description"><input name="amount" type="number" min="1" step="0.01" required placeholder="Amount (₦)" aria-label="Amount"><button class="adm-btn">Save payment</button></form>'}
+  m.innerHTML='<h2 class="adm-h">Payments</h2><div class="adm-card">'+rows+'</div>'+form},
+ news:async function(m){var n=await DB.notices();
+  m.innerHTML='<h2 class="adm-h">Notices</h2><div class="adm-card">'+(n.length?n.map(function(a){return'<div class="adm-note"><b>'+esc(a.title)+'</b><p>'+esc(a.body)+'</p><small>'+fmtDate(a.created_at)+'</small></div>'}).join(''):'<p class="adm-muted">No notices yet.</p>')+'</div>'+
+   (S.admin?'<form class="adm-card adm-form" data-form="notice"><h3 class="adm-h">Post a notice</h3><input name="title" required maxlength="120" placeholder="Title" aria-label="Title"><textarea name="body" required rows="3" maxlength="2000" placeholder="Message to parents" aria-label="Message"></textarea><button class="adm-btn gold">Publish</button></form>':'')},
+ desk:async function(m){S.all=await DB.all();var c=function(s){return S.all.filter(function(x){return x.status===s}).length};
+  var list=S.all.filter(function(s){return!S.filter||s.status===S.filter});
+  m.innerHTML='<div class="adm-stats">'+[['Applications',S.all.length],['Pending review',c('submitted')],['Approved',c('approved')],['Drafts',c('draft')]].map(function(x){return'<div class="adm-card"><small>'+x[0]+'</small><b class="adm-big">'+x[1]+'</b></div>'}).join('')+'</div>'+
+   '<div class="adm-row"><h2 class="adm-h">Admissions</h2><select id="adm-flt" aria-label="Filter by status">'+[['submitted','Pending review'],['draft','Drafts'],['approved','Approved'],['rejected','Rejected'],['','All']].map(function(o){return'<option value="'+o[0]+'"'+(S.filter===o[0]?' selected':'')+'>'+o[1]+'</option>'}).join('')+'</select></div>'+
+   '<div class="adm-card adm-scroll"><table class="adm-table"><thead><tr><th>Student</th><th>Class</th><th>Guardian phone</th><th>Complete</th><th>Flags</th><th><span class="adm-sr">Actions</span></th></tr></thead><tbody>'+
+   (list.length?list.map(function(s){var d=S.all.some(function(x){return x.id!==s.id&&String(x.first_name||'').toLowerCase()===String(s.first_name||'').toLowerCase()&&String(x.last_name||'').toLowerCase()===String(s.last_name||'').toLowerCase()&&x.dob===s.dob&&digits(x.guardian_phone)===digits(s.guardian_phone)});
+    return'<tr><td><b>'+esc(s.first_name)+' '+esc(s.last_name)+'</b><small>'+esc(s.dob||'')+(s.student_code?' · '+esc(s.student_code):'')+'</small></td><td>'+esc(s.class_applied||'—')+'</td><td>'+esc(s.guardian_phone||'—')+'</td><td>'+s.completion+'%</td><td>'+(d?'<span class="adm-pill rejected">Possible duplicate</span>':'')+'</td><td class="adm-end">'+(s.status==='submitted'?'<button class="adm-btn sm ok" data-act="decide" data-st="approved" data-id="'+esc(s.id)+'">Approve</button> <button class="adm-btn sm bad" data-act="decide" data-st="rejected" data-id="'+esc(s.id)+'">Reject</button>':'<span class="adm-pill '+esc(s.status)+'">'+esc(STATUS[s.status]||s.status)+'</span>')+'</td></tr>'}).join(''):'<tr><td colspan="6" class="adm-muted adm-center">Nothing here.</td></tr>')+'</tbody></table></div>'},
+ log:async function(m){var l=await DB.log();m.innerHTML='<h2 class="adm-h">Activity</h2><div class="adm-card">'+(l.length?l.map(function(x){return'<div class="adm-line"><small>'+new Date(x.at).toLocaleString('en-GB')+'</small><span>'+esc(x.action)+' · '+esc(JSON.stringify(x.detail||{}))+'</span></div>'}).join(''):'<p class="adm-muted">Nothing yet.</p>')+'</div>'}
+};
+function kidCard(k){var have=(k.adm_documents||[]).map(function(d){return d.kind});var miss=DOCS.filter(function(d){return have.indexOf(d[0])<0}).map(function(d){return d[1]});
+  return'<article class="adm-card"><div class="adm-kid">'+(k.photo_url&&/^data:image\//.test(k.photo_url)?'<img src="'+esc(k.photo_url)+'" alt="">':'<span class="adm-ava">'+esc((k.first_name||'?')[0])+'</span>')+'<div class="adm-grow"><b>'+esc(k.first_name||'Unnamed')+' '+esc(k.last_name||'')+'</b><small>'+esc(k.class_applied||'Class not chosen')+'</small></div><span class="adm-pill '+esc(k.status)+'">'+esc(STATUS[k.status]||k.status)+'</span></div>'+
+   '<div class="adm-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+k.completion+'"><i style="width:'+k.completion+'%"></i></div><small>'+k.completion+'% complete'+(miss.length&&k.status==='draft'?' · Missing: '+esc(miss.join(', ')):'')+'</small>'+
+   (k.student_code?'<div class="adm-ids"><div><b>Student ID:</b> '+esc(k.student_code)+'</div>'+(k.school_email?'<div><b>School email:</b> '+esc(k.school_email)+'</div>':'')+'</div>':'')+
+   (k.status==='draft'||k.status==='submitted'?'<button class="adm-link" data-act="edit" data-id="'+esc(k.id)+'">'+(k.status==='draft'?'Continue profile':'View / update')+'</button>':'')+'</article>'}
+
+/* ---------- admission form ---------- */
+function formEl(){return q('.adm-modal')}
+function val(k){var e=q('[data-f="'+k+'"]',formEl());return e?e.value.trim():''}
+function formData(){var o={};FIELDS.concat('previous_school').forEach(function(k){o[k]=val(k)});if(S.cur&&S.cur.id)o.id=S.cur.id;o.photo_url=S.photo||null;return o}
+function openForm(k){S.cur=k||null;S.photo=k?k.photo_url||null:null;S.docs=k?(k.adm_documents||[]).map(function(d){return{kind:d.kind,extracted:d.extracted||{}}}):[];if(S.photo&&!S.docs.some(function(d){return d.kind==='photo'}))S.docs.push({kind:'photo',extracted:{}});
+  var m=formEl(),locked=k&&k.status==='submitted';
+  var inp=function(key,label,type,extra){return'<label>'+label+'<input data-f="'+key+'" type="'+(type||'text')+'" value="'+esc(k&&k[key]||'')+'" '+(extra||'')+'></label>'};
+  m.innerHTML='<div class="adm-sheet" role="document"><div class="adm-sheet-h"><div class="adm-grow"><h2 class="adm-h" id="adm-ft">Admission profile</h2><div class="adm-bar"><i id="adm-fbar"></i></div><small id="adm-fpct"></small></div><button class="adm-x" data-act="closeForm" aria-label="Close form">&times;</button></div>'+
+   '<div class="adm-sheet-b"><div id="adm-dup" class="adm-alert" hidden></div><fieldset '+(locked?'disabled':'')+'><legend class="adm-h">Child &amp; guardian details</legend><div class="adm-cols">'+inp('first_name','First name','text','autocomplete="off" maxlength="60"')+inp('last_name','Last name','text','maxlength="60"')+inp('dob','Date of birth','date','max="'+new Date().toISOString().slice(0,10)+'"')+
+   '<label>Gender<select data-f="gender"><option value="">Select</option>'+['Female','Male'].map(function(g){return'<option'+(k&&k.gender===g?' selected':'')+'>'+g+'</option>'}).join('')+'</select></label>'+
+   '<label>Class applying for<select data-f="class_applied"><option value="">Select</option>'+CLASSES.map(function(c){return'<option'+(k&&k.class_applied===c?' selected':'')+'>'+esc(c)+'</option>'}).join('')+'</select></label>'+inp('guardian_phone','Guardian phone','tel','inputmode="tel" placeholder="080…" maxlength="20"')+'<div class="adm-span">'+inp('previous_school','Previous school (optional)','text','maxlength="120"')+'</div></div></fieldset>'+
+   '<fieldset '+(locked?'disabled':'')+'><legend class="adm-h">Documents</legend><p class="adm-muted">Text is read on your device to pre-fill the form. The original documents are not uploaded; only the extracted details and a small passport photo are kept. You can add the rest later.</p><div class="adm-cols" id="adm-zones"></div></fieldset></div>'+
+   '<div class="adm-sheet-f"><button class="adm-btn ghost" data-act="save">Save &amp; finish later</button><button class="adm-btn" id="adm-sub" data-act="submit" disabled>Submit for approval</button></div></div>';
+  m.hidden=false;zones();formState();dupCheck();setTimeout(function(){var f=q('[data-f="first_name"]',m);if(f)f.focus()},30)}
+function closeForm(){var m=formEl();m.hidden=true;m.innerHTML='';S.cur=null;var mn=q('#adm-main');if(mn)mn.focus()}
+function zones(){q('#adm-zones').innerHTML=DOCS.map(function(d){var got=S.docs.some(function(x){return x.kind===d[0]});
+  return'<label class="adm-zone'+(got?' got':'')+'" data-k="'+d[0]+'"><input type="file" accept="image/*" class="adm-file adm-sr" data-k="'+d[0]+'"><b>'+(got?'✓ ':'')+d[1]+'</b><small data-s="'+d[0]+'">'+(got?'Added. Tap to replace':'Drag &amp; drop or tap · '+d[2])+'</small></label>'}).join('')}
+function formState(){var f=formData(),p=completion(f,S.docs),b=q('#adm-fbar'),t=q('#adm-fpct'),s=q('#adm-sub');if(!b)return;b.style.width=p+'%';t.textContent=p+'% complete';s.disabled=p<100||(S.cur&&S.cur.status==='submitted')}
+var dupT;function dupCheck(){clearTimeout(dupT);dupT=setTimeout(async function(){var w=q('#adm-dup');if(!w)return;var f=formData();
+  if(!(f.first_name&&f.last_name&&f.dob&&f.guardian_phone)){w.hidden=true;return}
+  try{var n=await DB.dup(f);w.hidden=!n;if(n)w.textContent='A student with the same name, date of birth and guardian phone is already registered. If this is a mistake, please contact the school office. Duplicate submissions are flagged for review.'}catch(e){w.hidden=true}},350)}
+async function handle(kind,file){if(!/^image\//.test(file.type)){toast('Please upload a photo or scan (JPG or PNG).','err');return}
+  if(file.size>15*1048576){toast('That file is too large. Please use one under 15 MB.','err');return}
+  var st=q('[data-s="'+kind+'"]'),rec={kind:kind,extracted:{}};
+  try{if(kind==='photo')S.photo=await compress(file,256,.7);
+    else{st.textContent='Reading document… 0%';try{rec.extracted=await readDoc(file,function(p){st.textContent='Reading document… '+Math.round(p*100)+'%'});
+      var filled=[];['first_name','last_name','dob'].forEach(function(k){var e=q('[data-f="'+k+'"]',formEl());if(rec.extracted[k]&&e&&!e.value){e.value=rec.extracted[k];filled.push(k.replace('_',' '))}});
+      toast(filled.length?'Pre-filled: '+filled.join(', ')+'. Please check them.':'Document read. No new details found.','ok')}catch(e){toast('Could not read the text automatically. Please type the details.')}}
+    S.docs=S.docs.filter(function(x){return x.kind!==kind}).concat(rec);zones();formState();dupCheck()}catch(e){toast(msg(e),'err')}}
+async function persist(){var f=formData();if(!f.first_name&&!f.last_name){toast("Enter at least the child's name to save.",'err');return null}
+  var s=await DB.save(f,S.docs);S.cur=Object.assign({},S.cur,s);return s}
+
+/* ---------- actions ---------- */
+var ACT={
+ close:function(){close()},closeForm:function(){closeForm()},retry:function(){tab()},
+ tab:function(b){S.tab=b.dataset.t;tab()},
+ 'new':function(){openForm(null)},
+ edit:function(b){openForm(S.kids.filter(function(k){return k.id===b.dataset.id})[0])},
+ save:function(b){run(b,async function(){if(await persist()){toast('Progress saved.','ok');closeForm();tab()}})},
+ submit:function(b){run(b,async function(){var s=await persist();if(!s)return;
+   if(await DB.dup(s)&&!window.confirm('This looks like a duplicate of an existing student. Submit anyway for the office to review?'))return;
+   await DB.submit(s.id);toast('Submitted. The school will review your application.','ok');closeForm();tab()})},
+ decide:function(b){var ap=b.dataset.st==='approved';if(!ap&&!window.confirm('Reject this application?'))return;
+   run(b,async function(){await DB.decide(b.dataset.id,b.dataset.st);toast(ap?'Approved.':'Rejected.','ok');tab()})}
+};
+var FORMS={
+ pay:function(f){run(f.querySelector('button'),async function(){await DB.addPay({student_id:f.student.value,description:f.description.value.trim(),amount:+f.amount.value});toast('Payment saved.','ok');tab()})},
+ notice:function(f){run(f.querySelector('button'),async function(){await DB.addNotice(f.title.value.trim(),f.body.value.trim());toast('Published.','ok');tab()})}
+};
+
+/* ---------- open / close ---------- */
+async function open(opts){
+  try{var c=sb(),r=await c.auth.getSession(),ss=r&&r.data&&r.data.session;
+    if(!S.hooked){S.hooked=true;c.auth.onAuthStateChange(function(ev){if(ev==='SIGNED_OUT'){S.resume=false;close();S.user=null;S.admin=false;S.all=[];S.kids=[]}else if(ev==='SIGNED_IN'&&S.resume){S.resume=false;setTimeout(function(){open()},0)}})}
+    if(!ss){S.resume=true;if(typeof window.sclAccessGateAction==='function')window.sclAccessGateAction('account');return false}
+    S.resume=false;S.user=ss.user;
+    if(!S.root)build();
+    S.opener=document.activeElement;S.host.hidden=false;S.prevOverflow=document.body.style.overflow;document.body.style.overflow='hidden';
+    q('#adm-who').textContent=S.user.email||'';
+    try{S.admin=!!ok(await c.rpc('adm_is_admin'))}catch(e){S.admin=false}
+    S.tab=S.admin&&(!opts||opts.tab!=='kids')?'desk':'kids';
+    await tab();q('#adm-main').focus();return true}
+  catch(e){if(S.root)toast(msg(e),'err');else window.alert(msg(e));return false}}
+function close(){if(!S.host||S.host.hidden)return;closeForm();S.host.hidden=true;document.body.style.overflow=S.prevOverflow||'';if(S.opener&&S.opener.focus)try{S.opener.focus()}catch(e){}}
+
+window.SCLAdmissions=Object.freeze({open:open,close:close});
+})();
+</script>
 </body>
 </html>
