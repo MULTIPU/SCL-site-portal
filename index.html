@@ -1130,18 +1130,7 @@ body.scl-night .scl-craft-learning{background:linear-gradient(135deg,#171c2b,#20
 
 </style>
 
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Pinyon+Script&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
-<style id="scl-branch-gps-contrast-fix">
-/* High-contrast, readable Branch & GPS Setup dialog */
-#sclBranchAdminModal, #sclBranchAdminModal .modal-content, #sclBranchAdminModal .modal-body, #sclBranchAdminBody { color:#f8fafc !important; }
-#sclBranchAdminModal .scl-att-card, #sclBranchAdminModal .scl-att-card p, #sclBranchAdminModal .scl-att-card label, #sclBranchAdminModal .scl-att-card small, #sclBranchAdminModal .scl-att-card h4, #sclBranchAdminModal .scl-att-warning { color:#f8fafc !important; }
-#sclBranchAdminModal .scl-att-card { background:#172033 !important; border:1px solid #64748b !important; }
-#sclBranchAdminModal input, #sclBranchAdminModal select, #sclBranchAdminModal textarea { background:#fff !important; color:#111827 !important; border:1px solid #94a3b8 !important; }
-#sclBranchAdminModal input::placeholder, #sclBranchAdminModal textarea::placeholder { color:#64748b !important; opacity:1 !important; }
-#sclBranchAdminModal button { color:#fff !important; }
-#sclBranchAdminModal .scl-att-warning { background:#713f12 !important; border:1px solid #fbbf24 !important; padding:12px !important; border-radius:10px !important; }
-</style>
-</head>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Pinyon+Script&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet"></head>
 <body><a class="scl-skip" href="#hv2">Skip to main content</a>
 <!-- ACCESS GATE (merged from the access-gate page) -->
 
@@ -11067,10 +11056,10 @@ function dlg(){var d=D.getElementById('sclStaffDlg');if(d)return d;d=D.createEle
   d.addEventListener('click',function(e){if(e.target===d||e.target.hasAttribute('data-close'))d.classList.remove('open')});
   D.addEventListener('keydown',function(e){if(e.key==='Escape')d.classList.remove('open')});return d}
 function openStaff(ref){var p=data.filter(function(x){return x.ref===ref&&x.verified})[0];if(!p)return;var d=dlg();
-  function paint(extra){d.innerHTML='<div class="box">'+(p.photo?'<img alt="" src="'+esc(photoUrl(p.photo))+'">':'')+'<h3>'+esc(p.name)+'</h3><p>'+esc(p.position||'')+'</p>'+extra+'<button type="button" data-close>Close</button></div>';d.classList.add('open')}
+  function paint(extra){d.innerHTML='<div class="box">'+(p.photo?'<img alt="Staff profile photo" src="'+esc(photoUrl(p.photo))+'">':'')+'<h3>STAFF CONTACT DETAILS</h3>'+extra+'<button type="button" data-close>Close</button></div>';d.classList.add('open')}
   var s=sess();if(!(s&&s.accessToken)){paint('<p>Sign in to view contact details.</p>');return}
-  paint('<p>Loading…</p>');
-  rpc('scl_get_staff_contact',{p_ref:ref}).then(function(c){paint('<p><a href="mailto:'+esc(c.email)+'">'+esc(c.email)+'</a></p><p>'+(c.phone?'<a href="tel:'+esc(c.phone)+'">'+esc(c.phone)+'</a>':'No phone on record')+'</p>')},function(e){paint('<p>'+esc(e.message)+'</p>')})}
+  paint('<p>Loading contact details…</p>');
+  rpc('scl_get_staff_contact',{p_ref:ref}).then(function(c){c=c||{};var role=c.position||p.position||'Staff';paint('<p><b>User ID:</b> '+esc(c.userId||c.user_id||'Not available')+'</p><p><b>Email:</b> '+(c.email?'<a href="mailto:'+esc(c.email)+'">'+esc(c.email)+'</a>':'Not available')+'</p><p><b>Phone:</b> '+(c.phone?'<a href="tel:'+esc(c.phone)+'">'+esc(c.phone)+'</a>':'No phone on record')+'</p><p><b>Position:</b> '+esc(role)+'</p>')},function(e){paint('<p>'+esc(e.message)+'</p>')})}
 function mount(){
   if(D.getElementById('sclStaffShow'))return true;var host=D.getElementById('hv2');if(!host)return false;
   var sec=D.createElement('section');sec.id='sclStaffShow';sec.className='hv2-sec';sec.setAttribute('aria-label','Our staff');
