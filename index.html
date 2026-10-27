@@ -11033,10 +11033,10 @@ var SIL='<svg viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height=
 var root=null,view=null,track=null,sig='',data=[],mq=null;
 function photoUrl(p){return URLB()+'/storage/v1/object/public/staff-photos/'+String(p).split('/').map(encodeURIComponent).join('/')}
 function card(p){var b=D.createElement(p.verified?'button':'div');b.className='sso-card '+(p.verified?'ver':'pend');b.setAttribute('data-ref',p.ref);
-  if(p.verified){b.type='button';b.setAttribute('aria-label',(p.name||'Staff member')+', '+(p.position||'staff')+'. Open contact details')}else b.setAttribute('aria-label','Pending staff application, '+(p.position||'staff'));
-  var img=p.verified&&p.photo?'<img alt="'+esc(p.name||'')+'" loading="lazy" decoding="async" width="130" height="130" src="'+esc(photoUrl(p.photo))+'">':SIL;
+  if(p.verified){b.type='button';b.setAttribute('aria-label',(p.position||'Staff')+'. Open staff contact details')}else b.setAttribute('aria-label','Pending staff application, '+(p.position||'staff'));
+  var img=p.verified&&p.photo?'<img alt="Staff photo" loading="lazy" decoding="async" width="130" height="130" src="'+esc(photoUrl(p.photo))+'">':SIL;
   b.innerHTML='<div class="sso-oct">'+(p.verified?'':'<span class="sso-pend">PENDING</span>')+'<div class="sso-frame"></div><div class="sso-photo">'+img+'</div></div>'
-   +'<div class="sso-name">'+esc(p.verified?(p.name||''):'New applicant')+'</div><div class="sso-pos">'+esc(p.position||'')+'</div>';
+   +'<div class="sso-pos">'+esc(p.position||'Staff')+'</div>';
   var im=b.querySelector('img');if(im)im.onerror=function(){im.replaceWith(Object.assign(D.createElement('span'),{innerHTML:SIL}).firstChild)};
   return b}
 function stop(){}
