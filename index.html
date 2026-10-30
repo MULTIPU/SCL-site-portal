@@ -13613,7 +13613,32 @@ function mount(host,opts){
     $('.json').textContent=JSON.stringify(r.data,null,2);
     if(!navigator.onLine){fail('You’re offline. Reconnect and try again.');return}
     flip(true);note('');bar.hidden=false;bar.firstChild.style.width='0';sendBtn.disabled=true;
-    setState('uploading','Uploading… 0%');
+    setState('uploading','Checking document with SCL Educational Intelligence…');
+    const client=window.sclSupabase;
+    let accessToken='';
+    try{
+      const sessionResult=client&&client.auth&&client.auth.getSession?await client.auth.getSession():null;
+      accessToken=sessionResult&&sessionResult.data&&sessionResult.data.session&&sessionResult.data.session.access_token||'';
+    }catch(e){}
+    if(!accessToken){bar.hidden=true;sendBtn.disabled=false;fail('Please sign in to SCL before sending documents to the school library.');return}
+    /* Reuse SCL Educational Intelligence for an optional AI classification. The local classifier remains the fallback. */
+    if(r.data.extractedText){
+      try{
+        const ai=await fetch('https://eypdoeqiojopkbzckjor.supabase.co/functions/v1/scl-educational-intelligence',{
+          method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+accessToken},
+          body:JSON.stringify({action:'classify_document',question:'Classify this uploaded school document.',documentText:r.data.extractedText.slice(0,12000)}),
+          signal:AbortSignal.timeout(20000)
+        });
+        if(ai.ok){
+          const payload=await ai.json(),c=payload&&payload.classification;
+          if(payload.ok&&c&&c.requiresHumanReview&&Number(c.confidence)>=0.72){
+            r.id=c.docType;r.route=c.route;r.approval=c.approval;
+            r.data.aiClassification={provider:'SCL Educational Intelligence',confidence:c.confidence,summary:c.summary,requiresHumanReview:true};
+            if(c.extractedFields&&typeof c.extractedFields==='object')r.data.aiSuggestedFields=c.extractedFields;
+          }
+        }
+      }catch(e){/* AI is an enhancement, never a blocker; keep local classification. */}
+    }
     const fd=new FormData();fd.append(o.fileField,current.file,current.file.name);
     fd.append('docType',r.id);fd.append('route',r.route);fd.append('approval',r.approval);fd.append('source',current.source);fd.append('metadata',JSON.stringify(r.data));
     Object.keys(o.fields).forEach(k=>fd.append(k,o.fields[k]));
@@ -13632,10 +13657,6 @@ function mount(host,opts){
     x.onerror=()=>bad('Network error. Check your connection and try again.');
     x.ontimeout=()=>bad('The upload timed out. Try again.');
     try {
-      const client=window.sclSupabase;
-      const sessionResult=client&&client.auth&&client.auth.getSession?await client.auth.getSession():null;
-      const accessToken=sessionResult&&sessionResult.data&&sessionResult.data.session&&sessionResult.data.session.access_token;
-      if(!accessToken){bad('Please sign in to SCL before sending documents to the school library.');return}
       x.setRequestHeader('Authorization','Bearer '+accessToken);
       x.send(fd);
     } catch(e) { bad('Could not verify your SCL sign-in. Please sign in again and retry.'); }
@@ -13644,8 +13665,10 @@ function mount(host,opts){
   addEventListener('offline',()=>{if(!busy())setState('offline')});
   addEventListener('online',()=>{if(state==='offline')setState('idle')});
   setState('idle');
-  flip(false);
+  flip(o.startMode==='upload');
   const stage=$('.stage');let sx=null,swiped=false;stage.style.touchAction='pan-y';
+  /* Keep scanner gestures inside the scanner; do not let the homepage swipe handler consume them. */
+  ['touchstart','touchmove','touchend','touchcancel','pointerdown','pointermove','pointerup','pointercancel'].forEach(function(type){stage.addEventListener(type,function(e){e.stopPropagation()},{passive:type==='touchstart'||type==='touchmove'});});
   stage.addEventListener('pointerdown',e=>{sx=e.clientX});
   stage.addEventListener('pointerup',e=>{if(sx!==null&&Math.abs(e.clientX-sx)>45){swiped=true;flip(!coin.classList.contains('flipped'));setTimeout(()=>{swiped=false},80)}sx=null});
   stage.addEventListener('pointercancel',()=>{sx=null});
@@ -13663,25 +13686,26 @@ document.readyState==='loading'?document.addEventListener('DOMContentLoaded',ini
 (function(){
  'use strict';
  var labels=[
-  {title:'Parent Document Scanner',desc:'Scan admission documents, receipts, and supporting records. Submissions remain pending school review.'},
-  {title:'Learning Document Scanner',desc:'Scan score sheets, exam materials, and learning documents for academic review.'},
-  {title:'Staff & Community Document Scanner',desc:'Scan qualifications, staff credentials, and general school documents for the appropriate review queue.'}
+  {title:'Parent Document Scanner',desc:'Scan admission documents, receipts, and supporting records. Submissions remain pending school review.',mode:'scan'},
+  {title:'Learning Document Upload',desc:'Upload score sheets, exam materials, and learning documents for academic review.',mode:'upload'}
  ];
  var endpoint='https://eypdoeqiojopkbzckjor.supabase.co/functions/v1/scl-document-gateway';
  function mountAll(){
   var groups=document.querySelectorAll('.hv2-groups .hv2-grp');
-  if(groups.length<3||!window.MultiPUGateway||!window.MultiPUGateway.mount)return false;
-  groups=[groups[0],groups[1],groups[2]];
+  if(groups.length<2||!window.MultiPUGateway||!window.MultiPUGateway.mount)return false;
+  groups=[groups[0],groups[1]];
   groups.forEach(function(group,i){
    if(group.querySelector('[data-scl-document-gateway]'))return;
-   var section=document.createElement('section');section.className='scl-doc-gateway-card';section.setAttribute('aria-label',labels[i].title);
+   var section=document.createElement('section');section.className='scl-doc-gateway-card scl-doc-gateway-'+labels[i].mode;section.setAttribute('aria-label',labels[i].title);
    var heading=document.createElement('h4');heading.className='scl-doc-gateway-title';heading.textContent='▣ '+labels[i].title;
    var desc=document.createElement('p');desc.className='scl-doc-gateway-desc';desc.textContent=labels[i].desc;
-   var host=document.createElement('div');host.dataset.sclDocumentGateway='1';host.dataset.multipu='';host.dataset.endpoint=endpoint;host.dataset.maxMb='15';host.dataset.ocr='true';host.dataset.camera='auto';
+   var host=document.createElement('div');host.dataset.sclDocumentGateway='1';host.dataset.multipu='';host.dataset.endpoint=endpoint;host.dataset.maxMb='15';host.dataset.ocr='true';host.dataset.camera='auto';host.dataset.startMode=labels[i].mode;
    host.style.cssText='display:block;width:100%;--mpg-accent:#d9b25f;--mpg-live:#3b82f6;--mpg-busy:#facc15;--mpg-off:#ef4444;--mpg-panel:#170b12;--mpg-line:#4a2930;--mpg-text:#fff4dd;--mpg-mute:#d7c6bf';
    section.appendChild(heading);section.appendChild(desc);section.appendChild(host);group.appendChild(section);
-   try{window.MultiPUGateway.mount(host,{endpoint:endpoint,ocr:true,maxMb:15,minScanMs:1800,headers:{}})}catch(e){console.error('SCL document gateway mount failed',e);desc.textContent='The document scanner could not start. Refresh the page or contact the technical administrator.'}
+   try{window.MultiPUGateway.mount(host,{endpoint:endpoint,ocr:true,maxMb:15,minScanMs:1800,startMode:labels[i].mode,headers:{}})}catch(e){console.error('SCL document gateway mount failed',e);desc.textContent='The document scanner could not start. Refresh the page or contact the technical administrator.'}
   });
+  /* Remove any previously injected third scanner if this script is re-run against an older page state. */
+  document.querySelectorAll('.hv2-groups .scl-doc-gateway-staff,.hv2-groups [aria-label="Staff & Community Document Scanner"]').forEach(function(el){el.remove()});
   return true;
  }
  var tries=0;function start(){if(mountAll())return;if(++tries>80)return;setTimeout(start,250)}
@@ -13695,7 +13719,7 @@ document.readyState==='loading'?document.addEventListener('DOMContentLoaded',ini
 .scl-doc-gateway-card{grid-column:1/-1;width:100%;min-width:0;margin:14px 0 4px;padding:14px 10px 12px;border:1px solid rgba(217,178,95,.48);border-radius:18px;background:linear-gradient(145deg,rgba(34,12,22,.97),rgba(74,15,42,.94));box-shadow:0 12px 28px rgba(0,0,0,.16);color:#fff4dd;overflow:hidden}
 .scl-doc-gateway-title{margin:0 0 6px;color:#f3dca0;font-size:14px;font-weight:800;letter-spacing:.02em;line-height:1.35}
 .scl-doc-gateway-desc{margin:0 auto 12px;max-width:42ch;color:#e7d8d0;font-size:12px;line-height:1.5}
-.scl-doc-gateway-card [data-multipu]{max-width:100%;min-width:0}
+.scl-doc-gateway-card [data-multipu]{max-width:100%;min-width:0;touch-action:pan-y}.scl-doc-gateway-card .stage{touch-action:pan-y;overscroll-behavior:contain}.scl-doc-gateway-upload .scl-doc-gateway-title{color:#f3dca0}
 @media(max-width:600px){.scl-doc-gateway-card{padding:12px 8px;margin-top:12px}.scl-doc-gateway-title{font-size:13px}.scl-doc-gateway-desc{font-size:11.5px}}
 </style>
 </body>
