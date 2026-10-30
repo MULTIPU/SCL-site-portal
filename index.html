@@ -1469,7 +1469,7 @@ async function loadSchoolData(){
 loadSchoolData();
 setTimeout(()=>{try{window.renderSclGateCalendar?.()}catch(_){ }},700);
 
-function openM(id){const m=document.getElementById(id);if(!m){if(typeof toast==='function')toast('This section is not available yet. Please try again later or contact the school.');return}m.classList.add('open');m.style.display='flex';m.setAttribute('aria-hidden','false');document.body.classList.add('modal-open')}function closeM(id){const m=document.getElementById(id);if(!m)return;m.classList.remove('open');m.style.display='none';m.setAttribute('aria-hidden','true');if(!document.querySelector('.modal.open'))document.body.classList.remove('modal-open')}
+function openM(id){const m=document.getElementById(id);if(!m){if(typeof toast==='function')toast('This section is not available yet. Please try again later or contact the school.');return}m.classList.add('open');m.style.display='flex';m.setAttribute('aria-hidden','false');document.body.classList.add('modal-open')}function closeM(id){const m=document.getElementById(id);if(!m)return;if(id==='sclSuiteModal'){m.classList.remove('scl-att-focus');window.sclAttMode='student';const hh=m.querySelector('.mh h3');if(hh)hh.textContent='SCL STAFF & SCHOOL MANAGEMENT PORTAL'}m.classList.remove('open');m.style.display='none';m.setAttribute('aria-hidden','true');if(!document.querySelector('.modal.open'))document.body.classList.remove('modal-open')}
 function openLogoGallery(){const m=document.getElementById('logoGallery');m.classList.add('open');m.setAttribute('aria-hidden','false');document.getElementById('galleryCard').classList.add('gallery-open')}
 function closeLogoGallery(){const m=document.getElementById('logoGallery');m.classList.remove('open');m.setAttribute('aria-hidden','true');document.getElementById('galleryCard').classList.remove('gallery-open')}
 let pickerMode='registration';function renderPickerMode(){const m=document.getElementById('picker');const t=document.getElementById('sclPickerTitle');const n=document.getElementById('sclPickerNote');if(!m)return;m.classList.toggle('scl-picker-payment',pickerMode==='fees');m.classList.toggle('scl-picker-registration',pickerMode!=='fees');if(t)t.textContent=pickerMode==='fees'?'Select a Class for Payment':'Select a Class for Registration';if(n)n.textContent=pickerMode==='fees'?'💳 Payment mode — choose the class whose fees you want to view or pay.':'Registration mode — choose the class for the child registration.';}function pickRegistration(){pickerMode='registration';renderPickerMode();openM('picker')}function pickFees(){pickerMode='fees';renderPickerMode();openM('picker')}function pick(){if(typeof sclHasLiveSession==='function'&&!sclHasLiveSession()){openM('loginModal');return}pickRegistration()}function login(){if(typeof sclHasLiveSession==='function'&&sclHasLiveSession()){window.sclOpenModernProfile?.();}else openM('loginModal')}function openMaterials(){const m=document.getElementById('materialsModal');if(!m)return;m.classList.add('open');m.style.display='flex';m.setAttribute('aria-hidden','false');document.body.classList.add('modal-open')}
@@ -9448,14 +9448,15 @@ window.sclOpenStaffAffairs=function(){window.sclAttMode='staff';call('openM','sc
 window.renderStudentAttendance=function(){const b=$('sclSuiteBody');if(!b)return;
  const staff=window.sclAttMode==='staff';
  try{QA('.scl-suite-tabs button').forEach(x=>x.classList.remove('active'));const t=$(staff?'sclTab-staff':'sclTab-attendance');t&&t.classList.add('active')}catch(_){}
- const m=document.querySelector('#sclSuiteModal .mh h3');if(m)m.textContent=staff?'SCL STAFF AFFAIRS':'SCL STAFF & SCHOOL MANAGEMENT PORTAL';
+ const m=document.querySelector('#sclSuiteModal .mh h3');if(m)m.textContent=staff?'STAFF AFFAIRS':'STUDENT ATTENDANCE';const sm=$('sclSuiteModal');sm&&sm.classList.add('scl-att-focus');
  let h='';
  if(staff){h=viewStaff()}
  else{if(ST.tab==='take'||ST.tab==='approve')ST.tab=ST.tab==='take'?'take':'classes';
   const tabs=[['classes','🏫 Classes'],['admin','📊 Overview'],['roster','🧒 Students']];
   h='<div class="scl300-chips" style="margin-bottom:10px">'+tabs.map(t=>'<button type="button" data-tab="'+t[0]+'" class="'+(ST.tab===t[0]?'on':'')+'" style="'+(ST.tab===t[0]?'background:#7b4dff;color:#fff;border-color:#7b4dff':'')+'">'+t[1]+'</button>').join('')+'</div>';
   h+=ST.tab==='take'?viewClassHead()+viewTake():ST.tab==='admin'?viewAdmin():ST.tab==='roster'?viewRoster():viewClasses()}
- b.innerHTML='<div style="color:#14061f">'+h+'</div>';wireAtt(b);
+ b.innerHTML='<div style="color:#14061f"><button type="button" class="scl300-cta alt" id="at-portal" style="margin:0 0 8px">← Portal menu</button>'+h+'</div>';wireAtt(b);
+ const pb=b.querySelector('#at-portal');if(pb)pb.onclick=()=>{window.sclAttMode='student';const sm2=$('sclSuiteModal');sm2&&sm2.classList.remove('scl-att-focus');const mh=document.querySelector('#sclSuiteModal .mh h3');if(mh)mh.textContent='SCL STAFF & SCHOOL MANAGEMENT PORTAL';b.innerHTML='';try{sm2.querySelector('.card').scrollTop=0}catch(_){}};
  QA('[data-cls]',b).forEach(x=>x.onclick=()=>{ST.cls=x.dataset.cls;ST.tab='take';ST.lockPer=null;ST.autoAt=0;ST.autoP=null;marks={};window.renderStudentAttendance();try{b.scrollIntoView({block:'start'})}catch(_){}});
  const bk=b.querySelector('#at-back');if(bk)bk.onclick=()=>{ST.tab='classes';window.renderStudentAttendance()};
  QA('[data-staffgo]',b).forEach(x=>x.onclick=()=>{const f=STAFF_GO[x.dataset.staffgo];try{call('closeM','sclSuiteModal')}catch(_){}f&&setTimeout(f,120)})};
@@ -10064,7 +10065,7 @@ var tries=0,iv=setInterval(function(){init();if(document.querySelector('.hv2-gro
  setInterval(function(){try{sync()}catch(e){}},60000);
  var t=setInterval(function(){var f=window.renderStudentAttendance;if(f&&/ng-conf/.test(f.toString())&&!f.__ng2){clearInterval(t);
   var w=function(){var r=f.apply(this,arguments),b=document.getElementById('sclSuiteBody');
-   if(b&&window.sclAttTopLevel&&window.sclAttTopLevel()&&window.sclCanSeeStudentAttendance&&window.sclCanSeeStudentAttendance()&&!b.querySelector('#ngAttReg')){var d=document.createElement('div');d.id='ngAttReg';var a=b.firstElementChild;if(a)a.appendChild(d);else b.appendChild(d);draw(d);sync().then(function(){pull(d)})}
+   if(b&&window.sclAttTopLevel&&window.sclAttTopLevel()&&window.sclCanSeeStudentAttendance&&window.sclCanSeeStudentAttendance()&&!b.querySelector('#ngAttReg')){var d=document.createElement('div');d.id='ngAttReg';var a=b.lastElementChild;if(a)a.appendChild(d);else b.appendChild(d);draw(d);sync().then(function(){pull(d)})}
    return r};w.__ng2=1;window.renderStudentAttendance=w}},400);
 })();
 </script>
@@ -12840,10 +12841,11 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 })();
 </script>
 
+<style id="scl-att-focus-css">#sclSuiteModal.scl-att-focus .card>*:not(.mh):not(#sclSuiteBody){display:none!important}</style>
 <script id="scl-attendance-split-router">
 (function(){var t=setInterval(function(){var f=window.sclSuiteTab;if(typeof f!=='function'||typeof window.renderStudentAttendance!=='function'||f.__split)return;
  var w=function(tab){if(tab==='staff'){if(window.sclCanSeeStudentAttendance&&!window.sclCanSeeStudentAttendance()){try{(window.toast||alert)('🔒 Staff affairs is for school staff and admin only.')}catch(e){}return}window.sclAttMode='staff';window.renderStudentAttendance();return}
-  if(tab==='attendance'){window.sclAttMode='student';window.sclAttReset&&window.sclAttReset()}else if(window.sclAttMode==='staff'){window.sclAttMode='student'}
+  if(tab==='attendance'){window.sclAttMode='student';window.sclAttReset&&window.sclAttReset()}else if(window.sclAttMode==='staff'){window.sclAttMode='student'}if(tab!=='attendance'){var sm=document.getElementById('sclSuiteModal');sm&&sm.classList.remove('scl-att-focus');var hh=document.querySelector('#sclSuiteModal .mh h3');if(hh)hh.textContent='SCL STAFF & SCHOOL MANAGEMENT PORTAL'}
   return f.apply(this,arguments)};w.__split=1;window.sclSuiteTab=w;clearInterval(t)},400);})();
 </script>
 <!-- SCL v105: registration visibility and student-verification reconciliation panel -->
