@@ -13376,9 +13376,9 @@ const CSS=`
 :host{display:block;--mpg-accent:#6366f1;--mpg-live:#3b82f6;--mpg-busy:#facc15;--mpg-off:#ef4444;--mpg-panel:#0b101b;--mpg-line:#1b2536;--mpg-text:#e6edf7;--mpg-mute:#8393ab;color:var(--mpg-text);font:14px/1.45 "Segoe UI",system-ui,-apple-system,sans-serif}
 *{box-sizing:border-box}
 .wrap{max-width:420px;margin:0 auto}
-.stage{perspective:1100px;width:min(288px,100%);margin:0 auto;position:relative}
+.stage{perspective:1100px;width:100%;margin:0 auto;position:relative;display:flex;align-items:center;justify-content:center;gap:9px;touch-action:pan-y;overscroll-behavior:contain}
 .stage::after{content:"";position:absolute;left:12%;right:12%;bottom:-16px;height:18px;border-radius:50%;background:radial-gradient(rgba(99,102,241,.4),transparent 70%);filter:blur(6px)}
-.coin{position:relative;aspect-ratio:1;transform-style:preserve-3d;transition:transform .8s cubic-bezier(.2,.8,.2,1);--c:var(--mpg-live)}
+.coin{position:relative;flex:0 1 248px;width:min(248px,calc(100% - 112px));aspect-ratio:1;transform-style:preserve-3d;transition:transform .8s cubic-bezier(.2,.8,.2,1);--c:var(--mpg-live)}
 .coin.flipped{transform:rotateY(180deg)}
 .face{position:absolute;inset:0;display:block;border-radius:50%;cursor:pointer;backface-visibility:hidden;-webkit-backface-visibility:hidden;-webkit-tap-highlight-color:transparent;outline-offset:6px}
 .face.back{transform:rotateY(180deg)}
@@ -13420,9 +13420,9 @@ const CSS=`
 
 .pill{display:inline-flex;align-items:center;gap:.55rem;padding:.4rem .9rem;border:1px solid var(--mpg-line);border-radius:999px;background:var(--mpg-panel);font-size:.82rem;--c:var(--mpg-live)}
 .pill i{width:.55rem;height:.55rem;border-radius:50%;background:var(--c);box-shadow:0 0 8px var(--c)}
-.tabs{display:flex;justify-content:center;gap:10px;margin-top:30px}
-.tabs button{width:8px;height:8px;padding:0;border:0;border-radius:99px;background:#26324a;cursor:pointer;transition:.3s}
-.tabs button[aria-pressed=true]{width:22px;background:#7dd3fc}
+.tabs{display:contents}
+.tabs button{position:relative;z-index:2;display:grid;place-items:center;flex:0 0 46px;width:46px;height:46px;min-width:0;padding:0 2px;overflow:hidden;white-space:nowrap;border:1px solid rgba(244,211,145,.72);border-radius:50%;background:linear-gradient(145deg,#3b1730,#170b19);color:#fff0c8;font:800 8px/1 system-ui,sans-serif;letter-spacing:0;text-align:center;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.3),inset 0 0 0 2px rgba(255,255,255,.06);transition:transform .18s,background .18s,border-color .18s}
+.tabs button[aria-pressed=true]{background:linear-gradient(145deg,#e7bd61,#8f5c19);color:#24130b;border-color:#ffe5a3;box-shadow:0 0 14px rgba(231,189,97,.38)}.tabs button:active{transform:scale(.94)}.tabs .tScan{order:0}.stage>.coin{order:1}.tabs .tFile{order:2}
 .hint{margin:10px 0 0;text-align:center;font-size:.75rem;color:var(--mpg-mute);letter-spacing:.02em}
 .toast{margin:14px auto 0;max-width:320px;text-align:center;font-size:.85rem;color:var(--mpg-mute)}.toast.ok{color:#6ee7b7}.toast.bad{color:#fca5a5}
 .json{display:none}
@@ -13459,12 +13459,13 @@ pre{margin:0;padding:10px;border-radius:10px;border:1px solid var(--mpg-line);ba
 .cam .bar2 button{border:0;background:#1b2536;color:#fff;border-radius:999px;padding:.7rem 1.1rem;font:inherit;cursor:pointer}
 .cam .shutter{width:68px;height:68px;padding:0!important;background:#fff!important;box-shadow:0 0 0 4px #000,0 0 0 7px #fff}
 .cam .shutter:disabled{opacity:.4}
+@media(max-width:360px){.stage{gap:5px}.tabs button{flex-basis:42px;width:42px;height:42px;font-size:7.5px;padding:0 1px}.coin{width:min(220px,calc(100% - 94px));flex-basis:220px}}
 @media (prefers-reduced-motion:reduce){.pulse,.pulse svg,.flow,.up,.main,.dot,.front img{animation:none!important}.coin{transition:none}}
 @media (prefers-reduced-motion: reduce){.coin,.face,.dot,.pulse,.front img,.arr,.main,.up,.u2,.u3{animation:none!important;transition:none!important}.coin[data-state=scanning] .pulse{opacity:.65}}
 `;
 const HTML=`
 <div class="wrap">
- <div class="stage"><div class="coin" data-state="idle">
+ <div class="stage"><div class="tabs"><button type="button" class="tScan" aria-label="Switch to scan mode" aria-pressed="true">SCAN</button></div><div class="coin" data-state="idle">
   <label class="face front" for="inScan" tabindex="0" role="button" aria-label="Scan a document with the camera">
    <img alt="" draggable="false">
    <div class="lens"><div class="pulse"><svg viewBox="0 0 300 60" preserveAspectRatio="none"><path class="base" pathLength="400" d="M0 30H88l8-3 7 7 10-30 10 52 9-30 8 4h22l7-5 8 5H300" fill="none" stroke="#67e8f9" stroke-width="2.5" vector-effect="non-scaling-stroke" stroke-linejoin="round"/><path class="flow" pathLength="400" d="M0 30H88l8-3 7 7 10-30 10 52 9-30 8 4h22l7-5 8 5H300" fill="none" stroke="#ffffff" stroke-width="3.5" vector-effect="non-scaling-stroke" stroke-linejoin="round" stroke-linecap="round"/></svg></div></div>
@@ -13475,8 +13476,7 @@ const HTML=`
    <div class="ring"><div class="clip"><svg class="arr main" viewBox="0 0 40 48"><path d="M20 2 4 22h10v20h12V22h10z" fill="#e0f7ff"/></svg><svg class="arr up u1" viewBox="0 0 40 48"><path d="M20 2 4 22h10v20h12V22h10z" fill="#e0f7ff"/></svg><svg class="arr up u2" viewBox="0 0 40 48"><path d="M20 2 4 22h10v20h12V22h10z" fill="#e0f7ff"/></svg><svg class="arr up u3" viewBox="0 0 40 48"><path d="M20 2 4 22h10v20h12V22h10z" fill="#e0f7ff"/></svg></div></div>
    <div class="dotcov"><div class="dot"></div></div>
   </label>
- </div></div>
- <div class="tabs"><button type="button" class="tScan" aria-label="Scan side" aria-pressed="true"></button><button type="button" class="tFile" aria-label="Upload side" aria-pressed="false"></button></div>
+ </div><div class="tabs"><button type="button" class="tFile" aria-label="Switch to upload mode" aria-pressed="false">UPLOAD</button></div></div>
  <p class="hint"></p>
  <p class="toast" hidden></p>
  <div class="sr" aria-live="polite"><span class="pill"><i></i><span class="stext"></span></span></div>
@@ -13525,7 +13525,7 @@ function mount(host,opts){
     pill.style.setProperty('--c',s==='idle'?'var(--mpg-live)':(s==='offline'||s==='error')?'var(--mpg-off)':'var(--mpg-busy)');
     emit('status',{state:s});
   }
-  function flip(back){coin.classList.toggle('flipped',back);$('.tScan').setAttribute('aria-pressed',!back);$('.tFile').setAttribute('aria-pressed',back);$('.hint').textContent=back?'Tap to upload · swipe for camera':'Tap to scan · swipe for upload'}
+  function flip(back){coin.classList.toggle('flipped',back);$('.tScan').setAttribute('aria-pressed',!back);$('.tFile').setAttribute('aria-pressed',back);$('.hint').textContent=back?'Upload mode · tap the center to choose a file':'Scan mode · tap the center to use your camera'}
   function note(t,kind){const el=card.hidden?toast:msg;toast.hidden=true;msg.hidden=true;el.hidden=!t;el.textContent=t||'';el.className=(el===toast?'toast':'msg')+(kind?' '+kind:'');if(t&&kind==='ok')setTimeout(()=>{if(el.textContent===t)el.hidden=true},4000)}
   function fail(t){setState('error');note(t,'bad');emit('error',{message:t});if(current)card.hidden=false}
 
@@ -13669,10 +13669,10 @@ function mount(host,opts){
   const stage=$('.stage');let sx=null,swiped=false;stage.style.touchAction='pan-y';
   /* Keep scanner gestures inside the scanner; do not let the homepage swipe handler consume them. */
   ['touchstart','touchmove','touchend','touchcancel','pointerdown','pointermove','pointerup','pointercancel'].forEach(function(type){stage.addEventListener(type,function(e){e.stopPropagation()},{passive:type==='touchstart'||type==='touchmove'});});
+  /* Mode changes are deliberate: use the two side buttons. Do not hijack page swipes. */
   stage.addEventListener('pointerdown',e=>{sx=e.clientX});
-  stage.addEventListener('pointerup',e=>{if(sx!==null&&Math.abs(e.clientX-sx)>45){swiped=true;flip(!coin.classList.contains('flipped'));setTimeout(()=>{swiped=false},80)}sx=null});
+  stage.addEventListener('pointerup',()=>{sx=null});
   stage.addEventListener('pointercancel',()=>{sx=null});
-  stage.addEventListener('click',e=>{if(swiped){e.preventDefault();e.stopPropagation()}},true);
   stage.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key==='ArrowRight')flip(!coin.classList.contains('flipped'))});
   host.multipu={reset,setState,get state(){return state}};
   return host.multipu;
@@ -13685,32 +13685,29 @@ document.readyState==='loading'?document.addEventListener('DOMContentLoaded',ini
 <script id="scl-document-gateway-home-integration">
 (function(){
  'use strict';
- var labels=[
-  {title:'Parent Document Scanner',desc:'Scan admission documents, receipts, and supporting records. Submissions remain pending school review.',mode:'scan'},
-  {title:'Learning Document Upload',desc:'Upload score sheets, exam materials, and learning documents for academic review.',mode:'upload'}
- ];
  var endpoint='https://eypdoeqiojopkbzckjor.supabase.co/functions/v1/scl-document-gateway';
- function mountAll(){
+ function mountOne(){
   var groups=document.querySelectorAll('.hv2-groups .hv2-grp');
-  if(groups.length<2||!window.MultiPUGateway||!window.MultiPUGateway.mount)return false;
-  groups=[groups[0],groups[1]];
-  groups.forEach(function(group,i){
-   if(group.querySelector('[data-scl-document-gateway]'))return;
-   var section=document.createElement('section');section.className='scl-doc-gateway-card scl-doc-gateway-'+labels[i].mode;section.setAttribute('aria-label',labels[i].title);
-   var heading=document.createElement('h4');heading.className='scl-doc-gateway-title';heading.textContent='▣ '+labels[i].title;
-   var desc=document.createElement('p');desc.className='scl-doc-gateway-desc';desc.textContent=labels[i].desc;
-   var host=document.createElement('div');host.dataset.sclDocumentGateway='1';host.dataset.multipu='';host.dataset.endpoint=endpoint;host.dataset.maxMb='15';host.dataset.ocr='true';host.dataset.camera='auto';host.dataset.startMode=labels[i].mode;
-   host.style.cssText='display:block;width:100%;--mpg-accent:#d9b25f;--mpg-live:#3b82f6;--mpg-busy:#facc15;--mpg-off:#ef4444;--mpg-panel:#170b12;--mpg-line:#4a2930;--mpg-text:#fff4dd;--mpg-mute:#d7c6bf';
-   section.appendChild(heading);section.appendChild(desc);section.appendChild(host);group.appendChild(section);
-   try{window.MultiPUGateway.mount(host,{endpoint:endpoint,ocr:true,maxMb:15,minScanMs:1800,startMode:labels[i].mode,headers:{}})}catch(e){console.error('SCL document gateway mount failed',e);desc.textContent='The document scanner could not start. Refresh the page or contact the technical administrator.'}
-  });
-  /* Remove any previously injected third scanner if this script is re-run against an older page state. */
-  document.querySelectorAll('.hv2-groups .scl-doc-gateway-staff,.hv2-groups [aria-label="Staff & Community Document Scanner"]').forEach(function(el){el.remove()});
+  if(!groups.length||!window.MultiPUGateway||!window.MultiPUGateway.mount)return false;
+  var existing=document.querySelector('.hv2-groups [data-scl-document-gateway]');
+  if(existing){
+   document.querySelectorAll('.hv2-groups [data-scl-document-gateway]').forEach(function(el,i){if(i>0){var card=el.closest('.scl-doc-gateway-card');if(card)card.remove();else el.remove()}});
+   return true;
+  }
+  /* One shared scanner handles parent, student, staff, academic and general school documents. */
+  var group=groups[0];
+  var section=document.createElement('section');section.className='scl-doc-gateway-card scl-doc-gateway-universal';section.setAttribute('aria-label','SCL Universal Document Scanner');
+  var heading=document.createElement('h4');heading.className='scl-doc-gateway-title';heading.textContent='▣ SCL Universal Document Scanner';
+  var desc=document.createElement('p');desc.className='scl-doc-gateway-desc';desc.textContent='Scan with your camera or upload a document. SCL Educational Intelligence helps identify its purpose and suggest the correct school destination. All submissions remain pending authorized review.';
+  var host=document.createElement('div');host.dataset.sclDocumentGateway='1';host.dataset.multipu='';host.dataset.endpoint=endpoint;host.dataset.maxMb='15';host.dataset.ocr='true';host.dataset.camera='auto';host.dataset.startMode='scan';
+  host.style.cssText='display:block;width:100%;--mpg-accent:#d9b25f;--mpg-live:#3b82f6;--mpg-busy:#facc15;--mpg-off:#ef4444;--mpg-panel:#170b12;--mpg-line:#4a2930;--mpg-text:#fff4dd;--mpg-mute:#d7c6bf';
+  section.appendChild(heading);section.appendChild(desc);section.appendChild(host);group.appendChild(section);
+  try{window.MultiPUGateway.mount(host,{endpoint:endpoint,ocr:true,maxMb:15,minScanMs:1800,startMode:'scan',headers:{}})}catch(e){console.error('SCL document gateway mount failed',e);desc.textContent='The document scanner could not start. Refresh the page or contact the technical administrator.'}
   return true;
  }
- var tries=0;function start(){if(mountAll())return;if(++tries>80)return;setTimeout(start,250)}
+ var tries=0;function start(){if(mountOne())return;if(++tries>80)return;setTimeout(start,250)}
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
- var observer=new MutationObserver(function(){mountAll()});
+ var observer=new MutationObserver(function(){mountOne()});
  function observe(){if(document.body)observer.observe(document.body,{childList:true,subtree:true})}
  if(document.body)observe();else document.addEventListener('DOMContentLoaded',observe,{once:true});
 })();
