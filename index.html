@@ -13369,7 +13369,7 @@ const RULES=[
  {id:'award_list',label:'Awards or medal list',route:'/school/awards/staging',approval:'Management approval required',test:/award list|medal winner|award recipient|certificate of merit|honour roll/},
  {id:'school_document',label:'General school document',route:'/school/library/staging',approval:'Library officer review',test:/school library|school document|lesson note|scheme of work|curriculum|staff memo|official letter|school policy/}];
 const FALLBACK={id:'unrecognized',label:'Unrecognized document',route:'/staging/clarification_required',approval:'Management approval required'};
-const PURPOSES=['Staff qualification or credential','Payment receipt or financial proof','Academic score sheet','Exam or test paper draft','Medal or award list','General school document'];
+const PURPOSES=['Student admission / registration','Parent or guardian record','Staff application / qualification','Staff profile or credential update','Student profile / identity update','Payment receipt / fee evidence','Fee structure / payment schedule update','Academic score sheet / result','Exam or CBT paper / question bank','Assignment / classwork / homework','Lesson note / lesson plan','Curriculum / scheme of work update','Timetable update / period change','Teacher subject or class allocation','Student attendance sheet','Staff attendance / duty record','School announcement / notice','School calendar / event update','School policy / management memo','School material / textbook list','Uniform / supplies catalogue','Student promotion / transfer record','Certificate / award / medal record','Prefect / student leadership record','Gallery / school event photographs','Transport / bus route information','General school document / other'];
 const LABEL={idle:'Live · Ready',scanning:'Scanning document…',uploading:'Uploading…',offline:'Offline · Check your connection',error:'Failed · Tap to try again'};
 
 const CSS=`
@@ -13719,5 +13719,17 @@ document.readyState==='loading'?document.addEventListener('DOMContentLoaded',ini
 .scl-doc-gateway-card [data-multipu]{max-width:100%;min-width:0;touch-action:pan-y}.scl-doc-gateway-card .stage{touch-action:pan-y;overscroll-behavior:contain}.scl-doc-gateway-upload .scl-doc-gateway-title{color:#f3dca0}
 @media(max-width:600px){.scl-doc-gateway-card{padding:12px 8px;margin-top:12px}.scl-doc-gateway-title{font-size:13px}.scl-doc-gateway-desc{font-size:11.5px}}
 </style>
+
+<style id="scl-preserved-controls-and-scanner-usability-v1">
+/* Restore the existing Day/Night control; retain its original handler and saved preference. */
+html body #sclThemeToggle{display:grid!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;position:fixed!important;right:12px!important;left:auto!important;top:12px!important;z-index:2147483200!important;width:42px!important;height:42px!important}
+/* WhatsApp options remain a modal, but the panel itself must not fill a phone screen. */
+#sclWaChoice{align-items:center!important;padding:12px!important;box-sizing:border-box!important}
+#sclWaChoice .box{width:min(440px,calc(100vw - 32px))!important;max-width:440px!important;max-height:min(70dvh,560px)!important;overflow:auto!important;margin:0 auto!important;box-sizing:border-box!important}
+@media(max-width:600px){#sclWaChoice{align-items:flex-end!important;padding:10px 10px max(10px,env(safe-area-inset-bottom))!important}#sclWaChoice .box{width:min(92vw,440px)!important;max-height:58dvh!important;padding:14px!important;border-radius:18px!important}#sclWaChoice .box h3{font-size:17px!important}#sclWaChoice .box a,#sclWaChoice .box button{min-height:42px!important;padding:10px 12px!important;font-size:14px!important}}
+/* Give the purpose selector a readable touch target and room for the expanded catalogue. */
+[data-multipu] .purpose{min-height:48px!important;width:100%!important;font-size:15px!important;line-height:1.4!important;padding:11px 12px!important}
+</style>
+
 </body>
 </html>
