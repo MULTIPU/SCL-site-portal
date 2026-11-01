@@ -1146,7 +1146,6 @@ body.scl-night .scl-craft-learning{background:linear-gradient(135deg,#171c2b,#20
    <button class="ag-btn ag-g" data-access-action="login"><svg width="22" height="22" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.5l6.7-6.7C35.7 2.4 30.2 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.8 6C12.3 13.4 17.6 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.500-4.800 7.200l7.500 5.800c4.400-4.100 7.100-10.100 7.100-17.500z"/><path fill="#FBBC05" d="M10.400 28.800A14.500 14.500 0 0 1 9.500 24c0-1.700.3-3.300.9-4.800l-7.800-6A24 24 0 0 0 0 24c0 3.900.9 7.500 2.600 10.800l7.800-6z"/><path fill="#34A853" d="M24 48c6.200 0 11.400-2 15.200-5.600l-7.500-5.800c-2 1.400-4.700 2.300-7.700 2.300-6.400 0-11.700-3.900-13.600-9.300l-7.800 6C6.500 42.600 14.600 48 24 48z"/></svg><span style="display:flex;flex-direction:column;align-items:flex-start;line-height:1.25;text-align:left"><span>Continue with Google</span><small style="font-weight:600;font-size:.72em;opacity:.7">Browse as a visitor, or sign in</small></span></button>
    <div class="ag-or">or</div>
    <button class="ag-btn ag-s" data-access-action="signin">Sign in with email or user ID</button>
-   <button class="ag-btn ag-r" data-access-action="register">Register a new account</button>
    <p class="ag-foot" id="gateFooter">Students, parents and guardians welcome.</p>
   </div>
 
@@ -8699,7 +8698,6 @@ function emit(a,d){var e=new CustomEvent("accessgate:"+a,{bubbles:true,detail:Ob
 function go(n){gate.classList.toggle("ag-reg",n==="register");if(n==="register")showStep(1);gate.querySelectorAll(".ag-view").forEach(function(v){v.classList.toggle("ag-on",v.id==="v-"+n)});if(n!=="register")stopCam()}
 gate.querySelectorAll("[data-go]").forEach(function(b){b.onclick=function(){go(b.dataset.go)}});
 gate.querySelector('[data-access-action="signin"]').onclick=function(){go("signin")};
-gate.querySelector('[data-access-action="register"]').onclick=function(){go("register")};
 
 gate.querySelector('[data-access-action="login"]').onclick=function(){emit("login",{})};
 
@@ -10393,7 +10391,7 @@ function renderMenu(){
   b.innerHTML=h;
   if(lv==='admin')refreshPendingBadge()
 }
-function refreshPendingBadge(){if(level()!=='admin')return;rest('scl_registrations?status=eq.pending&select=id&limit=200').then(function(rows){var el=$('#sclPendingApprovalCount');if(el)el.textContent=String((rows||[]).length)}).catch(function(){var el=$('#sclPendingApprovalCount');if(el)el.textContent='!'});rest('students?select=id&limit=200').then(function(rows){var el=$('#sclStudentQueueCount');if(el)el.textContent=String((rows||[]).length)}).catch(function(){var el=$('#sclStudentQueueCount');if(el)el.textContent='!'})}
+function refreshPendingBadge(){if(level()!=='admin')return;rest('scl_registrations?status=eq.pending&kind=neq.account&select=id&limit=200').then(function(rows){var el=$('#sclPendingApprovalCount');if(el)el.textContent=String((rows||[]).length)}).catch(function(){var el=$('#sclPendingApprovalCount');if(el)el.textContent='!'});rest('students?select=id&limit=200').then(function(rows){var el=$('#sclStudentQueueCount');if(el)el.textContent=String((rows||[]).length)}).catch(function(){var el=$('#sclStudentQueueCount');if(el)el.textContent='!'})}
 function renderRegisteredStudents(){var b=body();title('Registered Students');b.innerHTML='<p class="scl-add-note">Loading official student records from the school database…</p>';rest('students?select=id,student_id,child_name,class_name,parent_email,parent_phone,status,created_at&order=created_at.desc&limit=100').then(function(rows){var h=vBack('menu');h+='<p class="scl-add-note">Only records returned by the live school database are listed here. If a registration failed, it will not appear in this list.</p>';if(!rows||!rows.length){b.innerHTML=h+'<p class="scl-add-note">No official student records found yet. Use Register a Student to open the full registration form.</p><div class="scl-add-actions"><button type="button" class="scl-add-btn primary" data-a="kind" data-k="student">Register a Student</button></div>';return}rows.forEach(function(r){h+='<div class="scl-add-card2"><b>🎓 '+esc(r.child_name||'Name missing')+'</b><small>Student ID: <b>'+esc(r.student_id||'Not assigned')+'</b></small><small>Class: '+esc(r.class_name||'Not assigned')+' · Status: '+esc(r.status||'unknown')+'</small><small>Parent email: '+esc(r.parent_email||'Not supplied')+' · Phone: '+esc(r.parent_phone||'Not supplied')+'</small><small>Saved: '+esc(fdate(r.created_at))+'</small></div>'});h+='<div class="scl-add-actions"><button type="button" class="scl-add-btn primary" data-a="kind" data-k="student">Register another student</button></div>';b.innerHTML=h}).catch(function(e){b.innerHTML=vBack('menu')+'<p class="scl-add-err">Could not load official student records: '+esc(e.message||'database access failed')+'</p><p class="scl-add-note">No student has been created by this screen. Use the full registration form only after access is restored.</p>'})}
 
 function renderForm(k){
@@ -10466,7 +10464,7 @@ function renderStudentQueue(){var b=body();title('Student verification');b.inner
 function renderStudentQueueAll(){var b=body();title('Student verification — all records');b.innerHTML='<p class="scl-add-note">Loading…</p>';studentQueueRequest({action:'list',status:'all'}).then(function(d){var rows=d.records||[],h=vBack('menu');h+='<p class="scl-add-note">All student drafts and decisions. Original source notes and submitted parent contacts remain visible.</p>';if(!rows.length){b.innerHTML=h+'<p class="scl-add-note">No student verification records were returned.</p>';return}rows.forEach(function(r){h+='<div class="scl-add-card2"><b>'+esc(r.student_name||'Name missing')+'</b><small>'+esc(r.class_name||r.class_label_raw||'Class not assigned')+' · '+esc(r.status)+' · '+esc(r.completion_status)+'</small><small>Parent/guardian: '+esc(r.parent_guardian_name||'Not supplied')+' · Phone: '+esc(r.parent_phone||'Not supplied')+' · Email: '+esc(r.parent_email||'Not supplied')+'</small><small>Source row '+esc(r.source_row||'—')+' · '+esc(r.source_note||'No note')+'</small></div>'});b.innerHTML=h}).catch(function(e){b.innerHTML=vBack('menu')+'<p class="scl-add-err">'+esc(e.message||'Could not load records.')+'</p>'})}
 function renderApprovals(){
   var b=body();title('Pending approvals');b.innerHTML='<p class="scl-add-note">Loading…</p>';
-  rest('scl_registrations?status=eq.pending&order=created_at.desc&limit=100').then(function(rows){
+  rest('scl_registrations?status=eq.pending&kind=neq.account&order=created_at.desc&limit=100').then(function(rows){
     var h='<div class="scl-add-actions" style="margin:0 0 12px"><button type="button" class="scl-add-btn" data-a="menu">Back</button></div>';
     if(!rows||!rows.length){b.innerHTML=h+'<p class="scl-add-note">Nothing is waiting for confirmation. ✔</p>';return}
     rows.forEach(function(r){var c=KINDS[r.kind]||{icon:'•',label:r.kind},isAccount=r.kind==='account',isStaff=r.kind==='teacher'||r.kind==='staff';
@@ -10608,7 +10606,7 @@ addEventListener('scroll',function(){
 var __sclKnownPendingIds=null;
 setInterval(function(){
   if(level()!=='admin'||!live()||document.hidden)return;
-  rest('scl_registrations?status=eq.pending&select=id,kind,full_name&order=created_at.desc&limit=100').then(function(rows){
+  rest('scl_registrations?status=eq.pending&kind=neq.account&select=id,kind,full_name&order=created_at.desc&limit=100').then(function(rows){
     rows=rows||[];var ids=rows.map(function(r){return r.id});
     if(__sclKnownPendingIds===null){__sclKnownPendingIds=ids;return}
     var fresh=rows.filter(function(r){return __sclKnownPendingIds.indexOf(r.id)<0});
@@ -13876,12 +13874,15 @@ html.scl-lite *,html.scl-lite *::before,html.scl-lite *::after{backdrop-filter:n
  function open(k){var re=S[k][4],all=[].slice.call(document.querySelectorAll('.scl-home-action-clean button,.scl-home-action-clean a,.hv2-tile,#sclShortcutGrid button'));
   var t=all.filter(function(b){return !bb.contains(b)&&re.test(b.innerText||b.textContent||'')})[0];
   if(t){t.click();return}var g=document.querySelector('.scl-home-action-clean');if(g)g.scrollIntoView({behavior:'smooth',block:'start'})}
- function anchor(){return document.querySelector('.hv2-groups')||document.querySelector('.scl-home-action-clean')}
+ /* The billboard belongs on the Home tab: first block inside #home, directly under the nav. */
  function ensure(){
-  var g=anchor();if(!g||!g.parentNode)return;
+  var home=document.querySelector('#hv2 #home'),g=home&&home.firstElementChild;
+  if(!home||!g){/* legacy page without the tabbed layout: keep the old anchor */
+   var o=document.querySelector('.hv2-groups')||document.querySelector('.scl-home-action-clean');if(!o||!o.parentNode)return;
+   if(!bb)build();if(bb.parentNode!==o.parentNode||bb.nextElementSibling!==o)o.parentNode.insertBefore(bb,o);return}
   if(!bb)build();
-  if(bb.parentNode!==g.parentNode||bb.nextElementSibling!==g)g.parentNode.insertBefore(bb,g);
-  var shown=g.getClientRects().length>0;bb.style.display=shown?'':'none';if(shown)sync()}
+  if(g!==bb&&(bb.parentNode!==home||home.firstElementChild!==bb))home.insertBefore(bb,home.firstElementChild);
+  var shown=home.getClientRects().length>0;bb.style.display=shown?'':'none';if(shown)sync()}
  var q=0;function later(){clearTimeout(q);q=setTimeout(ensure,150)}
  function start(){ensure();var t=0;(function r(){if(++t<20){if(!document.getElementById('sclBillboard'))ensure();setTimeout(r,500)}})();
   var host=document.getElementById('hv2')||document.querySelector('main.wrap')||document.body;new MutationObserver(later).observe(host,{childList:true,subtree:true});
