@@ -11062,13 +11062,19 @@ var css='#sclStaffShow{--oct:#5a0c1a;--gold:#e3b23c}#sclStaffShow .sso-head{text
 var st=D.createElement('style');st.id='scl-staff-octagon-css';st.textContent=css;D.head.appendChild(st);
 
 var SIL='<svg viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" fill="#d9c8a3"/><circle cx="50" cy="38" r="17" fill="#8a7a58"/><path d="M14 100c2-26 20-38 36-38s34 12 36 38z" fill="#8a7a58"/></svg>';
-var root=null,view=null,track=null,sig='',data=[],mq=null;
+var root=null,view=null,track=null,sig='',data=[],mq=null,idc={},idf={},idTok='';
+/* The public directory no longer carries names. A signed-in, authorised viewer sees each person's User ID instead. */
+function applyIds(){if(!view)return;var s=sess(),tok=s&&s.accessToken||'';if(tok!==idTok){idTok=tok;idf={};if(!tok)idc={}}
+  view.querySelectorAll('.sso-card.ver').forEach(function(c){var r=c.getAttribute('data-ref'),n=c.querySelector('[data-sso-id]');if(n&&idc[r])n.textContent=idc[r]});
+  if(!tok)return;
+  data.forEach(function(p){if(!p.verified||idc[p.ref]||idf[p.ref])return;idf[p.ref]=1;
+    rpc('scl_get_staff_contact',{p_ref:p.ref}).then(function(c){if(c&&c.userId){idc[p.ref]=c.userId;applyIds()}}).catch(function(){})})}
 function photoUrl(p){return URLB()+'/storage/v1/object/public/staff-photos/'+String(p).split('/').map(encodeURIComponent).join('/')}
 function card(p){var b=D.createElement(p.verified?'button':'div');b.className='sso-card '+(p.verified?'ver':'pend');b.setAttribute('data-ref',p.ref);
-  if(p.verified){b.type='button';b.setAttribute('aria-label',(p.name||'Staff member')+', '+(p.position||'staff')+'. Open contact details')}else b.setAttribute('aria-label','Pending staff application, '+(p.position||'staff'));
-  var img=p.verified&&p.photo?'<img alt="'+esc(p.name||'')+'" loading="lazy" decoding="async" width="130" height="130" src="'+esc(photoUrl(p.photo))+'">':SIL;
+  if(p.verified){b.type='button';b.setAttribute('aria-label','Staff member, '+(p.position||'staff')+'. Open contact details')}else b.setAttribute('aria-label','Pending staff application, '+(p.position||'staff'));
+  var img=p.verified&&p.photo?'<img alt="Staff photo" loading="lazy" decoding="async" width="130" height="130" src="'+esc(photoUrl(p.photo))+'">':SIL;
   b.innerHTML='<div class="sso-oct">'+(p.verified?'':'<span class="sso-pend">PENDING</span>')+'<div class="sso-frame"></div><div class="sso-photo">'+img+'</div></div>'
-   +'<div class="sso-name">'+esc(p.verified?(p.name||''):'New applicant')+'</div><div class="sso-pos">'+esc(p.position||'')+'</div>';
+   +'<div class="sso-name" data-sso-id>'+esc(p.verified?(idc[p.ref]||'Staff member'):'New applicant')+'</div><div class="sso-pos">'+esc(p.position||'')+'</div>';
   var im=b.querySelector('img');if(im)im.onerror=function(){im.replaceWith(Object.assign(D.createElement('span'),{innerHTML:SIL}).firstChild)};
   return b}
 function stop(){}
@@ -11082,16 +11088,16 @@ function render(list){
   root.classList.remove('sso-static');root.classList.add('sso-scroll');view.scrollLeft=0;
 }
 function load(){return rawFetch(URLB()+'/rest/v1/rpc/scl_public_staff_directory',{method:'POST',cache:'no-store',headers:{apikey:KEY(),'Content-Type':'application/json'},body:'{}'})
-  .then(function(r){if(!r.ok)throw new Error('x');return r.json()}).then(function(l){data=Array.isArray(l)?l:[];render(data)})
+  .then(function(r){if(!r.ok)throw new Error('x');return r.json()}).then(function(l){data=Array.isArray(l)?l:[];render(data);applyIds()})
   .catch(function(){if(!track)view.innerHTML='<div class="sso-msg">Staff display is temporarily unavailable.</div>'})}
 function dlg(){var d=D.getElementById('sclStaffDlg');if(d)return d;d=D.createElement('div');d.id='sclStaffDlg';d.setAttribute('role','dialog');d.setAttribute('aria-modal','true');D.body.appendChild(d);
   d.addEventListener('click',function(e){if(e.target===d||e.target.hasAttribute('data-close'))d.classList.remove('open')});
   D.addEventListener('keydown',function(e){if(e.key==='Escape')d.classList.remove('open')});return d}
 function openStaff(ref){var p=data.filter(function(x){return x.ref===ref&&x.verified})[0];if(!p)return;var d=dlg();
-  function paint(extra){d.innerHTML='<div class="box">'+(p.photo?'<img alt="" src="'+esc(photoUrl(p.photo))+'">':'')+'<h3>'+esc(p.name)+'</h3><p>'+esc(p.position||'')+'</p>'+extra+'<button type="button" data-close>Close</button></div>';d.classList.add('open')}
+  function paint(extra){d.innerHTML='<div class="box">'+(p.photo?'<img alt="Staff photo" src="'+esc(photoUrl(p.photo))+'">':'')+extra+'<button type="button" data-close>Close</button></div>';d.classList.add('open')}
   var s=sess();if(!(s&&s.accessToken)){paint('<p>Sign in to view contact details.</p>');return}
   paint('<p>Loading…</p>');
-  rpc('scl_get_staff_contact',{p_ref:ref}).then(function(c){paint('<p><a href="mailto:'+esc(c.email)+'">'+esc(c.email)+'</a></p><p>'+(c.phone?'<a href="tel:'+esc(c.phone)+'">'+esc(c.phone)+'</a>':'No phone on record')+'</p>')},function(e){paint('<p>'+esc(e.message)+'</p>')})}
+  rpc('scl_get_staff_contact',{p_ref:ref}).then(function(c){if(c&&c.userId)idc[ref]=c.userId;applyIds();paint('<p><b>User ID:</b> '+esc(c.userId||'Not issued yet')+'</p><p><b>Phone:</b> '+(c.phone?'<a href="tel:'+esc(c.phone)+'">'+esc(c.phone)+'</a>':'No phone on record')+'</p><p><b>Email:</b> '+(c.email?'<a href="mailto:'+esc(c.email)+'">'+esc(c.email)+'</a>':'No email on record')+'</p>')},function(e){paint('<p>'+esc(e.message)+'</p>')})}
 function mount(){
   if(D.getElementById('sclStaffShow'))return true;var host=D.getElementById('hv2');if(!host)return false;
   var sec=D.createElement('section');sec.id='sclStaffShow';sec.className='hv2-sec';sec.setAttribute('aria-label','Our staff');
