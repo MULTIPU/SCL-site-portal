@@ -2,15 +2,17 @@
 
 <html lang="en">
 <head>
+<!-- SCL UPLOAD BUILD: 2026-11-04 | preserves existing V1101 layout; session and failed-write safety repair -->
+
 <script id="scl-api-shim">
-/* SCL backend connector. On static hosting (github.io) there is no /api server, so calls to /api/* get an instant
-   "not connected" answer (same shape as a failed request) and the site's built-in local fallbacks run.
-   To connect a real backend later, set window.SCL_API_BASE='https://your-backend.example.com' before this site loads. */
+/* SCL legacy API guard. GitHub Pages does not host same-origin /api routes.
+   Supabase-backed features must call their configured Supabase tables/Edge Functions;
+   optional SCL_API_BASE is reserved for a separately deployed legacy API. */
 (function(){var of=window.fetch;if(!of||of.__scl)return;window.SCL_API_BASE=window.SCL_API_BASE||'';
 function f(input,init){var u=typeof input==='string'?input:(input&&input.url)||'';
 if(/^\/api\//.test(u)){var b=String(window.SCL_API_BASE||'').replace(/\/+$/,'');
 if(b)return of.call(this,b+u,init);
-if(/\.github\.io$/i.test(location.hostname))return Promise.resolve(new Response(JSON.stringify({error:'SCL backend not connected'}),{status:503,headers:{'Content-Type':'application/json'}}));}
+if(/\.github\.io$/i.test(location.hostname))return Promise.resolve(new Response(JSON.stringify({error:'This legacy API route is not deployed. Use the configured SCL Supabase service.'}),{status:503,headers:{'Content-Type':'application/json'}}));}
 return of.apply(this,arguments)}
 f.__scl=1;window.fetch=f})();
 </script>
@@ -1516,7 +1518,12 @@ async function api(path,options={}){
       }
     }
     let r=await fetch(path,options);if(!r.ok)throw new Error('API '+r.status);return await r.json();
-  }catch(e){console.warn('SCL backend request failed:',e);if(path==='/api/registrations'||path==='/api/registrations/draft')throw e;return null}
+  }catch(e){
+    console.error('SCL backend request failed:',path,e);
+    /* Never turn a failed write into a silent success/local-only save. */
+    if(method!=='GET'||path==='/api/registrations'||path==='/api/registrations/draft')throw e;
+    return null;
+  }
 }
 async function loadSchoolData(){
  let fees=await api('/api/fees');
@@ -2381,7 +2388,27 @@ window.sclYouTube=function(){const q=(by("sclAiInput")?.value||"").trim();if(q){
   window.sclLogout=function(){try{window.sclSupabase?.auth?.signOut()}catch(_){} sessionStorage.removeItem(KEY);document.body.classList.add('scl-public-locked');closeM('sclAccountModal');closeM('sclModernProfileModal');toast('You have been logged out of SCL.');};
   window.login=function(){const a=getAuth();if(a){renderAccount(a);openM('sclAccountModal')}else openM('loginModal')};
   function escapeHtml(v){return String(v).replace(/[&<>'"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[m]));}
-  document.addEventListener('DOMContentLoaded',async()=>{const a=getAuth();if(!a)return;try{const r=await sclAuthFetch('/api/auth/me');if(!r.ok)throw 0;const d=await r.json();sessionStorage.setItem(KEY,JSON.stringify({...a,...d}));}catch(_){sessionStorage.removeItem(KEY);}});
+  document.addEventListener('DOMContentLoaded',async()=>{
+    const a=getAuth();if(!a)return;
+    /* GitHub Pages has no same-origin /api/auth/me server. Validate/refresh the
+       persisted session with Supabase instead of deleting a valid login when
+       that legacy endpoint returns 404/503 or the network is temporarily down. */
+    try{
+      const sb=window.sclSupabase;
+      if(sb?.auth?.getSession){
+        const {data,error}=await sb.auth.getSession();
+        if(error)throw error;
+        const session=data?.session;
+        if(session?.access_token){
+          const next={...a,accessToken:session.access_token,refreshToken:session.refresh_token,user:session.user||a.user};
+          sessionStorage.setItem(KEY,JSON.stringify(next));
+          return;
+        }
+      }
+      /* A legacy SCL token may not be a Supabase JS session. Keep it available
+         for its own API until an authoritative auth response says it is invalid. */
+    }catch(err){console.warn('SCL session refresh deferred; retaining existing session.',err);}
+  });
 })();
 </script>
 
