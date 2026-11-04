@@ -2,17 +2,13 @@
 
 <html lang="en">
 <head>
-<!-- SCL UPLOAD BUILD: 2026-11-04 | preserves existing V1101 layout; session and failed-write safety repair -->
-
 <script id="scl-api-shim">
-/* SCL legacy API guard. GitHub Pages does not host same-origin /api routes.
-   Supabase-backed features must call their configured Supabase tables/Edge Functions;
-   optional SCL_API_BASE is reserved for a separately deployed legacy API. */
+/* SCL backend connector. Legacy /api/* routes are not deployed on GitHub Pages. Set SCL_API_BASE only when a compatible legacy API is deployed separately. */
 (function(){var of=window.fetch;if(!of||of.__scl)return;window.SCL_API_BASE=window.SCL_API_BASE||'';
 function f(input,init){var u=typeof input==='string'?input:(input&&input.url)||'';
 if(/^\/api\//.test(u)){var b=String(window.SCL_API_BASE||'').replace(/\/+$/,'');
 if(b)return of.call(this,b+u,init);
-if(/\.github\.io$/i.test(location.hostname))return Promise.resolve(new Response(JSON.stringify({error:'This legacy API route is not deployed. Use the configured SCL Supabase service.'}),{status:503,headers:{'Content-Type':'application/json'}}));}
+if(/\.github\.io$/i.test(location.hostname))return Promise.resolve(new Response(JSON.stringify({error:'SCL legacy API is not deployed on this GitHub Pages site. Configure the SCL Supabase services for this operation.'}),{status:503,headers:{'Content-Type':'application/json'}}));}
 return of.apply(this,arguments)}
 f.__scl=1;window.fetch=f})();
 </script>
@@ -1122,6 +1118,7 @@ body.scl-night .scl-craft-learning{background:linear-gradient(135deg,#171c2b,#20
 </style>
 
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Pinyon+Script&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet"><meta name="scl-document-gateway" content="v1-secure-review-queue-2026-10-30">
+<!-- SCL UPLOAD BUILD: 2026-11-04 | preserves existing V1101 layout; session and failed-write safety repair -->
 </head>
 <body><a class="scl-skip" href="#hv2">Skip to main content</a>
 <!-- ACCESS GATE (merged from the access-gate page) -->
@@ -1518,12 +1515,7 @@ async function api(path,options={}){
       }
     }
     let r=await fetch(path,options);if(!r.ok)throw new Error('API '+r.status);return await r.json();
-  }catch(e){
-    console.error('SCL backend request failed:',path,e);
-    /* Never turn a failed write into a silent success/local-only save. */
-    if(method!=='GET'||path==='/api/registrations'||path==='/api/registrations/draft')throw e;
-    return null;
-  }
+  }catch(e){console.error('SCL backend request failed for '+path+':',e);if((options.method||'GET').toUpperCase()!=='GET')throw e;return null}
 }
 async function loadSchoolData(){
  let fees=await api('/api/fees');
@@ -2388,27 +2380,7 @@ window.sclYouTube=function(){const q=(by("sclAiInput")?.value||"").trim();if(q){
   window.sclLogout=function(){try{window.sclSupabase?.auth?.signOut()}catch(_){} sessionStorage.removeItem(KEY);document.body.classList.add('scl-public-locked');closeM('sclAccountModal');closeM('sclModernProfileModal');toast('You have been logged out of SCL.');};
   window.login=function(){const a=getAuth();if(a){renderAccount(a);openM('sclAccountModal')}else openM('loginModal')};
   function escapeHtml(v){return String(v).replace(/[&<>'"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[m]));}
-  document.addEventListener('DOMContentLoaded',async()=>{
-    const a=getAuth();if(!a)return;
-    /* GitHub Pages has no same-origin /api/auth/me server. Validate/refresh the
-       persisted session with Supabase instead of deleting a valid login when
-       that legacy endpoint returns 404/503 or the network is temporarily down. */
-    try{
-      const sb=window.sclSupabase;
-      if(sb?.auth?.getSession){
-        const {data,error}=await sb.auth.getSession();
-        if(error)throw error;
-        const session=data?.session;
-        if(session?.access_token){
-          const next={...a,accessToken:session.access_token,refreshToken:session.refresh_token,user:session.user||a.user};
-          sessionStorage.setItem(KEY,JSON.stringify(next));
-          return;
-        }
-      }
-      /* A legacy SCL token may not be a Supabase JS session. Keep it available
-         for its own API until an authoritative auth response says it is invalid. */
-    }catch(err){console.warn('SCL session refresh deferred; retaining existing session.',err);}
-  });
+  document.addEventListener('DOMContentLoaded',async()=>{const a=getAuth();if(!a)return;try{const r=await sclAuthFetch('/api/auth/me');if(!r.ok)throw 0;const d=await r.json();sessionStorage.setItem(KEY,JSON.stringify({...a,...d}));}catch(_){try{const sb=window.sclSupabase;const q=await sb?.auth?.getSession();const ss=q?.data?.session;if(ss){sessionStorage.setItem(KEY,JSON.stringify({...a,accessToken:ss.access_token,refreshToken:ss.refresh_token,user:ss.user||a.user}));}}catch(__){/* Preserve the existing session when the legacy profile endpoint is unavailable. */}}});
 })();
 </script>
 
