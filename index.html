@@ -13991,6 +13991,205 @@ html body .bottom .scl-bottom-plus svg{stroke:#3b2600!important;stroke-width:2.4
 html body .bottom .scl-bottom-plus:active{background:linear-gradient(145deg,#ffe78a,#e7a900)!important}
 @media(prefers-reduced-motion:reduce){html body .bottom,html body .bottom .scl-bottom-item{transition:none!important}}
 </style>
+<script id="scl-question-engine">
+/* Offline question engine. No AI and no internet needed.
+   It reads the study notes a teacher types, uploads or scans, then builds objective and theory questions by rules:
+   fill-in-the-blank and "which best describes" questions from the notes, with wrong options taken from other words in the same notes. */
+(function(root){'use strict';
+var STOP={};('the a an and or of to in on at for with by from is are was were be been being as that this these those it its their there which who whom whose what when where how also can may will would should could has have had do does did not no but if then than so such into over under between during each other more most many some any all both only very one two three four five six your you we they he she his her our us them about after before because while through using use used called known make makes made like get gets give gives given said says example examples important things thing way ways part parts many much well still just even those these here also take takes taken found breathe release happens happen need needs tiny keep keeps help helps carry carries place takes show shows hold holds').split(' ').forEach(function(w){STOP[w]=1});
+
+function rng(seed){var a=seed>>>0;return function(){a=(a+0x6D2B79F5)>>>0;var t=a;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296}}
+function shuffle(arr,r){var a=arr.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(r()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
+function escRe(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}
+function stem(w){return String(w).toLowerCase().replace(/[^a-z0-9]/g,'').slice(0,6)}
+function cap1(s){return s.charAt(0).toUpperCase()+s.slice(1)}
+function cleanText(t){return String(t||'').replace(/\r/g,'').replace(/-\n(?=[a-z])/g,'').replace(/[“”]/g,'"').replace(/[‘’]/g,"'").replace(/[|¦]/g,' ').replace(/_{2,}/g,' ').replace(/[ \t]+/g,' ')}
+function isHeading(l){var w=l.split(' ');return w.length<=7&&l.length<=60&&!/[.!?,;]$/.test(l)&&/^[A-Z0-9]/.test(l)&&/[A-Za-z]{3}/.test(l)}
+
+/* 1. Read the notes into clean sentences and headings */
+function parseNotes(text){
+ var lines=cleanText(text).split('\n'),sents=[],heads=[],buf='',cur=null;
+ function add(s){s=s.replace(/\s+/g,' ').trim();var w=s.split(' ').length,letters=(s.match(/[A-Za-z]/g)||[]).length;
+  if(w<6||w>34||letters/s.length<.72||/https?:|www\./i.test(s))return;sents.push({t:s,head:cur})}
+ function flush(){if(!buf.trim())return;(buf.match(/[^.!?]+[.!?]+(?:\s|$)|[^.!?]+$/g)||[]).forEach(add);buf=''}
+ lines.forEach(function(l){l=l.trim();if(!l){flush();return}
+  if(/^[-*•▪●◦]\s|^\(?\d{1,2}[.)]\s/.test(l)){flush();buf=l.replace(/^[-*•▪●◦]\s*|^\(?\d{1,2}[.)]\s*/,'');if(!/[.!?]$/.test(buf))buf+='.';flush();return}
+  if(isHeading(l)){flush();cur=l.replace(/:$/,'');if(heads.indexOf(cur)<0)heads.push(cur);return}
+  buf+=(buf?' ':'')+l});
+ flush();
+ return {sents:sents,heads:heads};
+}
+
+/* 2. Share the sentences between the topics */
+function assignTopics(sents,topics){
+ var tw=topics.map(function(t){return t.split(/\s+/).map(stem).filter(function(w){return w.length>=4&&!STOP[w]})}),prev=0;
+ sents.forEach(function(s,i){
+  var toks=(s.t.match(/[A-Za-z]+/g)||[]).map(stem),hd=(s.head||'').split(/\s+/).map(stem),best=-1,bs=0;
+  tw.forEach(function(ws,ti){var sc=0;ws.forEach(function(w){if(toks.indexOf(w)>=0)sc++;if(hd.indexOf(w)>=0)sc+=2});if(sc>bs){bs=sc;best=ti}});
+  s.ti=best>=0?best:(topics.length?(i<1?0:prev):0);prev=s.ti;
+ });
+}
+
+/* 3. Word pool: every useful word in the notes (used to make wrong options) */
+function tokens(s){return s.match(/[A-Za-z][A-Za-z'\-]*|\d+(?:[.,]\d+)?/g)||[]}
+function buildPool(sents){
+ var pool={};
+ sents.forEach(function(s){
+  var seen={};s.toks=tokens(s.t);
+  s.toks.forEach(function(w,i){
+   var num=/^\d/.test(w),k=w.toLowerCase();
+   if(!num&&(w.length<4||STOP[k]))return;if(num&&w.length>7)return;
+   var p=pool[k]||(pool[k]={k:k,w:num?w:w.toLowerCase(),c:0,num:num,cap:false,ti:{}});
+   if(!seen[k]){p.c++;seen[k]=1}
+   if(i>0&&/^[A-Z]/.test(w)&&!num){p.cap=true;p.w=w}
+   p.ti[s.ti]=1;
+  });
+ });
+ return pool;
+}
+function fmtLike(n,like){var d=(like.split('.')[1]||'').length;return d?n.toFixed(d):String(Math.round(n))}
+function suf(k){return /(?:ed|en)$/.test(k)?'ed':/ing$/.test(k)?'ing':/ly$/.test(k)?'ly':'n'}
+function distractors(ans,s,pool,r){
+ var out=[];
+ if(ans.num){
+  var v=parseFloat(ans.w.replace(/,/g,'')),vs=[v*2,v+1,v-1,v+10,v*10,v+5,v-5,v/2,v+2,v-2,v*3];
+  shuffle(vs,r).forEach(function(x){if(x>0&&x!==v&&isFinite(x)){var f=fmtLike(x,ans.w);if(f!==ans.w&&out.indexOf(f)<0)out.push(f)}});
+  return out.slice(0,4);
+ }
+ var sl=s.t.toLowerCase(),a=stem(ans.w),list=Object.keys(pool).map(function(k){return pool[k]}).filter(function(p){
+  return !p.num&&p.k!==ans.k&&stem(p.w)!==a&&Math.abs(p.w.length-ans.w.length)<=5&&sl.indexOf(p.k)<0&&p.cap===ans.cap&&suf(p.k)===suf(ans.k)});
+ list.sort(function(x,y){return ((y.ti[s.ti]?2:0)+Math.min(y.c,4)*2)-((x.ti[s.ti]?2:0)+Math.min(x.c,4)*2)});
+ var top=shuffle(list.slice(0,14),r),used={};
+ top.forEach(function(p){if(out.length<4&&!used[stem(p.w)]){used[stem(p.w)]=1;out.push(/^[A-Z]/.test(ans.w)?cap1(p.w):p.w)}});
+ return out;
+}
+function answerCandidates(s,pool){
+ var list=[],n=s.toks.length;
+ s.toks.forEach(function(w,i){
+  var num=/^\d/.test(w),k=w.toLowerCase();if(!num&&(w.length<4||STOP[k]))return;if(num&&w.length>7)return;
+  var p=pool[k];if(!p)return;
+  var sc=num?4:Math.min(w.length,10)-3;
+  if(!num&&i>0&&/^[A-Z]/.test(w))sc+=3;if(p.c>=2)sc+=2;if(i>n/3)sc+=1;if(w.length<5&&!num)sc-=2;if(!num&&suf(k)!=='n')sc-=5;if(!num&&s.toks.filter(function(x){return x.toLowerCase()===k}).length>1)sc-=20;
+  list.push({w:w,k:k,num:num,cap:!num&&i>0&&/^[A-Z]/.test(w),sc:sc});
+ });
+ var seen={};return list.sort(function(a,b){return b.sc-a.sc}).filter(function(c){if(seen[c.k])return false;seen[c.k]=1;return true});
+}
+var DEF=/^((?:[A-Z][\w'\-]*)(?:\s[\w'\-]+){0,3}?)\s+(?:is|are|means|refers to|is defined as|are defined as|is called)\s+(?:the |a |an )?(.{12,})$/;
+function defOf(s){
+ var m=s.t.replace(/[.!?]+$/,'').match(DEF);if(!m)return null;
+ var term=m[1].replace(/^(?:The|A|An)\s+/,'').trim(),words=m[2].split(' ');if(!term||term.split(' ').length>4||STOP[term.toLowerCase()]||/^\w+(?:ed|en)\b/i.test(m[2])||/^(?:found|made|used|given|kept|stored|known|broken)\b/i.test(m[2]))return null;
+ return {term:term,desc:words.slice(0,13).join(' ').replace(/[,;:]$/,''),full:m[2]};
+}
+
+/* 4. Objective questions */
+function buildObjectives(parsed,topics,n,seed){
+ var r=rng(seed),sents=parsed.sents;if(!topics.length)topics=['General'];
+ assignTopics(sents,topics);var pool=buildPool(sents);
+ var defs=[];sents.forEach(function(s,i){var d=defOf(s);if(d){s.def=d;defs.push(s)}});
+ var queues=topics.map(function(){return []});
+ sents.forEach(function(s){queues[s.ti].push(s)});queues=queues.map(function(q){return shuffle(q,r)});
+ var made=[],useTerm={},usedS={},defMade=0,maxDef=Math.min(5,Math.floor(n*.3));
+ function tryDef(s){
+  if(!s.def||defMade>=maxDef||defs.length<5)return null;
+  var others=defs.filter(function(x){return x!==s&&x.def.desc.split(' ').slice(0,3).join(' ').toLowerCase()!==s.def.desc.split(' ').slice(0,3).join(' ').toLowerCase()});
+  others.sort(function(a,b){return (b.ti===s.ti?1:0)-(a.ti===s.ti?1:0)});
+  var d=shuffle(others.slice(0,10),r),opts=[],seen={};
+  d.forEach(function(x){var k=x.def.desc.toLowerCase();if(opts.length<4&&!seen[k]){seen[k]=1;opts.push(x.def.desc)}});
+  if(opts.length<4)return null;defMade++;
+  return {q:'Which of the following best describes "'+s.def.term+'"?',correct:s.def.desc,wrong:opts,ans:s.def.term,ti:s.ti};
+ }
+ function tryCloze(s,idx){
+  var cands=answerCandidates(s,pool),c=cands[idx||0];if(!c||c.sc<0||(useTerm[c.k]||0)>=2)return null;
+  var wrong=distractors(c,s,pool,r);if(wrong.length<4)return null;
+  useTerm[c.k]=(useTerm[c.k]||0)+1;
+  var blank=s.t.replace(new RegExp('(^|[^A-Za-z0-9])'+escRe(c.w)+'(?![A-Za-z0-9])'),function(m,p){return p+'__________'});
+  if(blank===s.t)return null;
+  return {q:blank,correct:c.w,wrong:wrong,ans:c.w,ti:s.ti};
+ }
+ function pass(idx){
+  var guard=0;
+  while(made.length<n&&guard++<5000){
+   var progressed=false;
+   for(var t=0;t<topics.length&&made.length<n;t++){
+    while(queues[t].length){
+     var s=queues[t].shift();if(idx===0&&usedS[s.t])continue;
+     var q=(idx===0&&tryDef(s))||tryCloze(s,idx);
+     if(q){usedS[s.t]=1;made.push(q);progressed=true;break}
+    }
+   }
+   if(!progressed)break;
+  }
+ }
+ pass(0);
+ if(made.length<n){queues=topics.map(function(){return []});sents.forEach(function(s){queues[s.ti].push(s)});queues=queues.map(function(q){return shuffle(q,r)});pass(1)}
+ if(made.length<n)return {shortage:made.length,usable:sents.length};
+ var letters=['A','B','C','D','E'],pos=[];for(var i=0;i<n;i++)pos.push(i%5);pos=shuffle(pos,r);
+ made=shuffle(made,r).slice(0,n);
+ return {objectives:made.map(function(m,i){
+  var w=shuffle(m.wrong,r).slice(0,4),o={},j=0;
+  letters.forEach(function(L,k){o[L]=k===pos[i]?m.correct:w[j++]});
+  return {q:cap1(m.q),options:o,ans:letters[pos[i]],answerText:m.ans};
+ }),defs:defs.map(function(s){return {term:s.def.term,ti:s.ti}}),pool:pool,sents:sents};
+}
+
+/* 5. Theory questions: 5 questions, each (a)(b)(c) worth 3 + 4 + 3 = 10 marks */
+function pickTerms(topics,parsed,info){
+ var out=topics.map(function(t,ti){
+  var d=(info.defs||[]).filter(function(x){return x.ti===ti}).map(function(x){return x.term});
+  var heads=parsed.heads.filter(function(h){return stem(h)===stem(t)});
+  return {topic:t,terms:d};
+ });
+ return out;
+}
+function buildTheory(topics,info,seed){
+ var r=rng(seed+7),T=topics.length?topics:['this topic'],tm=pickTerms(T,{heads:[]},info||{}),all=(info&&info.defs||[]).map(function(x){return x.term}),out=[];
+ var sets=[
+  function(t,x){return [['Define '+x+'.',3],['Explain '+x+' in your own words and give two examples.',4],['State two reasons why '+t+' is important.',3]]},
+  function(t,x){return [['What is meant by '+t+'?',3],['List four (4) points you have learnt about '+x+'.',4],['Give two uses of '+x+' in everyday life.',3]]},
+  function(t,x){return [['Mention three (3) important words used in '+t+'.',3],['Describe '+x+' clearly, using a simple example.',4],['State two mistakes students can make in '+t+' and how to avoid them.',3]]}
+ ];
+ for(var i=0;i<5;i++){
+  var ti=i%T.length,t=T[ti],terms=tm[ti]?tm[ti].terms:[],x=terms.length?terms[Math.floor(r()*terms.length)]:(all.length&&r()>.5?all[Math.floor(r()*all.length)]:t);
+  var parts=sets[(i+Math.floor(i/T.length))%3](t,x);
+  out.push({stem:'',parts:parts.map(function(p,k){return {label:'abc'[k],text:p[0],marks:p[1]}})});
+ }
+ return out;
+}
+
+/* 6. Whole papers */
+function topicsFrom(userTopics,parsed){
+ var t=userTopics.slice(0,10);if(t.length)return t;
+ if(parsed.heads.length)return parsed.heads.slice(0,10);
+ return ['General'];
+}
+function exam(notes,userTopics,seed){
+ var p=parseNotes(notes),topics=topicsFrom(userTopics,p),o=buildObjectives(p,topics,20,seed);
+ if(o.shortage!=null)return o;
+ return {topics:topics,objectives:o.objectives,theory:buildTheory(topics,o,seed)};
+}
+function assignment(notes,userTopics,seed){
+ var p=parseNotes(notes),topics=topicsFrom(userTopics,p),o=buildObjectives(p,topics,5,seed);
+ if(o.shortage!=null)return o;
+ var th=buildTheory(topics,o,seed),short=th.map(function(q){return q.parts[0].text.replace(/^(Define|What is meant by)\s+/,'Define ').replace(/\?$/,'.')});
+ return {topics:topics,objectives:o.objectives,shortQs:short};
+}
+function lesson(notes,userTopics,v,seed){
+ var p=parseNotes(notes),topics=topicsFrom(userTopics,p);assignTopics(p.sents,topics);
+ var pool=buildPool(p.sents),o=buildObjectives(p,topics,5,seed),defs=p.sents.map(defOf).filter(Boolean).slice(0,3),
+  facts=p.sents.slice(0,10).map(function(s){return s.t}),terms=defs.map(function(d){return d.term}),
+  ev=o.shortage!=null?[]:o.objectives.map(function(q){return q.q+'  (Answer: '+q.answerText+')'});
+ var md=['## Subject','- '+v.subject,'## Class','- '+v.cls,'## Topic','- '+topics.join(', '),'## Duration','- 40 minutes','## Behavioural Objectives','- By the end of the lesson, pupils should be able to:'];
+ (terms.length?terms.map(function(t){return 'define and explain '+t}):topics.map(function(t){return 'explain the main ideas of '+t})).forEach(function(x){md.push('- '+x)});
+ md.push('- answer simple questions on '+topics[0],'## Instructional Materials','- Chalkboard, textbook, charts and real objects','## Previous Knowledge','- Pupils have already learnt related ideas in '+v.subject+'.','## Introduction','- The teacher asks two or three questions on earlier work, then introduces '+topics[0]+'.','## Content (from your notes)');
+ facts.forEach(function(f){md.push('- '+f)});if(!facts.length)md.push('- Add the lesson content from your textbook.');
+ md.push('## Presentation','- Step 1: The teacher states and explains the main idea of '+topics[0]+' with examples.','- Step 2: Pupils read and copy the key points from the board.','- Step 3: The teacher guides pupils through one worked example or demonstration.','- Step 4: Pupils practise in pairs while the teacher moves round the class.','## Evaluation');
+ ev.forEach(function(e,i){md.push((i+1)+'. '+e.replace(/\s+\(Answer:.*$/,''))});if(!ev.length)md.push('- Ask five oral questions on the lesson.');
+ md.push('## Conclusion','- The teacher summarises the key points and corrects mistakes.','## Assignment','- Write short notes on '+(terms[0]||topics[0])+' and give two examples.');
+ return md.join('\n');
+}
+root.sclEngine={parseNotes:parseNotes,exam:exam,assignment:assignment,lesson:lesson,headings:function(t){return parseNotes(t).heads}};
+})(typeof window!=='undefined'?window:globalThis);
+</script>
 <style id="scl-doc-studio-css">
 #sclDocStudioModal .scl-ds{color:#2a1a14;font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
 #sclDocStudioModal .scl-ds *{box-sizing:border-box}
@@ -14007,7 +14206,7 @@ html body .bottom .scl-bottom-plus:active{background:linear-gradient(145deg,#ffe
 #sclDocStudioModal textarea{min-height:130px;resize:vertical}
 #sclDocStudioModal .scl-ds-row{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
 #sclDocStudioModal .scl-ds-btn{padding:11px 16px;border-radius:12px;border:2px solid #4a0f2a;background:#4a0f2a;color:#fff;font:700 14px system-ui,sans-serif;cursor:pointer}
-#sclDocStudioModal .scl-ds-btn.alt{background:#fff;color:#4a0f2a}
+#sclDocStudioModal .scl-ds-btn.alt{background:#fff!important;color:#4a0f2a!important;-webkit-text-fill-color:#4a0f2a!important}
 #sclDocStudioModal .scl-ds-btn.gold{background:#e7b93a;border-color:#8a5d00;color:#2a1a00}
 #sclDocStudioModal .scl-ds-btn[disabled]{opacity:.55;cursor:wait}
 #sclDocStudioModal .scl-ds-note{padding:10px 12px;border-radius:10px;background:#fff6dc;border:1px solid #e0c675;font-size:13px;color:#4a3a10;margin:8px 0}
@@ -14115,13 +14314,18 @@ function parseTopics(text){
  });
  return out;
 }
-function addTopics(text){
- var ta=$('scl-ds-topics');if(!ta)return 0;
- var have=parseTopics(ta.value),add=parseTopics(text),seen={};have.forEach(function(t){seen[t.toLowerCase()]=1});
- var n=0;add.forEach(function(t){if(!seen[t.toLowerCase()]&&have.length<10){have.push(t);seen[t.toLowerCase()]=1;n++}});
- ta.value=have.join('\n');count();return n;
+function usable(text){return window.sclEngine.parseNotes(text).sents.length}
+function addNotes(text){
+ var ta=$('scl-ds-notes');if(!ta)return 0;
+ ta.value=(ta.value.trim()?ta.value.trim()+'\n\n':'')+String(text).trim();
+ var tp=$('scl-ds-topics');if(tp&&!parseTopics(tp.value).length){var h=window.sclEngine.headings(ta.value).slice(0,10);if(h.length)tp.value=h.join('\n')}
+ count();return usable(ta.value);
 }
-function count(){var ta=$('scl-ds-topics'),c=$('scl-ds-count');if(!ta||!c)return;var n=parseTopics(ta.value).length;c.textContent=n+(n===1?' topic':' topics')+(n>10?' (only the first 10 are used)':'')}
+function count(){
+ var tp=$('scl-ds-topics'),nt=$('scl-ds-notes'),c=$('scl-ds-count'),u=$('scl-ds-usable');
+ if(tp&&c){var n=parseTopics(tp.value).length;c.textContent=n+(n===1?' topic':' topics')+(n>10?' (only the first 10 are used)':'')}
+ if(nt&&u){var k=usable(nt.value),need=S.type==='exam'?'about 25 or more':(S.type==='assignment'?'about 10 or more':'a few');u.textContent=k+' usable sentence'+(k===1?'':'s')+' found. For this document you need '+need+'.';u.style.color=k>=(S.type==='exam'?20:(S.type==='assignment'?8:1))?'#7ee2a0':'#ffd9a0'}
+}
 
 /* ---------- reading an uploaded text or Word file (images go through the Universal Scanner so OCR lives in one place) ---------- */
 async function readDocx(file){
@@ -14143,11 +14347,9 @@ async function readDocx(file){
 }
 async function onFile(e){
  var f=e.target.files&&e.target.files[0];e.target.value='';if(!f)return;
- var st=$('scl-ds-status');
  try{
-  var t=/\.docx$/i.test(f.name)?await readDocx(f):await f.text();
-  var n=addTopics(t);
-  note(n?('Added '+n+' topic'+(n>1?'s':'')+' from '+f.name+'. Please check the list below.'):'No new topics were found in that file. You can type them instead.',n?'':'bad');
+  var t=/\.docx$/i.test(f.name)?await readDocx(f):await f.text(),n=addNotes(t);
+  note(n?('Added the text from '+f.name+' ('+n+' usable sentences so far). Please check it below.'):'No readable sentences were found in that file.',n?'':'bad');
  }catch(err){note('That file could not be read. Use a .txt or .docx file, or scan a photo instead.','bad')}
 }
 function note(t,cls){var el=$('scl-ds-status');if(!el)return;el.hidden=!t;el.textContent=t||'';el.className='scl-ds-note'+(cls?' '+cls:'')}
@@ -14160,61 +14362,21 @@ function mountScanner(){
  host.style.cssText='display:block;--mpg-accent:#d9b25f;--mpg-live:#3b82f6;--mpg-busy:#facc15;--mpg-off:#ef4444;--mpg-panel:#170b12;--mpg-line:#4a2930;--mpg-text:#fff4dd;--mpg-mute:#d7c6bf';
  window.MultiPUGateway.mount(host,{endpoint:'',ocr:true,maxMb:15,minScanMs:800,autoSend:false,onEvent:function(name,d){
   if(name!=='scanned')return;
-  var txt=d&&d.result&&d.result.data&&d.result.data.extractedText||'';
-  var n=addTopics(txt);
-  note(txt?(n?'Scanned. Added '+n+' topic'+(n>1?'s':'')+' to the list. Please check them.':'Scanned, but no new topics were found.'):'Nothing readable was found. Try a clearer, well-lit photo.',txt&&n?'':'bad');
+  var txt=d&&d.result&&d.result.data&&d.result.data.extractedText||'',n=txt?addNotes(txt):0;
+  note(n?'Scanned. The text was added to the notes below ('+n+' usable sentences so far). Please check it.':(txt?'The photo was read but no full sentences were found. Try a flatter, brighter, closer photo of the page.':'Nothing readable was found. Try a clearer, well-lit photo of the page.'),n?'':'bad');
   try{host.shadowRoot.querySelector('.discard').click()}catch(_){}
  }});
 }
 
-/* ---------- prompts ---------- */
-function examPrompt(v){
- var level=/^primary/i.test(v.cls)?'primary':'secondary';
- return 'Act as an experienced Nigerian '+level+' school examiner. Generate exactly 20 multiple-choice (objective) questions with options A to E, followed by exactly 5 theory questions (where answering any 4 out of the 5 theory questions completes the full 40 theory marks to make 60 marks total, and answering the 5th question earns 10 extra bonus marks; each theory question must have sub-questions strictly limited up to a, b, and c at most) for '+v.cls+' on '+v.subject+' covering the following topics:\n'+v.topics.map(function(t){return '- '+t}).join('\n')+'\n\n'
- +'STRICT INSTRUCTIONS:\n'
- +'1. Generate EXACTLY 20 objective questions and EXACTLY 5 theory questions—no extra sections, NO marking scheme, answer key, or explanations.\n'
- +'2. Structure the mark allocations so 4 answered theory questions + 20 objectives = 60 full marks, while the 5th theory question serves as 10 extra bonus marks: Section A (Objective Questions) is 20 marks total (1 mark per question); Section B (Theory Questions) is 40 marks for answering any 4 out of 5 questions (10 marks per question) + 10 bonus marks if the 5th question is answered. Each theory question carries 10 marks, and the marks of its sub-questions (a, b, c) must add up to exactly 10 (e.g. 3 + 4 + 3).\n'
- +'3. Do not make any specific question number compulsory.\n'
- +'4. Keep the language very simple, clear, and easy for '+v.cls+' students to understand.\n'
- +'5. Distribute the questions evenly across all the listed topics.\n'
- +'6. The paper must be short enough to fit neatly onto a MAXIMUM OF ONE PAGE, so keep every question and option concise.\n'
- +'7. Do NOT include greetings, conversational filler, acknowledgments, or introductory/concluding remarks.\n\n'
- +'OUTPUT FORMAT: Return ONLY one valid JSON object and nothing else (no markdown fences). The website adds the school header, section headings, instructions and mark labels itself, so do not write them. Use exactly this shape:\n'
- +'{"objectives":[{"q":"question text","options":{"A":"...","B":"...","C":"...","D":"...","E":"..."}}],"theory":[{"stem":"optional one-line lead-in or empty string","parts":[{"label":"a","text":"...","marks":3},{"label":"b","text":"...","marks":4},{"label":"c","text":"...","marks":3}]}]}\n'
- +'"objectives" must contain exactly 20 items. "theory" must contain exactly 5 items, each with 1 to 3 parts labelled a, b, c in order, whose marks add up to 10.';
-}
-function textPrompt(kind,v){
- var tl=v.topics.map(function(t){return '- '+t}).join('\n');
- if(kind==='lesson')return 'Act as an experienced Nigerian school teacher. Write a clear, concise lesson note for '+v.cls+' on '+v.subject+' covering these topics:\n'+tl+'\n\nUse these headings in order: Subject, Class, Topic, Sub-topic, Duration, Behavioural Objectives, Instructional Materials, Previous Knowledge, Introduction, Presentation (Step 1 to Step 4, each with teacher activity and pupil activity), Evaluation (5 questions), Conclusion, Assignment. Keep the language simple for '+v.cls+'. Format with markdown: "## " for each heading and "- " for bullet points. No greetings or concluding remarks.';
- return 'Act as an experienced Nigerian school teacher. Write a take-home assignment for '+v.cls+' on '+v.subject+' covering these topics:\n'+tl+'\n\nInclude exactly 5 objective questions (options A to D) and 5 short-answer questions. Spread them evenly over the topics, use very simple language for '+v.cls+', and do NOT include answers or explanations. Format with markdown: "## " for headings, "1." style numbering and "- " for options. No greetings or concluding remarks.';
-}
-
-/* ---------- AI call, parse, validate ---------- */
-async function askAI(prompt){
- var auth={};try{var s=await window.sclSupabase.auth.getSession();if(s&&s.data&&s.data.session)auth={Authorization:'Bearer '+s.data.session.access_token}}catch(_){}
- var r=await fetch(window.SCL_EDU_AI_API,{method:'POST',signal:AbortSignal.timeout?AbortSignal.timeout(90000):undefined,headers:Object.assign({'Content-Type':'application/json',apikey:window.SCL_SUPABASE_PUBLISHABLE_KEY||''},auth),body:JSON.stringify({question:prompt,context:'Teacher document studio. Follow the requested output format exactly.'})});
- if(!r.ok)throw new Error('The school AI service returned HTTP '+r.status+'.');
- var d=await r.json();if(!d||!d.answer)throw new Error('The school AI service sent no answer.');
- return String(d.answer);
-}
-function parseExam(txt){
- var a=txt.indexOf('{'),b=txt.lastIndexOf('}');if(a<0||b<a)throw new Error('The answer was not in the expected format.');
- var j=JSON.parse(txt.slice(a,b+1)),ob=j.objectives,th=j.theory;
- if(!Array.isArray(ob)||ob.length!==20)throw new Error('Expected exactly 20 objective questions but got '+(Array.isArray(ob)?ob.length:0)+'.');
- if(!Array.isArray(th)||th.length!==5)throw new Error('Expected exactly 5 theory questions but got '+(Array.isArray(th)?th.length:0)+'.');
- ob.forEach(function(o,i){var L=['A','B','C','D','E'];if(!o||!o.q||!o.options||L.some(function(k){return !o.options[k]}))throw new Error('Objective question '+(i+1)+' must have options A to E.')});
- th.forEach(function(t,i){var p=t&&t.parts;if(!Array.isArray(p)||p.length<1||p.length>3)throw new Error('Theory question '+(i+1)+' must have between 1 and 3 parts (a, b, c).');
-  var sum=p.reduce(function(m,x){return m+(+x.marks||0)},0);if(sum!==10)throw new Error('Theory question '+(i+1)+' marks add up to '+sum+', not 10.')});
- return j;
-}
-async function generate(kind,v){
- if(kind!=='exam'){return {kind:kind,text:await askAI(textPrompt(kind,v))}}
- var p=examPrompt(v),err;
- for(var k=0;k<2;k++){
-  try{return {kind:'exam',data:parseExam(await askAI(k?p+'\n\nYour previous answer was rejected: '+err+' Fix this and return only the JSON object.':p))}}
-  catch(e){err=e.message;if(/HTTP|no answer|abort|fetch|network/i.test(err))throw e}
- }
- throw new Error('The AI could not produce a valid paper: '+err);
+/* ---------- build the document (offline engine, no AI) ---------- */
+function build(kind,v){
+ var seed=Date.now()%100000,E=window.sclEngine;
+ if(kind==='exam'){var r=E.exam(v.notes,v.topics,seed);if(r.shortage!=null)return r;return {kind:'exam',data:r,key:r.objectives.map(function(q,i){return (i+1)+'. '+q.ans+' — '+q.answerText})}}
+ if(kind==='assignment'){var a=E.assignment(v.notes,v.topics,seed);if(a.shortage!=null)return a;
+  var md=['## Section A: Objective Questions'];a.objectives.forEach(function(q,i){md.push((i+1)+'. '+q.q);'ABCDE'.split('').forEach(function(L){md.push('- '+L+'. '+q.options[L])})});
+  md.push('## Section B: Short-Answer Questions');a.shortQs.forEach(function(t,i){md.push((i+6)+'. '+t)});
+  return {kind:'text',text:md.join('\n'),key:a.objectives.map(function(q,i){return (i+1)+'. '+q.ans+' — '+q.answerText})}}
+ return {kind:'text',text:E.lesson(v.notes,v.topics,v,seed)};
 }
 
 /* ---------- rendering ---------- */
@@ -14243,7 +14405,7 @@ function mdHTML(md,v){
   var m;
   if((m=l.match(/^#{1,4}\s+(.*)/))){close();out.push('<h3>'+inl(m[1])+'</h3>')}
   else if((m=l.match(/^\s*[-*•]\s+(.*)/))){if(list!=='ul'){close();out.push('<ul>');list='ul'}out.push('<li>'+inl(m[1])+'</li>')}
-  else if((m=l.match(/^\s*\d+[.)]\s+(.*)/))){if(list!=='ol'){close();out.push('<ol>');list='ol'}out.push('<li>'+inl(m[1])+'</li>')}
+  else if((m=l.match(/^\s*\d+[.)]\s+(.*)/))){if(list!=='ol'){close();out.push('<ol start="'+parseInt(l,10)+'">');list='ol'}out.push('<li>'+inl(m[1])+'</li>')}
   else if(l.trim()){close();out.push('<p>'+inl(l)+'</p>')}
  });close();
  return '<div class="scl-paper txt"><h1>'+esc(v.school)+'</h1><p style="text-align:center;margin:0 0 6px"><b>'+esc(DOC_TYPES[S.type].title.toUpperCase())+'</b> — '+esc(v.subject)+' — '+esc(v.cls)+'</p>'+out.join('')+'</div>';
@@ -14253,14 +14415,15 @@ function fullDoc(inner,title,forWord){
  var page='@page{size:A4;margin:8mm}body{margin:0;background:#fff}';
  return '<!doctype html><html><head><meta charset="utf-8"><title>'+esc(title)+'</title><style>'+page+paperCSS().replace(/#sclDocStudioModal[^{}]*\{[^{}]*\}/g,'')+'</style></head><body>'+inner+'</body></html>';
 }
+function syncEdits(){var el=document.querySelector('#sclDocStudioModal .scl-ds-paper');if(el&&S.last){var c=el.cloneNode(true);c.removeAttribute('contenteditable');S.last.html=c.innerHTML}}
 function printDoc(){
- if(!S.last)return;
+ if(!S.last)return;syncEdits();
  var f=document.createElement('iframe');f.style.cssText='position:fixed;right:0;bottom:0;width:0;height:0;border:0';f.srcdoc=fullDoc(S.last.html,S.last.title);
  f.onload=function(){try{f.contentWindow.focus();f.contentWindow.print()}catch(e){note('Printing is not available here. Use "Download Word file" instead.','bad')}setTimeout(function(){f.remove()},60000)};
  document.body.appendChild(f);
 }
 function downloadDoc(){
- if(!S.last)return;
+ if(!S.last)return;syncEdits();
  var b=new Blob(['﻿'+fullDoc(S.last.html,S.last.title,true)],{type:'application/msword'}),a=document.createElement('a');
  a.href=URL.createObjectURL(b);a.download=S.last.title.replace(/[^\w]+/g,'_')+'.doc';document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},2000);
 }
@@ -14278,50 +14441,47 @@ function screenChoose(){
 function screenForm(){
  if(S.type==='report')return screenReport();
  var T=DOC_TYPES[S.type],prev=S.form||{};
- body().innerHTML='<div class="scl-ds"><h4>'+T.icon+' '+esc(T.title)+'</h4><p class="sub">Add the class, subject and topics. You can type them, upload a .txt or .docx file, or scan a photo.</p>'
+ body().innerHTML='<div class="scl-ds"><h4>'+T.icon+' '+esc(T.title)+'</h4><p class="sub">Everything is built on this device from the notes you give it. Type, paste, upload or scan the notes for the topics, then press Generate. No AI and no internet are used.</p>'
   +'<div class="scl-ds-grid"><label class="f">Class<select id="scl-ds-cls">'+CLASSES.map(function(c){return '<option'+(prev.cls===c?' selected':'')+'>'+c+'</option>'}).join('')+'</select></label>'
-  +'<label class="f">Subject<input id="scl-ds-subject" placeholder="e.g. Mathematics" value="'+esc(prev.subject||'')+'" autocomplete="off"></label>'
+  +'<label class="f">Subject<input id="scl-ds-subject" placeholder="e.g. Basic Science" value="'+esc(prev.subject||'')+'" autocomplete="off"></label>'
   +(S.type==='exam'?'<label class="f">Examination<select id="scl-ds-exam">'+['First Term Examination','Second Term Examination','Third Term Examination','Mid-Term Test'].map(function(c){return '<option'+(prev.exam===c?' selected':'')+'>'+c+'</option>'}).join('')+'</select></label><label class="f">Time allowed<input id="scl-ds-time" value="'+esc(prev.time||'45 Mins')+'"></label>':'')
   +'<label class="f">School name<input id="scl-ds-school" value="'+esc(prev.school||SCHOOL)+'"></label></div>'
-  +'<label class="f" style="margin-top:10px">Topics (one per line, up to 10) <span id="scl-ds-count" style="font-weight:400;color:#5b4a43"></span><textarea id="scl-ds-topics" placeholder="Fractions&#10;Decimals&#10;Percentages">'+esc((prev.topics||[]).join('\n'))+'</textarea></label>'
-  +'<div class="scl-ds-row"><button type="button" class="scl-ds-btn alt" id="scl-ds-upload">⬆ Upload topic file</button><input type="file" id="scl-ds-file" accept=".txt,.md,.csv,.docx" hidden></div>'
-  +'<details class="scl-ds-scan" id="scl-ds-scandet"><summary>📷 Scan topics with the Universal Scanner</summary><p class="sub" style="margin:8px 0">Photograph a scheme of work or topic list. Text is read on your phone and added to the topics above. Nothing is sent to the school library.</p><div id="scl-ds-scanhost"></div></details>'
+  +'<label class="f" style="margin-top:10px">Topics (one per line, up to 10; leave empty to use the headings in your notes) <span id="scl-ds-count" style="font-weight:400"></span><textarea id="scl-ds-topics" style="min-height:70px" placeholder="Photosynthesis&#10;Respiration&#10;Nutrition">'+esc((prev.topics||[]).join('\n'))+'</textarea></label>'
+  +'<label class="f" style="margin-top:10px">Notes for these topics (the questions are made from this text) <span id="scl-ds-usable" style="font-weight:400;display:block"></span><textarea id="scl-ds-notes" style="min-height:170px" placeholder="Paste or type the notes here, or use Upload / Scan below. Put each topic name on its own line above its notes.">'+esc(prev.notes||'')+'</textarea></label>'
+  +'<div class="scl-ds-row"><button type="button" class="scl-ds-btn alt" id="scl-ds-upload">⬆ Upload notes (.txt or .docx)</button><input type="file" id="scl-ds-file" accept=".txt,.md,.csv,.docx" hidden></div>'
+  +'<details class="scl-ds-scan" id="scl-ds-scandet"><summary>📷 Scan a page of notes with the Universal Scanner</summary><p class="sub" style="margin:8px 0">Photograph a textbook or notebook page: hold the phone flat, in good light, with the whole page in view. The text is read on your phone and added to the notes above. Nothing is sent to the school library.</p><div id="scl-ds-scanhost"></div></details>'
   +'<div id="scl-ds-status" class="scl-ds-note" hidden role="status" aria-live="polite"></div>'
   +'<div class="scl-ds-row"><button type="button" class="scl-ds-btn gold" id="scl-ds-go">✨ Generate</button><button type="button" class="scl-ds-btn alt" id="scl-ds-back">← Change document type</button></div></div>';
- var ta=$('scl-ds-topics');ta.oninput=count;count();
+ $('scl-ds-topics').oninput=count;$('scl-ds-notes').oninput=count;count();
  $('scl-ds-upload').onclick=function(){$('scl-ds-file').click()};$('scl-ds-file').onchange=onFile;
  $('scl-ds-scandet').addEventListener('toggle',function(){if(this.open)mountScanner()});
  $('scl-ds-back').onclick=screenChoose;$('scl-ds-go').onclick=run;
 }
 function readForm(){
- return {cls:$('scl-ds-cls').value,subject:$('scl-ds-subject').value.trim(),exam:$('scl-ds-exam')?$('scl-ds-exam').value:'',time:$('scl-ds-time')?$('scl-ds-time').value.trim()||'45 Mins':'',school:$('scl-ds-school').value.trim()||SCHOOL,topics:parseTopics($('scl-ds-topics').value).slice(0,10)};
+ return {cls:$('scl-ds-cls').value,subject:$('scl-ds-subject').value.trim(),exam:$('scl-ds-exam')?$('scl-ds-exam').value:'',time:$('scl-ds-time')?$('scl-ds-time').value.trim()||'45 Mins':'',school:$('scl-ds-school').value.trim()||SCHOOL,topics:parseTopics($('scl-ds-topics').value).slice(0,10),notes:$('scl-ds-notes').value};
 }
-async function run(){
+function run(){
  if(S.busy)return;var v=readForm();S.form=v;
  if(!v.subject){note('Please enter the subject.','bad');$('scl-ds-subject').focus();return}
- if(!v.topics.length){note('Please add at least one topic.','bad');$('scl-ds-topics').focus();return}
- S.busy=true;var go=$('scl-ds-go');go.disabled=true;go.textContent='Generating… this can take up to a minute';note('');
- try{
-  var r=await generate(S.type,v);
-  S.last={html:r.kind==='exam'?examHTML(r.data,v):mdHTML(r.text,v),title:v.subject+' '+v.cls+' '+DOC_TYPES[S.type].title,v:v};
-  screenResult();
- }catch(e){
-  S.busy=false;go.disabled=false;go.textContent='✨ Generate';
-  note((e&&e.message||'Something went wrong.')+' You can try again, or copy the prompt below into any AI tool.','bad');
-  var st=$('scl-ds-status'),pr=S.type==='exam'?examPrompt(v):textPrompt(S.type,v);
-  var b=document.createElement('button');b.type='button';b.className='scl-ds-btn alt';b.style.marginTop='8px';b.textContent='Copy the prompt';
-  b.onclick=function(){try{navigator.clipboard.writeText(pr);b.textContent='Copied ✓'}catch(_){window.prompt('Copy this prompt:',pr)}};st.appendChild(document.createElement('br'));st.appendChild(b);
- }
- S.busy=false;
+ if(!v.notes.trim()){note('Please add the notes first: type or paste them, upload a file, or scan a page.','bad');$('scl-ds-notes').focus();return}
+ var r=build(S.type,v);
+ if(r.shortage!=null){note('Only '+r.shortage+' good questions could be made from these notes ('+r.usable+' usable sentences). Add more notes (full sentences, such as definitions and facts) and press Generate again.','bad');return}
+ S.key=r.key||null;
+ S.last={html:r.kind==='exam'?examHTML(r.data,v):mdHTML(r.text,v),title:v.subject+' '+v.cls+' '+DOC_TYPES[S.type].title,v:v};
+ screenResult();
 }
 function screenResult(){
  var T=DOC_TYPES[S.type];
- body().innerHTML='<div class="scl-ds"><h4>'+T.icon+' Your '+esc(T.title.toLowerCase())+' is ready</h4><p class="sub">'+(S.type==='report'?'Check the marks and comment before printing.':'Read it through before printing. AI can make mistakes, so please check the questions.')+'</p>'
-  +'<div class="scl-ds-row"><button type="button" class="scl-ds-btn gold" id="scl-ds-print">🖨 Print / Save as PDF</button><button type="button" class="scl-ds-btn" id="scl-ds-word">⬇ Download Word file</button><button type="button" class="scl-ds-btn alt" id="scl-ds-redo">↻ Generate again</button><button type="button" class="scl-ds-btn alt" id="scl-ds-edit">← Edit topics</button></div>'
+ body().innerHTML='<div class="scl-ds"><h4>'+T.icon+' Your '+esc(T.title.toLowerCase())+' is ready</h4><p class="sub">'+(S.type==='report'?'Check the marks and comment before printing.':'Tap any text in the page to correct it before printing.')+'</p>'
+  +'<div class="scl-ds-row"><button type="button" class="scl-ds-btn gold" id="scl-ds-print">🖨 Print / Save as PDF</button><button type="button" class="scl-ds-btn" id="scl-ds-word">⬇ Download Word file</button>'
+  +(S.key?'<button type="button" class="scl-ds-btn alt" id="scl-ds-keybtn">🔑 Answer key (teacher only)</button>':'')
+  +'<button type="button" class="scl-ds-btn alt" id="scl-ds-redo">↻ Make a different version</button><button type="button" class="scl-ds-btn alt" id="scl-ds-edit">← Edit notes</button></div>'
   +'<div id="scl-ds-status" class="scl-ds-note" hidden role="status"></div>'
-  +'<div class="scl-ds-paperwrap" data-scl-keep><div class="scl-ds-paper" data-scl-keep>'+S.last.html+'</div></div>'
+  +(S.key?'<div id="scl-ds-key" class="scl-ds-note" hidden><b>Answer key (not printed with the paper)</b><br>'+S.key.map(esc).join('<br>')+'</div>':'')
+  +'<div class="scl-ds-paperwrap" data-scl-keep><div class="scl-ds-paper" data-scl-keep'+(S.type==='report'?'':' contenteditable="true"')+'>'+S.last.html+'</div></div>'
   +'<p class="sub" style="margin-top:8px">The Word file opens in Microsoft Word and can be uploaded to Google Docs from Google Drive.</p></div>';
  $('scl-ds-print').onclick=printDoc;$('scl-ds-word').onclick=downloadDoc;$('scl-ds-edit').onclick=screenForm;
+ if($('scl-ds-keybtn'))$('scl-ds-keybtn').onclick=function(){var k=$('scl-ds-key');k.hidden=!k.hidden};
  $('scl-ds-redo').onclick=function(){screenForm();if(S.type!=='report')setTimeout(run,0)};
  if(S.type==='report'){$('scl-ds-redo').style.display='none';$('scl-ds-edit').textContent='← Change marks'}
 }
@@ -14341,7 +14501,7 @@ function paperHash(){
  setTimeout(function(){try{toast('Exam paper '+c+(info?' — '+info.subject+', '+info.cls:'')+'. Sign in to continue to your class tests.');openM('sclSuiteModal');sclSuiteTab('cbt')}catch(_){}},2500);
 }
 window.addEventListener('hashchange',paperHash);window.addEventListener('load',paperHash);
-window.__sclDocStudio={parseTopics:parseTopics,examHTML:examHTML,parseExam:parseExam,examPrompt:examPrompt};
+window.__sclDocStudio={parseTopics:parseTopics,examHTML:examHTML,build:build};
 })();
 </script>
 
