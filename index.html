@@ -9781,7 +9781,7 @@ if(typeof window.renderResults==='function'&&!window.renderResults.__att){
 /* ---------- self-test ---------- */
 window.sclSelfTest=function(){const rows=[];const seen=new Set();QA('.scl-acc-body button,#sclShortcutGrid button,.scl-suite-all-tools button,.scl-home-action-clean button,nav a[onclick]').forEach(b=>{const t=label(b),oc=b.getAttribute('onclick')||'';if(!oc||seen.has(t+oc))return;seen.add(t+oc);const names=(oc.match(/(?:^|[;{\s])([A-Za-z_$][\w$]*)\s*\(/g)||[]).map(x=>x.replace(/[;{\s(]/g,'')).filter(n=>!KW.has(n));const bad=names.filter(n=>typeof window[n]!=='function');rows.push([t,bad.length?'❌ missing: '+bad.join(', '):'✅ connected'])});
  const sys=[['Student attendance screen',typeof window.renderStudentAttendance==='function'],['CBT / Assignments / Lesson notes / Bulk screens',typeof window.sclOpenCbt==='function'],['Notification outbox',typeof window.sclOpenOutbox==='function'],['School database connection',!!(sb()&&sb().auth)],['Biometrics (https + device)',bioOK()],['Camera available',!!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia)]];
- const pend=['Cloud sync, student attendance table and server-side user IDs — need the setup SQL run once in Supabase (scl_setup.sql)','Automatic parent email/SMS — needs the scl-notify server function deployed with your mail/SMS keys; until then the Notification Outbox gives one-tap send buttons','Facebook & LinkedIn links — disabled until you supply the URLs','Biometric sign-in — works on https with a phone/computer that has fingerprint or face unlock; set up once from your profile'];
+ const pend=['Cloud sync, student attendance table and server-side user IDs — need the setup SQL run once in Supabase (scl_setup.sql)','Parent email/SMS — sent from the Notification Outbox with one-tap buttons','Facebook & LinkedIn links — disabled until you supply the URLs','Biometric sign-in — works on https with a phone/computer that has fingerprint or face unlock; set up once from your profile'];
  modal300('sclSelfTestModal','<h3>🧪 Function Self-Test</h3><div class="scl300-note">Checks that each button is wired to a working function on this page.</div><table class="scl300-tbl"><tr><th>Button</th><th>Result</th></tr>'+rows.map(r=>'<tr><td>'+esc(r[0])+'</td><td>'+r[1]+'</td></tr>').join('')+sys.map(s=>'<tr><td>'+s[0]+'</td><td>'+(s[1]?'✅ ready':'⚠️ not available')+'</td></tr>').join('')+'</table><h3 style="margin-top:14px">Sections still to build / automate</h3><ul style="font-size:13px;line-height:1.7">'+pend.map(p=>'<li>'+esc(p)+'</li>').join('')+'</ul>');fb('Self-test finished: '+rows.filter(r=>r[1][0]==='✅').length+' of '+rows.length+' buttons connected.','ok',3500)};
 /* ---------- boot ---------- */
 function tick(){try{installLogos();decorate();groupAll();enhanceProfile();bootReg();bioButtons();runAC()}catch(e){}}
@@ -9812,15 +9812,14 @@ const norm234=p=>String(p||'').replace(/\D/g,'').replace(/^0/,'234');
 window.sclNotifyBatch=async function(msgs,opts){opts=opts||{};msgs=(msgs||[]).filter(m=>m&&(m.email||m.phone));const ob=LS('sclOutbox',[]);const ids=[];
  msgs.forEach(m=>{const e={id:nid(),at:Date.now(),kind:opts.kind||'notice',email:m.email||'',phone:m.phone||'',subject:m.subject||'School notice',text:m.text||'',status:'queued'};ob.push(e);ids.push(e.id)});
  ob.push({id:nid(),at:Date.now(),kind:(opts.kind||'notice')+'-school',email:SCHOOL_EMAIL,phone:'',subject:'[Copy] '+(opts.summary||msgs.length+' notice(s)'),text:(opts.summary||'')+'\n\n'+msgs.map(m=>m.text).join('\n'),status:'queued'});ids.push(ob[ob.length-1].id);
- let mode='manual',sent=0;const down=+sessionStorage.getItem('sclNotifyDown')||0;
- if(SUP()&&window.__sclRawFetch&&Date.now()-down>600000){try{const s=await sb().auth.getSession(),tok=s&&s.data&&s.data.session&&s.data.session.access_token;if(tok){const r=await window.__sclRawFetch(SUP()+'/functions/v1/scl-notify',{method:'POST',headers:{'Content-Type':'application/json',apikey:PUBK(),Authorization:'Bearer '+tok},body:JSON.stringify({school_email:SCHOOL_EMAIL,summary:opts.summary||'',messages:msgs.map(m=>({email:m.email||'',phone:m.phone||'',subject:m.subject||'School notice',text:m.text||''}))})});const d=await r.json().catch(()=>({}));if(r.ok&&d&&d.ok){mode='auto';sent=(d.sent&&(d.sent.email+d.sent.sms))||msgs.length}else sessionStorage.setItem('sclNotifyDown',String(Date.now()))}}catch(e){sessionStorage.setItem('sclNotifyDown',String(Date.now()))}}
+ let mode='manual',sent=0;
  if(mode==='auto')ob.forEach(e=>{if(ids.indexOf(e.id)>-1)e.status='sent'});SV('sclOutbox',ob.slice(-2000));return{mode,sent,queued:mode==='auto'?0:msgs.length}};
 window.sclOpenOutbox=function(){const ob=LS('sclOutbox',[]).slice().reverse(),q=ob.filter(x=>x.status==='queued');
- const h='<h3>📨 Notification Outbox</h3><div class="scl300-note">'+(q.length?'<b>'+q.length+'</b> waiting to be sent. Automatic sending needs the <code>scl-notify</code> server function (see the setup file); until then use the buttons.':'Nothing is waiting. ✔')+' Every notice is also copied to <b>'+SCHOOL_EMAIL+'</b>.</div><div class="scl300-stats"><div><b>'+ob.filter(x=>x.status==='sent').length+'</b>Sent</div><div><b>'+q.length+'</b>Waiting</div><div><b>'+ob.length+'</b>Total</div><div><b>'+(+sessionStorage.getItem("sclNotifyDown")?'Manual':'Auto')+'</b>Mode</div></div><button class="scl300-cta" data-o="retry" type="button">🔁 Retry automatic send</button><a class="scl300-cta alt" style="display:inline-block;text-decoration:none" href="mailto:'+SCHOOL_EMAIL+'?bcc='+encodeURIComponent(q.map(x=>x.email).filter(e=>e&&e!==SCHOOL_EMAIL).filter((e,i,a)=>a.indexOf(e)===i).join(','))+'&subject='+encodeURIComponent('School notice')+'">📧 Email all waiting</a><button class="scl300-cta warn" data-o="clear" type="button">🧹 Clear sent</button><div style="overflow:auto;margin-top:8px"><table class="scl300-tbl"><tr><th>When</th><th>To</th><th>Message</th><th>Status</th><th>Send</th></tr>'+(ob.slice(0,80).map(x=>'<tr><td>'+new Date(x.at).toLocaleString()+'</td><td>'+esc(x.email||x.phone)+'</td><td><b>'+esc(x.subject)+'</b><br><small>'+esc(String(x.text).slice(0,140))+'</small></td><td>'+(x.status==='sent'?'✅ sent':'⏳ waiting')+'</td><td>'+(x.status==='sent'?'':(x.phone?'<a href="https://wa.me/'+norm234(x.phone)+'?text='+encodeURIComponent(x.text)+'" target="_blank" rel="noopener">💬</a> ':'')+(x.email?'<a href="mailto:'+esc(x.email)+'?cc='+SCHOOL_EMAIL+'&subject='+encodeURIComponent(x.subject)+'&body='+encodeURIComponent(x.text)+'">✉️</a> ':'')+'<button type="button" data-o="done" data-id="'+x.id+'" style="border:0;background:#e6f7ec;border-radius:8px;padding:3px 7px;cursor:pointer" title="Mark sent">✔</button>')+'</td></tr>').join('')||'<tr><td colspan="5">No notices yet.</td></tr>')+'</table></div>';
+ const h='<h3>📨 Notification Outbox</h3><div class="scl300-note">'+(q.length?'<b>'+q.length+'</b> waiting to be sent. Use the buttons below to send them.':'Nothing is waiting. ✔')+' Every notice is also copied to <b>'+SCHOOL_EMAIL+'</b>.</div><div class="scl300-stats"><div><b>'+ob.filter(x=>x.status==='sent').length+'</b>Sent</div><div><b>'+q.length+'</b>Waiting</div><div><b>'+ob.length+'</b>Total</div><div><b>Manual</b>Mode</div></div><a class="scl300-cta alt" style="display:inline-block;text-decoration:none" href="mailto:'+SCHOOL_EMAIL+'?bcc='+encodeURIComponent(q.map(x=>x.email).filter(e=>e&&e!==SCHOOL_EMAIL).filter((e,i,a)=>a.indexOf(e)===i).join(','))+'&subject='+encodeURIComponent('School notice')+'">📧 Email all waiting</a><button class="scl300-cta warn" data-o="clear" type="button">🧹 Clear sent</button><div style="overflow:auto;margin-top:8px"><table class="scl300-tbl"><tr><th>When</th><th>To</th><th>Message</th><th>Status</th><th>Send</th></tr>'+(ob.slice(0,80).map(x=>'<tr><td>'+new Date(x.at).toLocaleString()+'</td><td>'+esc(x.email||x.phone)+'</td><td><b>'+esc(x.subject)+'</b><br><small>'+esc(String(x.text).slice(0,140))+'</small></td><td>'+(x.status==='sent'?'✅ sent':'⏳ waiting')+'</td><td>'+(x.status==='sent'?'':(x.phone?'<a href="https://wa.me/'+norm234(x.phone)+'?text='+encodeURIComponent(x.text)+'" target="_blank" rel="noopener">💬</a> ':'')+(x.email?'<a href="mailto:'+esc(x.email)+'?cc='+SCHOOL_EMAIL+'&subject='+encodeURIComponent(x.subject)+'&body='+encodeURIComponent(x.text)+'">✉️</a> ':'')+'<button type="button" data-o="done" data-id="'+x.id+'" style="border:0;background:#e6f7ec;border-radius:8px;padding:3px 7px;cursor:pointer" title="Mark sent">✔</button>')+'</td></tr>').join('')||'<tr><td colspan="5">No notices yet.</td></tr>')+'</table></div>';
  const m=modal300('sclOutboxModal',h);m.onclick=async function(e){if(e.target===m||e.target.closest('[data-x]')){m.classList.remove('open');return}const t=e.target.closest('[data-o]');if(!t)return;const a=t.dataset.o,all=LS('sclOutbox',[]);
   if(a==='done'){const x=all.find(y=>y.id===t.dataset.id);if(x)x.status='sent';SV('sclOutbox',all);fb('Marked as sent.','ok');window.sclOpenOutbox()}
   if(a==='clear'){SV('sclOutbox',all.filter(x=>x.status!=='sent'));fb('Sent notices cleared.','ok');window.sclOpenOutbox()}
-  if(a==='retry'){sessionStorage.removeItem('sclNotifyDown');const w=all.filter(x=>x.status==='queued'&&x.kind.indexOf('-school')<0);if(!w.length){fb('Nothing waiting to send.','info');return}fb('Trying to send '+w.length+' notice(s)…','info',1500);SV('sclOutbox',all.filter(x=>x.status!=='queued'));const r=await window.sclNotifyBatch(w.map(x=>({email:x.email,phone:x.phone,subject:x.subject,text:x.text})),{kind:'retry',summary:'Retry of '+w.length+' notice(s)'});fb(r.mode==='auto'?'Sent automatically ✔':'Automatic sending is still not connected — use the ✉️/💬 buttons.',r.mode==='auto'?'ok':'warn',3500);window.sclOpenOutbox()}}};
+  }};
 function contactOf(name,cls){const n=String(name||'').toLowerCase().trim();return(LS('sclStuRoster',[])).find(s=>s.name.toLowerCase()===n&&(!cls||String(s.cls).toLowerCase()===String(cls).toLowerCase()))||null}
 /* ---------- shared UI helpers ---------- */
 function modeBar(){const m=LS('sclMode','staff'),on='background:#7b4dff;color:#fff;border-color:#7b4dff';return '<div class="scl300-chips" style="margin-bottom:8px"><button type="button" data-act="mode" data-v="staff" style="'+(m==='staff'?on:'')+'">👩‍🏫 Teacher / Admin</button><button type="button" data-act="mode" data-v="student" style="'+(m==='student'?on:'')+'">🧒 Student</button></div>'}
@@ -10240,8 +10239,7 @@ var tries=0,iv=setInterval(function(){init();if(document.querySelector('.hv2-gro
  function sync(){if(!U||!K||!tok())return Promise.resolve();var a=LS('sclStuAtt',{}),done=LS('sclAttSynced',{}),batch=[];
   Object.keys(a).forEach(function(k){var r=a[k];if(r&&r.savedAt&&done[k]!==r.savedAt)batch.push({att_key:k,att_date:r.date,class_name:r.cls,period:String(r.period==null?'0':r.period),subject:r.subject||'',teacher_name:r.teacher||'',marks:r.marks||{},saved_at:r.savedAt})});
   if(!batch.length)return Promise.resolve();
-  return fetch(U+'/rest/v1/student_attendance?on_conflict=att_key',{method:'POST',headers:hdr({Prefer:'resolution=merge-duplicates,return=minimal'}),body:JSON.stringify(batch)}).then(function(r){if(r.ok){batch.forEach(function(b){done[b.att_key]=b.saved_at});localStorage.setItem('sclAttSynced',JSON.stringify(done));
-   fetch(U+'/functions/v1/scl-student-attendance-notify',{method:'POST',headers:hdr(),body:JSON.stringify({keys:batch.map(function(b){return b.att_key})})}).catch(function(){})}}).catch(function(){})}
+  return fetch(U+'/rest/v1/student_attendance?on_conflict=att_key',{method:'POST',headers:hdr({Prefer:'resolution=merge-duplicates,return=minimal'}),body:JSON.stringify(batch)}).then(function(r){if(r.ok){batch.forEach(function(b){done[b.att_key]=b.saved_at});localStorage.setItem('sclAttSynced',JSON.stringify(done));}}).catch(function(){})}
  setInterval(function(){try{sync()}catch(e){}},60000);
  var t=setInterval(function(){var f=window.renderStudentAttendance;if(f&&/ng-conf/.test(f.toString())&&!f.__ng2){clearInterval(t);
   var w=function(){var r=f.apply(this,arguments),b=document.getElementById('sclSuiteBody');
@@ -14007,14 +14005,15 @@ function cleanText(t){return String(t||'').replace(/\r/g,'').replace(/-\n(?=[a-z
 function isHeading(l){var w=l.split(' ');return w.length<=7&&l.length<=60&&!/[.!?,;]$/.test(l)&&/^[A-Z0-9]/.test(l)&&/[A-Za-z]{3}/.test(l)}
 
 /* 1. Read the notes into clean sentences and headings */
-function parseNotes(text){
- var lines=cleanText(text).split('\n'),sents=[],heads=[],buf='',cur=null;
+function parseNotes(text,tops){
+ var lines=cleanText(text).split('\n'),sents=[],heads=[],buf='',cur=null,top=null,tl=(tops||[]).map(function(t){return t.toLowerCase()});
  function add(s){s=s.replace(/\s+/g,' ').trim();var w=s.split(' ').length,letters=(s.match(/[A-Za-z]/g)||[]).length;
-  if(w<6||w>34||letters/s.length<.72||/https?:|www\./i.test(s))return;sents.push({t:s,head:cur})}
+  if(w<6||w>34||letters/s.length<.72||/https?:|www\./i.test(s))return;sents.push({t:s,head:cur,top:top})}
  function flush(){if(!buf.trim())return;(buf.match(/[^.!?]+[.!?]+(?:\s|$)|[^.!?]+$/g)||[]).forEach(add);buf=''}
  lines.forEach(function(l){l=l.trim();if(!l){flush();return}
   if(/^[-*•▪●◦]\s|^\(?\d{1,2}[.)]\s/.test(l)){flush();buf=l.replace(/^[-*•▪●◦]\s*|^\(?\d{1,2}[.)]\s*/,'');if(!/[.!?]$/.test(buf))buf+='.';flush();return}
-  if(isHeading(l)){flush();cur=l.replace(/:$/,'');if(heads.indexOf(cur)<0)heads.push(cur);return}
+  var ti=tl.indexOf(l.toLowerCase());if(ti>=0){flush();top=tops[ti];cur=top;return}
+  if(isHeading(l)){flush();cur=l.replace(/:$/,'');if(!top&&heads.indexOf(cur)<0)heads.push(cur);return}
   buf+=(buf?' ':'')+l});
  flush();
  return {sents:sents,heads:heads};
@@ -14024,6 +14023,7 @@ function parseNotes(text){
 function assignTopics(sents,topics){
  var tw=topics.map(function(t){return t.split(/\s+/).map(stem).filter(function(w){return w.length>=4&&!STOP[w]})}),prev=0;
  sents.forEach(function(s,i){
+  if(s.top!=null){var k=topics.indexOf(s.top);if(k>=0){s.ti=k;prev=k;return}}
   var toks=(s.t.match(/[A-Za-z]+/g)||[]).map(stem),hd=(s.head||'').split(/\s+/).map(stem),best=-1,bs=0;
   tw.forEach(function(ws,ti){var sc=0;ws.forEach(function(w){if(toks.indexOf(w)>=0)sc++;if(hd.indexOf(w)>=0)sc+=2});if(sc>bs){bs=sc;best=ti}});
   s.ti=best>=0?best:(topics.length?(i<1?0:prev):0);prev=s.ti;
@@ -14163,18 +14163,18 @@ function topicsFrom(userTopics,parsed){
  return ['General'];
 }
 function exam(notes,userTopics,seed){
- var p=parseNotes(notes),topics=topicsFrom(userTopics,p),o=buildObjectives(p,topics,20,seed);
+ var p=parseNotes(notes,userTopics.slice(0,10)),topics=topicsFrom(userTopics,p),o=buildObjectives(p,topics,20,seed);
  if(o.shortage!=null)return o;
  return {topics:topics,objectives:o.objectives,theory:buildTheory(topics,o,seed)};
 }
 function assignment(notes,userTopics,seed){
- var p=parseNotes(notes),topics=topicsFrom(userTopics,p),o=buildObjectives(p,topics,5,seed);
+ var p=parseNotes(notes,userTopics.slice(0,10)),topics=topicsFrom(userTopics,p),o=buildObjectives(p,topics,5,seed);
  if(o.shortage!=null)return o;
  var th=buildTheory(topics,o,seed),short=th.map(function(q){return q.parts[0].text.replace(/^(Define|What is meant by)\s+/,'Define ').replace(/\?$/,'.')});
  return {topics:topics,objectives:o.objectives,shortQs:short};
 }
 function lesson(notes,userTopics,v,seed){
- var p=parseNotes(notes),topics=topicsFrom(userTopics,p);assignTopics(p.sents,topics);
+ var p=parseNotes(notes,userTopics.slice(0,10)),topics=topicsFrom(userTopics,p);assignTopics(p.sents,topics);
  var pool=buildPool(p.sents),o=buildObjectives(p,topics,5,seed),defs=p.sents.map(defOf).filter(Boolean).slice(0,3),
   facts=p.sents.slice(0,10).map(function(s){return s.t}),terms=defs.map(function(d){return d.term}),
   ev=o.shortage!=null?[]:o.objectives.map(function(q){return q.q+'  (Answer: '+q.answerText+')'});
@@ -14314,44 +14314,13 @@ function parseTopics(text){
  });
  return out;
 }
-function usable(text){return window.sclEngine.parseNotes(text).sents.length}
-function addNotes(text){
- var ta=$('scl-ds-notes');if(!ta)return 0;
- ta.value=(ta.value.trim()?ta.value.trim()+'\n\n':'')+String(text).trim();
- var tp=$('scl-ds-topics');if(tp&&!parseTopics(tp.value).length){var h=window.sclEngine.headings(ta.value).slice(0,10);if(h.length)tp.value=h.join('\n')}
- count();return usable(ta.value);
+function addTopics(text){
+ var ta=$('scl-ds-topics');if(!ta)return 0;
+ var have=parseTopics(ta.value),seen={};have.forEach(function(t){seen[t.toLowerCase()]=1});var n=0;
+ parseTopics(text).forEach(function(t){if(!seen[t.toLowerCase()]&&have.length<10){have.push(t);seen[t.toLowerCase()]=1;n++}});
+ ta.value=have.join('\n');count();return n;
 }
-function count(){
- var tp=$('scl-ds-topics'),nt=$('scl-ds-notes'),c=$('scl-ds-count'),u=$('scl-ds-usable');
- if(tp&&c){var n=parseTopics(tp.value).length;c.textContent=n+(n===1?' topic':' topics')+(n>10?' (only the first 10 are used)':'')}
- if(nt&&u){var k=usable(nt.value),need=S.type==='exam'?'about 25 or more':(S.type==='assignment'?'about 10 or more':'a few');u.textContent=k+' usable sentence'+(k===1?'':'s')+' found. For this document you need '+need+'.';u.style.color=k>=(S.type==='exam'?20:(S.type==='assignment'?8:1))?'#7ee2a0':'#ffd9a0'}
-}
-
-/* ---------- reading an uploaded text or Word file (images go through the Universal Scanner so OCR lives in one place) ---------- */
-async function readDocx(file){
- var buf=new Uint8Array(await file.arrayBuffer()),dv=new DataView(buf.buffer),i=buf.length-22;
- while(i>=0&&dv.getUint32(i,true)!==0x06054b50)i--;
- if(i<0)throw new Error('not a docx');
- var n=dv.getUint16(i+10,true),off=dv.getUint32(i+16,true);
- for(var k=0;k<n;k++){
-  var nl=dv.getUint16(off+28,true),el=dv.getUint16(off+30,true),cl=dv.getUint16(off+32,true),lo=dv.getUint32(off+42,true),m=dv.getUint16(off+10,true),cs=dv.getUint32(off+20,true);
-  var name=new TextDecoder().decode(buf.subarray(off+46,off+46+nl));
-  if(name==='word/document.xml'){
-   var ln=dv.getUint16(lo+26,true),le=dv.getUint16(lo+28,true),data=buf.subarray(lo+30+ln+le,lo+30+ln+le+cs);
-   var xml=m===0?new TextDecoder().decode(data):await new Response(new Blob([data]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).text();
-   return xml.replace(/<\/w:p>/g,'\n').replace(/<[^>]+>/g,'').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>');
-  }
-  off+=46+nl+el+cl;
- }
- throw new Error('no text found');
-}
-async function onFile(e){
- var f=e.target.files&&e.target.files[0];e.target.value='';if(!f)return;
- try{
-  var t=/\.docx$/i.test(f.name)?await readDocx(f):await f.text(),n=addNotes(t);
-  note(n?('Added the text from '+f.name+' ('+n+' usable sentences so far). Please check it below.'):'No readable sentences were found in that file.',n?'':'bad');
- }catch(err){note('That file could not be read. Use a .txt or .docx file, or scan a photo instead.','bad')}
-}
+function count(){var ta=$('scl-ds-topics'),c=$('scl-ds-count');if(!ta||!c)return;var n=parseTopics(ta.value).length;c.textContent=n+(n===1?' topic':' topics')+(n>10?' (only the first 10 are used)':'')}
 function note(t,cls){var el=$('scl-ds-status');if(!el)return;el.hidden=!t;el.textContent=t||'';el.className='scl-ds-note'+(cls?' '+cls:'')}
 
 /* ---------- Universal Scanner: a second instance of the SAME scanner engine, set to read text only and never send anything to the school library ---------- */
@@ -14362,8 +14331,8 @@ function mountScanner(){
  host.style.cssText='display:block;--mpg-accent:#d9b25f;--mpg-live:#3b82f6;--mpg-busy:#facc15;--mpg-off:#ef4444;--mpg-panel:#170b12;--mpg-line:#4a2930;--mpg-text:#fff4dd;--mpg-mute:#d7c6bf';
  window.MultiPUGateway.mount(host,{endpoint:'',ocr:true,maxMb:15,minScanMs:800,autoSend:false,onEvent:function(name,d){
   if(name!=='scanned')return;
-  var txt=d&&d.result&&d.result.data&&d.result.data.extractedText||'',n=txt?addNotes(txt):0;
-  note(n?'Scanned. The text was added to the notes below ('+n+' usable sentences so far). Please check it.':(txt?'The photo was read but no full sentences were found. Try a flatter, brighter, closer photo of the page.':'Nothing readable was found. Try a clearer, well-lit photo of the page.'),n?'':'bad');
+  var txt=d&&d.result&&d.result.data&&d.result.data.extractedText||'',n=txt?addTopics(txt):0;
+  note(n?'Scanned. '+n+' topic'+(n>1?'s were':' was')+' added to the list. Please check them.':(txt?'The photo was read but no new topics were found.':'Nothing readable was found. Try a clearer, well-lit photo.'),n?'':'bad');
   try{host.shadowRoot.querySelector('.discard').click()}catch(_){}
  }});
 }
@@ -14438,46 +14407,84 @@ function screenChoose(){
  body().querySelectorAll('.scl-ds-card').forEach(function(b){b.onclick=function(){S.type=b.dataset.type;screenForm()}});
  $('scl-ds-notnow').onclick=function(){closeM('sclDocStudioModal')};
 }
+/* ---------- research: reference text for each topic from Simple English Wikipedia (then English Wikipedia). The offline engine turns it into questions. ---------- */
+var CUT=/^(References|Other websites|Related pages|See also|External links|Notes|Sources|Further reading|Bibliography)\s*$/i;
+function cleanWeb(t){
+ var out=[];
+ String(t||'').split('\n').some(function(l){if(CUT.test(l.trim()))return true;out.push(l);return false});
+ return out.join('\n').replace(/\([^()]*\)/g,'').replace(/\[[^\]]*\]/g,'').replace(/[ \t]+/g,' ').replace(/ ([,.;:])/g,'$1').replace(/\n{3,}/g,'\n\n').trim();
+}
+async function wiki(host,q){
+ var base='https://'+host+'/w/api.php?format=json&origin=*&';
+ async function j(u){var c=new AbortController(),t=setTimeout(function(){c.abort()},12000);try{var r=await fetch(u,{signal:c.signal});if(!r.ok)throw new Error('HTTP '+r.status);return await r.json()}finally{clearTimeout(t)}}
+ var s=await j(base+'action=query&list=search&srlimit=3&srsearch='+encodeURIComponent(q));
+ var hits=(s.query&&s.query.search)||[];
+ for(var i=0;i<hits.length;i++){
+  var d=await j(base+'action=query&prop=extracts&explaintext=1&exsectionformat=plain&redirects=1&titles='+encodeURIComponent(hits[i].title)),pg=d.query&&d.query.pages,pgs=pg&&pg[Object.keys(pg)[0]],tx=pgs&&pgs.extract||'';
+  if(tx.length>=500&&!/may (?:also )?refer to|can refer to/i.test(tx.slice(0,300)))return {title:pgs.title,url:'https://'+host+'/wiki/'+encodeURIComponent(pgs.title.replace(/ /g,'_')),text:cleanWeb(tx)};
+ }
+ return null;
+}
+async function research(topics,onStep){
+ var per=Math.max(4000,Math.floor(16000/topics.length)),notes=[],sources=[],missing=[],netFail=0;
+ await Promise.all(topics.map(async function(t,i){
+  var r=null;
+  try{r=await wiki('simple.wikipedia.org',t);if(!r||r.text.length<900)r=(await wiki('en.wikipedia.org',t))||r}catch(e){netFail++}
+  notes[i]=r?t+'\n'+r.text.slice(0,per):'';if(r)sources.push({topic:t,title:r.title,url:r.url});else missing.push(t);
+  if(onStep)onStep(topics.length-missing.length-notes.filter(function(x){return x===undefined}).length);
+ }));
+ return {notes:notes.join('\n\n'),sources:sources,missing:missing,netFail:netFail};
+}
 function screenForm(){
  if(S.type==='report')return screenReport();
  var T=DOC_TYPES[S.type],prev=S.form||{};
- body().innerHTML='<div class="scl-ds"><h4>'+T.icon+' '+esc(T.title)+'</h4><p class="sub">Everything is built on this device from the notes you give it. Type, paste, upload or scan the notes for the topics, then press Generate. No AI and no internet are used.</p>'
+ body().innerHTML='<div class="scl-ds"><h4>'+T.icon+' '+esc(T.title)+'</h4><p class="sub">Type only the class, subject and topics. The studio researches each topic on Simple English Wikipedia, writes simple questions, and shows you a draft to check before you download it. An internet connection is needed.</p>'
   +'<div class="scl-ds-grid"><label class="f">Class<select id="scl-ds-cls">'+CLASSES.map(function(c){return '<option'+(prev.cls===c?' selected':'')+'>'+c+'</option>'}).join('')+'</select></label>'
   +'<label class="f">Subject<input id="scl-ds-subject" placeholder="e.g. Basic Science" value="'+esc(prev.subject||'')+'" autocomplete="off"></label>'
   +(S.type==='exam'?'<label class="f">Examination<select id="scl-ds-exam">'+['First Term Examination','Second Term Examination','Third Term Examination','Mid-Term Test'].map(function(c){return '<option'+(prev.exam===c?' selected':'')+'>'+c+'</option>'}).join('')+'</select></label><label class="f">Time allowed<input id="scl-ds-time" value="'+esc(prev.time||'45 Mins')+'"></label>':'')
   +'<label class="f">School name<input id="scl-ds-school" value="'+esc(prev.school||SCHOOL)+'"></label></div>'
-  +'<label class="f" style="margin-top:10px">Topics (one per line, up to 10; leave empty to use the headings in your notes) <span id="scl-ds-count" style="font-weight:400"></span><textarea id="scl-ds-topics" style="min-height:70px" placeholder="Photosynthesis&#10;Respiration&#10;Nutrition">'+esc((prev.topics||[]).join('\n'))+'</textarea></label>'
-  +'<label class="f" style="margin-top:10px">Notes for these topics (the questions are made from this text) <span id="scl-ds-usable" style="font-weight:400;display:block"></span><textarea id="scl-ds-notes" style="min-height:170px" placeholder="Paste or type the notes here, or use Upload / Scan below. Put each topic name on its own line above its notes.">'+esc(prev.notes||'')+'</textarea></label>'
-  +'<div class="scl-ds-row"><button type="button" class="scl-ds-btn alt" id="scl-ds-upload">⬆ Upload notes (.txt or .docx)</button><input type="file" id="scl-ds-file" accept=".txt,.md,.csv,.docx" hidden></div>'
-  +'<details class="scl-ds-scan" id="scl-ds-scandet"><summary>📷 Scan a page of notes with the Universal Scanner</summary><p class="sub" style="margin:8px 0">Photograph a textbook or notebook page: hold the phone flat, in good light, with the whole page in view. The text is read on your phone and added to the notes above. Nothing is sent to the school library.</p><div id="scl-ds-scanhost"></div></details>'
+  +'<label class="f" style="margin-top:10px">Topics (one per line, up to 10) <span id="scl-ds-count" style="font-weight:400"></span><textarea id="scl-ds-topics" style="min-height:120px" placeholder="Photosynthesis&#10;Respiration&#10;Nutrition">'+esc((prev.topics||[]).join('\n'))+'</textarea></label>'
+  +'<p class="sub" style="margin:6px 0">Use clear topic names, such as “Photosynthesis” or “Fractions”, rather than “Chapter 3”.</p>'
+  +'<details class="scl-ds-scan" id="scl-ds-scandet"><summary>📷 Scan a topic list with the Universal Scanner</summary><p class="sub" style="margin:8px 0">Photograph your scheme of work or topic list. The topics are read on your phone and added above. Nothing is sent to the school library.</p><div id="scl-ds-scanhost"></div></details>'
   +'<div id="scl-ds-status" class="scl-ds-note" hidden role="status" aria-live="polite"></div>'
-  +'<div class="scl-ds-row"><button type="button" class="scl-ds-btn gold" id="scl-ds-go">✨ Generate</button><button type="button" class="scl-ds-btn alt" id="scl-ds-back">← Change document type</button></div></div>';
- $('scl-ds-topics').oninput=count;$('scl-ds-notes').oninput=count;count();
- $('scl-ds-upload').onclick=function(){$('scl-ds-file').click()};$('scl-ds-file').onchange=onFile;
+  +'<div class="scl-ds-row"><button type="button" class="scl-ds-btn gold" id="scl-ds-go">✨ Research and draft</button><button type="button" class="scl-ds-btn alt" id="scl-ds-back">← Change document type</button></div></div>';
+ $('scl-ds-topics').oninput=count;count();
  $('scl-ds-scandet').addEventListener('toggle',function(){if(this.open)mountScanner()});
  $('scl-ds-back').onclick=screenChoose;$('scl-ds-go').onclick=run;
 }
 function readForm(){
- return {cls:$('scl-ds-cls').value,subject:$('scl-ds-subject').value.trim(),exam:$('scl-ds-exam')?$('scl-ds-exam').value:'',time:$('scl-ds-time')?$('scl-ds-time').value.trim()||'45 Mins':'',school:$('scl-ds-school').value.trim()||SCHOOL,topics:parseTopics($('scl-ds-topics').value).slice(0,10),notes:$('scl-ds-notes').value};
+ return {cls:$('scl-ds-cls').value,subject:$('scl-ds-subject').value.trim(),exam:$('scl-ds-exam')?$('scl-ds-exam').value:'',time:$('scl-ds-time')?$('scl-ds-time').value.trim()||'45 Mins':'',school:$('scl-ds-school').value.trim()||SCHOOL,topics:parseTopics($('scl-ds-topics').value).slice(0,10),notes:''};
 }
-function run(){
+async function run(){
  if(S.busy)return;var v=readForm();S.form=v;
  if(!v.subject){note('Please enter the subject.','bad');$('scl-ds-subject').focus();return}
- if(!v.notes.trim()){note('Please add the notes first: type or paste them, upload a file, or scan a page.','bad');$('scl-ds-notes').focus();return}
- var r=build(S.type,v);
- if(r.shortage!=null){note('Only '+r.shortage+' good questions could be made from these notes ('+r.usable+' usable sentences). Add more notes (full sentences, such as definitions and facts) and press Generate again.','bad');return}
- S.key=r.key||null;
- S.last={html:r.kind==='exam'?examHTML(r.data,v):mdHTML(r.text,v),title:v.subject+' '+v.cls+' '+DOC_TYPES[S.type].title,v:v};
- screenResult();
+ if(!v.topics.length){note('Please add at least one topic.','bad');$('scl-ds-topics').focus();return}
+ S.busy=true;var go=$('scl-ds-go');go.disabled=true;go.textContent='🔎 Researching '+v.topics.length+' topic'+(v.topics.length>1?'s':'')+'…';note('');
+ try{
+  var key=v.topics.join('|'),rs=S.cache&&S.cache.key===key?S.cache.rs:await research(v.topics);
+  if(rs.netFail===v.topics.length)throw new Error('offline');
+  S.cache={key:key,rs:rs};
+  v.notes=rs.notes;
+  var r=build(S.type,v);
+  if(r.shortage!=null){
+   note('Not enough reliable text was found to write the questions ('+r.shortage+' made).'+(rs.missing.length?' Nothing was found for: '+rs.missing.join(', ')+'.':'')+' Try clearer topic names, or add one or two more topics.','bad');return;
+  }
+  S.key=r.key||null;S.sources=rs.sources;S.missing=rs.missing;
+  S.last={html:r.kind==='exam'?examHTML(r.data,v):mdHTML(r.text,v),title:v.subject+' '+v.cls+' '+DOC_TYPES[S.type].title,v:v};
+  screenResult();
+ }catch(e){
+  note(e&&e.message==='offline'?'The internet could not be reached. Check your connection and try again.':'Something went wrong while researching: '+((e&&e.message)||'unknown error')+'. Please try again.','bad');
+ }finally{S.busy=false;var g=$('scl-ds-go');if(g){g.disabled=false;g.textContent='✨ Research and draft'}}
 }
 function screenResult(){
  var T=DOC_TYPES[S.type];
- body().innerHTML='<div class="scl-ds"><h4>'+T.icon+' Your '+esc(T.title.toLowerCase())+' is ready</h4><p class="sub">'+(S.type==='report'?'Check the marks and comment before printing.':'Tap any text in the page to correct it before printing.')+'</p>'
+ body().innerHTML='<div class="scl-ds"><h4>'+T.icon+' Your '+esc(T.title.toLowerCase())+' is ready</h4><p class="sub">'+(S.type==='report'?'Check the marks and comment before printing.':'This is a draft. Tap any text to correct it, then print or download when you are happy with it.')+'</p>'
   +'<div class="scl-ds-row"><button type="button" class="scl-ds-btn gold" id="scl-ds-print">🖨 Print / Save as PDF</button><button type="button" class="scl-ds-btn" id="scl-ds-word">⬇ Download Word file</button>'
   +(S.key?'<button type="button" class="scl-ds-btn alt" id="scl-ds-keybtn">🔑 Answer key (teacher only)</button>':'')
-  +'<button type="button" class="scl-ds-btn alt" id="scl-ds-redo">↻ Make a different version</button><button type="button" class="scl-ds-btn alt" id="scl-ds-edit">← Edit notes</button></div>'
+  +'<button type="button" class="scl-ds-btn alt" id="scl-ds-redo">↻ Make a different version</button><button type="button" class="scl-ds-btn alt" id="scl-ds-edit">← Edit topics</button></div>'
   +'<div id="scl-ds-status" class="scl-ds-note" hidden role="status"></div>'
   +(S.key?'<div id="scl-ds-key" class="scl-ds-note" hidden><b>Answer key (not printed with the paper)</b><br>'+S.key.map(esc).join('<br>')+'</div>':'')
+  +(S.sources&&S.sources.length?'<div class="scl-ds-note"><b>Researched from:</b> '+S.sources.map(function(x){return '<a href="'+esc(x.url)+'" target="_blank" rel="noopener">'+esc(x.title)+'</a>'}).join(', ')+'.'+(S.missing&&S.missing.length?' <b>Nothing found for:</b> '+esc(S.missing.join(', '))+'.':'')+' These are open web articles, so please check the questions against your scheme of work.</div>':'')
   +'<div class="scl-ds-paperwrap" data-scl-keep><div class="scl-ds-paper" data-scl-keep'+(S.type==='report'?'':' contenteditable="true"')+'>'+S.last.html+'</div></div>'
   +'<p class="sub" style="margin-top:8px">The Word file opens in Microsoft Word and can be uploaded to Google Docs from Google Drive.</p></div>';
  $('scl-ds-print').onclick=printDoc;$('scl-ds-word').onclick=downloadDoc;$('scl-ds-edit').onclick=screenForm;
