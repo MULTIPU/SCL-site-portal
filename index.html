@@ -1119,6 +1119,13 @@ body.scl-night .scl-craft-learning{background:linear-gradient(135deg,#171c2b,#20
 
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Pinyon+Script&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet"><meta name="scl-document-gateway" content="v1-secure-review-queue-2026-10-30">
 <!-- SCL UPLOAD BUILD: 2026-11-04 | preserves existing V1101 layout; session and failed-write safety repair -->
+
+<style id="scl-smart-email-creator-style">
+.scl-v33-email-source,.scl-v33-suggestions{margin:10px 0;padding:12px;border:1px solid rgba(212,175,55,.35);border-radius:14px;background:rgba(255,255,255,.06)}
+.scl-v33-email-source b,.scl-v33-suggestions b{display:block;margin-bottom:4px}.scl-v33-email-source span,.scl-v33-suggestions small{display:block;opacity:.8}
+#sclV33EmailSuggestionList{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.scl-v33-email-suggestion{border:1px solid rgba(212,175,55,.55);border-radius:999px;padding:9px 12px;background:transparent;color:inherit;cursor:pointer}.scl-v33-email-suggestion.selected{outline:2px solid rgba(212,175,55,.9);font-weight:700}
+#sclV33EmailEditable{width:100%;box-sizing:border-box}
+</style>
 </head>
 <body><a class="scl-skip" href="#hv2">Skip to main content</a>
 <!-- ACCESS GATE (merged from the access-gate page) -->
@@ -2299,23 +2306,35 @@ window.sclYouTube=function(){const q=(by("sclAiInput")?.value||"").trim();if(q){
 <div class="scl-v33-box">
 <h3 id="sclV33EmailTitle">OFFICIAL EMAIL CREATIONS</h3>
 <p>For students who do not already have a suitable email that reflects their own name, or who currently use a parent's email, create the student's official academic email identity here.</p>
-<div class="scl-v33-email-grid">
+<div class="scl-v33-email-source" id="sclV33EmailSource">
+  <b>Student information detected from this registration</b>
+  <span id="sclV33EmailSourceName">Waiting for the registration details…</span>
+</div>
+<div class="scl-v33-email-grid" id="sclV33EmailManualFields" hidden>
 <label>Surname<input autocomplete="family-name" id="sclV33EmailSurname" type="text"/></label>
 <label>First Name<input autocomplete="given-name" id="sclV33EmailFirstName" type="text"/></label>
-<label>Third Name<input id="sclV33EmailThirdName" type="text"/></label>
+<label>Other Name<input id="sclV33EmailThirdName" type="text"/></label>
 <label>Year of Birth<input id="sclV33EmailBirthYear" inputmode="numeric" max="2100" min="1900" placeholder="YYYY" type="number"/></label>
 </div>
 <label>Official School Academic Email Domain
       <input id="sclV33EmailDomain" placeholder="Configured by SCL technical administrator" type="text"/>
 </label>
-<button class="scl-v33-generate" id="sclV33GenerateEmail" type="button">GENERATE OFFICIAL EMAIL</button>
+<div class="scl-v33-suggestions" id="sclV33EmailSuggestions" hidden>
+  <b>Suggested email names</b>
+  <small>Choose one, or edit the selected address below.</small>
+  <div id="sclV33EmailSuggestionList"></div>
+</div>
+<label>Selected / editable academic email
+  <input id="sclV33EmailEditable" type="email" autocomplete="off" placeholder="Choose a suggestion or type your preferred address"/>
+</label>
+<button class="scl-v33-generate" id="sclV33GenerateEmail" type="button">CREATE / APPLY SELECTED EMAIL</button>
 <div class="scl-v33-generated" hidden="" id="sclV33Generated">
-<span>Generated academic email identity</span>
+<span>Selected academic email identity</span>
 <strong id="sclV33EmailOutput"></strong>
 <button class="scl-v33-copy" id="sclV33CopyEmail" type="button">COPY EMAIL</button>
 <small id="sclV33EmailStatus"></small>
 </div>
-<small>The actual mailbox must be provisioned by the school's approved email provider. This website creates the official identity and registration link; it does not pretend that a mailbox exists before provisioning.</small>
+<small>If the registration already contains the student's name and date of birth, those details are used automatically. Manual name entry is shown only when the registration did not contain the required information. The actual mailbox must still be provisioned by the school's approved email provider.</small>
 <button class="scl-v33-close" id="sclV33EmailClose" type="button">CLOSE</button>
 </div>
 </div>
@@ -2338,15 +2357,50 @@ window.sclYouTube=function(){const q=(by("sclAiInput")?.value||"").trim();if(q){
   };
 
   window.openSclEmailCreatorForRegistration=function(){
+    const clean=v=>String(v||'').trim();
+    const form=document.getElementById('form');
+    const get=n=>clean(form?.querySelector('[name="'+n+'"]')?.value);
+    const surname=get('surname'), first=get('firstName'), other=get('middleName'), dob=get('dateOfBirth');
+    const full=[surname,first,other].filter(Boolean).join(' ');
+    const source=document.getElementById('sclV33EmailSourceName');
+    const manual=document.getElementById('sclV33EmailManualFields');
+    const suggestionBox=document.getElementById('sclV33EmailSuggestions');
+    const list=document.getElementById('sclV33EmailSuggestionList');
+    const editable=document.getElementById('sclV33EmailEditable');
+    const domain=document.getElementById('sclV33EmailDomain');
+    const stored=localStorage.getItem('sclAcademicEmailDomain')||'';
+    if(stored&&domain&&!domain.value)domain.value=stored;
+    document.getElementById('sclV33EmailSurname').value=surname;
+    document.getElementById('sclV33EmailFirstName').value=first;
+    document.getElementById('sclV33EmailThirdName').value=other;
+    document.getElementById('sclV33EmailBirthYear').value=dob?dob.slice(0,4):'';
+    if(source)source.textContent=full?'Detected: '+full+(dob?' · DOB '+dob:''):'The registration has not supplied enough name information yet.';
+    const missing=!surname||!first;
+    if(manual)manual.hidden=!missing;
+    const cleanPart=v=>String(v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'.').replace(/^\.|\.$/g,'');
+    const sn=cleanPart(surname),fn=cleanPart(first),on=cleanPart(other),yr=dob?dob.slice(0,4):'';
+    const localParts=[];
+    if(sn&&fn){
+      localParts.push(sn+'.'+fn);
+      if(on)localParts.push(sn+'.'+fn+'.'+on);
+      if(yr)localParts.push(sn+'.'+fn+yr);
+      if(yr&&on)localParts.push(fn+'.'+sn+yr);
+      localParts.push(fn+'.'+sn);
+    }
+    const d=clean(domain?.value).replace(/^@/,'');
+    const makeEmail=local=>local+(d?'@'+d:'');
+    if(list){list.innerHTML='';localParts.slice(0,5).forEach((local,i)=>{
+      const b=document.createElement('button'); b.type='button'; b.className='scl-v33-email-suggestion'; b.textContent=makeEmail(local)||local; b.dataset.local=local;
+      b.addEventListener('click',()=>{document.querySelectorAll('.scl-v33-email-suggestion').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');if(editable)editable.value=makeEmail(local)||local;});
+      list.appendChild(b);
+    });}
+    if(suggestionBox)suggestionBox.hidden=!localParts.length;
+    if(editable&&!editable.value&&localParts[0])editable.value=makeEmail(localParts[0]);
     window.sclV33EmailRegistrationCallback=function(email){
       const hidden=document.getElementById('regOfficialAcademicEmail');
       const status=document.getElementById('regAcademicEmailStatus');
-      if(hidden)hidden.value=email;
-      if(status)status.textContent='Generated: '+email;
+      if(hidden)hidden.value=email; if(status)status.textContent='Selected: '+email;
     };
-    const stored=localStorage.getItem('sclAcademicEmailDomain')||'';
-    const domain=document.getElementById('sclV33EmailDomain');
-    if(stored&&domain)domain.value=stored;
     if(typeof sclV33Show==='function')sclV33Show('sclV33EmailModal');
   };
 
@@ -8634,19 +8688,16 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     document.getElementById('sclV33EmailButton')?.addEventListener('click',()=>window.sclV33Show('sclV33EmailModal'));
     document.getElementById('sclV33CurriculumButton')?.addEventListener('click',()=>window.openSchoolCurriculum?.());
     document.getElementById('sclV33GenerateEmail')?.addEventListener('click',()=>{
-      const clean=v=>String(v||'').trim().toLowerCase().replace(/[^a-z0-9]+/g,'.').replace(/^\.|\.$/g,'');
-      const surname=clean(document.getElementById('sclV33EmailSurname')?.value);
-      const first=clean(document.getElementById('sclV33EmailFirstName')?.value);
-      const third=clean(document.getElementById('sclV33EmailThirdName')?.value);
-      const year=String(document.getElementById('sclV33EmailBirthYear')?.value||'').replace(/\D/g,'').slice(0,4);
-      const domain=String(document.getElementById('sclV33EmailDomain')?.value||localStorage.getItem('sclAcademicEmailDomain')||'').trim().replace(/^@/,'');
       const out=document.getElementById('sclV33EmailOutput'), box=document.getElementById('sclV33Generated'), status=document.getElementById('sclV33EmailStatus');
-      if(!surname||!first||!domain){if(status)status.textContent='Enter surname, first name and the official school email domain.';return}
-      const local=[surname,first,third,year].filter(Boolean).join('.').replace(/\.+/g,'.');
-      const email=local+'@'+domain;
-      if(out)out.textContent=email;if(box)box.hidden=false;if(status)status.textContent='Generated identity. The mailbox still needs to be provisioned by the school email provider.';
-      localStorage.setItem('sclAcademicEmailDomain',domain);
+      const domain=String(document.getElementById('sclV33EmailDomain')?.value||localStorage.getItem('sclAcademicEmailDomain')||'').trim().replace(/^@/,'');
+      let email=String(document.getElementById('sclV33EmailEditable')?.value||'').trim().toLowerCase();
+      if(!email){if(status)status.textContent='Choose a suggested email or type the email you want.';return}
+      if(!email.includes('@')){if(!domain){if(status)status.textContent='The SCL academic email domain is not configured yet. An administrator must configure it first.';return}email=email+'@'+domain}
+      if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){if(status)status.textContent='Please choose or enter a valid email address.';return}
+      if(out)out.textContent=email;if(box)box.hidden=false;if(status)status.textContent='Academic email selected and linked to this registration.';
+      if(domain)localStorage.setItem('sclAcademicEmailDomain',domain);
       window.sclV33EmailRegistrationCallback?.(email);
+      setTimeout(()=>window.sclV33Hide?.('sclV33EmailModal'),450);
     });
     document.getElementById('sclV33CopyEmail')?.addEventListener('click',async()=>{const email=document.getElementById('sclV33EmailOutput')?.textContent||'';try{await navigator.clipboard.writeText(email);document.getElementById('sclV33EmailStatus').textContent='Email copied.'}catch(_){document.getElementById('sclV33EmailStatus').textContent='Select and copy the generated email manually.'}});
   }
