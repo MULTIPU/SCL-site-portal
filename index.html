@@ -1337,22 +1337,22 @@ body.scl-night .scl-craft-learning{background:linear-gradient(135deg,#171c2b,#20
 <div class="scl-reg-tabs" role="tablist"><button class="scl-reg-tab active" id="sclRegTabNew" onclick="sclRegistrationMode('new')" type="button">👤 NEW STUDENT</button><button class="scl-reg-tab" id="sclRegTabReturning" onclick="sclRegistrationMode('returning')" type="button">⬆️ RETURNING STUDENT / PROMOTION</button></div>
 <div class="scl-reg-body">
 <section id="sclNewStudentRegistration"><form id="form" novalidate onsubmit="return false;">
-<div class="scl-reg-section scl-child-photo-card" id="sclChildPhotoCard"><div class="scl-child-photo-copy"><b>📷 Child’s passport photo <span class="scl-required">Required for every application</span></b><small>Upload a recent clear photo or tap the camera option on your phone. This stays visible in both registration paths.</small></div><div class="field"><input accept="image/*" capture="user" name="childPhoto" required type="file" aria-label="Required child passport photo"/></div><div class="scl-photo-preview" id="sclChildPhotoPreview" hidden><img alt="Preview of selected child photo"><span>Photo selected</span></div></div>
+<div class="scl-reg-section scl-child-photo-card" id="sclChildPhotoCard"><div class="scl-child-photo-copy"><b>📷 Child’s passport photo <span class="scl-required">Recommended — you may save and complete this later</span></b><small>Upload a recent clear photo or tap the camera option on your phone. This stays visible in both registration paths.</small></div><div class="field"><input accept="image/*" capture="user" name="childPhoto" data-scl-soft-required="1" type="file" aria-label="Required child passport photo"/></div><div class="scl-photo-preview" id="sclChildPhotoPreview" hidden><img alt="Preview of selected child photo"><span>Photo selected</span></div></div>
 
 <div class="scl-reg-section"><div class="scl-reg-section-head"><b>1. ACADEMIC &amp; IDENTIFICATION DATA</b><span>System-generated fields cannot be edited by the parent.</span></div><div class="grid">
 <div class="field"><label>Admission / Student ID</label><input id="regAdmissionId" name="admissionId" placeholder="Generated after submission" readonly=""/></div>
 <div class="field"><label>LASGEM / State Identification Number</label><input name="lasgem" placeholder="If already assigned"/></div>
-<div class="field full"><label>Selected Class *</label><input id="selected" name="class" readonly="" required=""/></div>
+<div class="field full"><label>Selected Class</label><input id="selected" name="class" readonly="" data-scl-soft-required="1"/></div>
 <div class="field"><label>Date of Admission</label><input id="regAdmissionDate" name="admissionDate" type="date"/></div>
 <div class="field"><label>Last School Attended</label><input name="lastSchoolAttended" placeholder="Previous school"/></div>
 </div></div>
 <div class="scl-reg-section"><div class="scl-reg-section-head"><b>2. STUDENT PERSONAL INFORMATION</b><span>Nigerian name order: Surname first, First/Given name second, then other names. Age is calculated automatically from date of birth.</span></div><div class="grid">
-<div class="field full"><label>Check for an existing student <small>(optional)</small></label><input id="sclExistingStudentLookup" list="sclExistingStudentNames" autocomplete="off" placeholder="Start typing a student name to check for a match"><datalist id="sclExistingStudentNames"></datalist><small class="scl-auto-note" id="sclExistingStudentHint">This checks records your signed-in account is permitted to view. It does not create or change a student record.</small></div><div class="field"><label>Surname * <small>(family name — entered first)</small></label><input name="surname" autocomplete="family-name" required=""/></div><div class="field"><label>First / Given Name *</label><input name="firstName" autocomplete="given-name" required=""/></div><div class="field"><label>Other Names</label><input name="middleName" autocomplete="additional-name"/></div>
+<div class="field"><label>Surname <small>(family name — entered first)</small></label><input name="surname" autocomplete="family-name" data-scl-soft-required="1"/></div><div class="field"><label>First / Given Name</label><input name="firstName" autocomplete="given-name" data-scl-soft-required="1"/></div><div class="field"><label>Other Names</label><input name="middleName" autocomplete="additional-name"/></div>
 <div class="field"><label>Child Full Name</label><input id="regChildFullName" name="childName" placeholder="Auto-built from names" readonly=""/></div>
-<div class="field"><label>Date of Birth *</label><input id="regDob" name="dateOfBirth" onchange="sclUpdateRegistrationAge()" required="" type="date"/><small class="scl-auto-note">Age is calculated automatically from this date.</small></div>
+<div class="field"><label>Date of Birth</label><input id="regDob" name="dateOfBirth" onchange="sclUpdateRegistrationAge()" data-scl-soft-required="1" type="date"/><small class="scl-auto-note">Age is calculated automatically from this date.</small></div>
 <div class="field"><label>Student Age — Automatically Calculated</label><div aria-live="polite" class="scl-auto-output" id="regAgeDisplay">Select the date of birth</div></div>
-<div class="field"><label>Student Gender *</label><select name="gender" required=""><option value="">Select</option><option>Male</option><option>Female</option></select></div>
-<div class="field"><label>State of Origin</label><input name="stateOfOrigin"/></div><div class="field"><label>LGA of Origin</label><input name="lgaOfOrigin"/></div><div class="field"><label>Place of Birth</label><input name="placeOfBirth"/></div><div class="field"><label>Religion</label><input name="religion"/></div>
+<div class="field"><label>Student Gender</label><select name="gender" data-scl-soft-required="1"><option value="">Select</option><option>Male</option><option>Female</option></select></div>
+<div class="field"><label>Country of Origin</label><select name="countryOfOrigin"><option>Nigeria</option><option>United States</option><option>Other country</option></select></div><div class="field"><label>State of Origin</label><select name="stateOfOrigin"><option value="">Choose state</option></select></div><div class="field"><label>LGA of Origin</label><select name="lgaOfOrigin"><option value="">Choose state first</option></select></div><div class="field"><label>Place of Birth</label><input name="placeOfBirth" placeholder="Town or city"/></div><div class="field"><label>Religion</label><select name="religion" data-other="1"><option value="">Choose</option><option>Christianity</option><option>Islam</option><option>Traditional</option><option>Prefer not to say</option><option value="">Other (type it)…</option></select></div>
 <div class="field full"><label>Any Ailments / Medical Conditions</label><textarea name="medicalConditions" placeholder="State relevant condition, allergy, medication or write None." rows="3"></textarea></div>
 </div></div>
 <div class="scl-reg-section scl-family-section" id="sclFamilySection">
@@ -1370,20 +1370,20 @@ body.scl-night .scl-craft-learning{background:linear-gradient(135deg,#171c2b,#20
 <div class="scl-family-panel" data-family-panel="guardian1" hidden><div class="grid"><div class="field"><label>Guardian full name</label><input name="guardianName"/></div><div class="field"><label>Relationship to child</label><select name="guardianRelationship"><option value="">Choose relationship</option><option>Grandparent</option><option>Aunt / Uncle</option><option>Sibling</option><option>Foster parent</option><option>Legal guardian</option><option>Other</option></select></div><div class="field"><label>Phone / WhatsApp</label><input name="guardianPhone" type="tel"/></div><div class="field"><label>Email</label><input name="guardianEmail" type="email"/></div><div class="field"><label>Occupation</label><input name="guardianOccupation"/></div><div class="field"><label>Address</label><input name="guardianAddress"/></div></div></div>
 <div id="sclExtraGuardians"></div><button type="button" class="btn outline" id="sclAddGuardian">＋ Add another guardian <span>(1 of 5)</span></button>
 </div>
-<div class="scl-family-contact"><b>Preferred school contact</b><div class="grid"><div class="field"><label>Primary contact phone *</label><input name="phone" required="" type="tel" autocomplete="tel"/></div><div class="field"><label>Primary contact email *</label><input name="email" required="" type="email" autocomplete="email"/></div><div class="field full"><label>Who should the school contact first?</label><select name="primaryContactType"><option value="">Select</option><option>Father</option><option>Mother</option><option>Guardian 1</option><option>Guardian 2</option><option>Guardian 3</option><option>Guardian 4</option><option>Guardian 5</option></select></div></div></div>
+<div class="scl-family-contact"><b>Preferred school contact</b><div class="grid"><div class="field"><label>Primary contact phone</label><input name="phone" data-scl-soft-required="1" type="tel" autocomplete="tel"/></div><div class="field"><label>Primary contact email (optional)</label><input name="email" data-scl-soft-required="1" type="email" autocomplete="email"/></div><div class="field full"><label>Who should the school contact first?</label><select name="primaryContactType"><option value="">Select</option><option>Father</option><option>Mother</option><option>Guardian 1</option><option>Guardian 2</option><option>Guardian 3</option><option>Guardian 4</option><option>Guardian 5</option></select></div></div></div>
 </div>
 <div class="scl-reg-section"><div class="scl-reg-section-head"><b>4. ACADEMIC EMAIL</b><span>This is optional during initial registration and can be completed later.</span></div>
-<div class="scl-reg-email-options"><label><input name="academicEmailStatus" onchange="updateRegAcademicEmailUI()" required="" type="radio" value="existing"/> Child already has a suitable email</label><label><input name="academicEmailStatus" onchange="updateRegAcademicEmailUI()" type="radio" value="create"/> Create Official SCL Academic Email</label></div>
+<div class="scl-reg-email-options"><label><input name="academicEmailStatus" onchange="updateRegAcademicEmailUI()" data-scl-soft-required="1" type="radio" value="existing"/> Child already has a suitable email</label><label><input name="academicEmailStatus" onchange="updateRegAcademicEmailUI()" type="radio" value="create"/> Create Official SCL Academic Email</label></div>
 <input id="regOfficialAcademicEmail" name="officialAcademicEmail" type="hidden" value=""/><div class="scl-reg-email-action" hidden="" id="regAcademicEmailAction"><button class="btn gold" onclick="openSclEmailCreatorForRegistration()" type="button">CREATE OFFICIAL ACADEMIC EMAIL</button><span id="regAcademicEmailStatus">You can add the academic email later.</span></div></div>
 <div class="scl-reg-section scl-documents-section" id="sclDocumentUploads"><div class="scl-reg-section-head"><b>DOCUMENTS FOR AUTO-FILL &amp; VERIFICATION</b><span>Upload a clear photo, scan, or PDF. You can also use your camera.</span></div>
 <div class="scl-doc-intro">Start with the birth certificate. SCL will scan readable document photos, suggest details it can recognise, and leave you in control to confirm or correct them. Scanning is an aid—not proof that a document is genuine.</div>
 <div class="scl-doc-grid">
-<div class="field"><label>Birth Certificate / Age Declaration <em class="scl-required">Required</em></label><input accept="image/*,.pdf" capture="environment" data-scl-scan-source="birthCertificate" name="birthCertificate" required type="file"/><small>Main source for the child’s legal name and date of birth.</small></div>
+<div class="field"><label>Birth Certificate / Age Declaration <em class="scl-required">Recommended — can be added later</em></label><input accept="image/*,.pdf" capture="environment" data-scl-scan-source="birthCertificate" name="birthCertificate" data-scl-soft-required="1" type="file"/><small>Main source for the child’s legal name and date of birth.</small></div>
 <div class="field"><label>Previous School Result / Report Card <em>Where applicable</em></label><input accept="image/*,.pdf" capture="environment" data-scl-scan-source="previousResult" name="previousResult" type="file"/><small>For a child transferring from another school.</small></div>
 <div class="field"><label>Immunisation / Health Record <em>Where applicable</em></label><input accept="image/*,.pdf" capture="environment" data-scl-scan-source="immunizationRecord" name="immunizationRecord" type="file"/><small>Especially useful for younger learners; medical details are handled carefully.</small></div>
 <div class="field"><label>Transfer Certificate / School Testimonial <em>Transfer students</em></label><input accept="image/*,.pdf" capture="environment" data-scl-scan-source="transferCertificate" name="transferCertificate" type="file"/><small>Only needed when moving from another school.</small></div>
 <div class="field"><label>Parent / Guardian Identification <em>Optional</em></label><input accept="image/*,.pdf" capture="environment" data-scl-scan-source="parentIdDocument" name="parentIdDocument" type="file"/><small>For confirming the responsible adult’s identity when requested.</small></div>
-<div class="field"><label>Parent / Guardian Photo <em>Optional</em></label><input accept="image/*" capture="user" name="parentPhoto" type="file"/><small>Optional; a parent photo is not required to submit the child’s application.</small></div>
+<div class="field"><label>Parent / Guardian Photo <em>Optional</em></label><input accept="image/*" capture="user" name="parentPhoto" type="file"/><small>Optional; a parent photo is not data-scl-soft-required="1" to submit the child’s application.</small></div>
 </div>
 <div class="scl-scan-actions"><button type="button" class="btn gold" id="sclScanDocuments">✨ Scan document and suggest details</button><button type="button" class="btn outline" id="sclReviewDetails">Review / edit details</button></div><div id="sclScanStatus" class="scl-scan-status" role="status" aria-live="polite">Choose a document photo to scan. PDFs can be attached for school review; for automatic reading, use a clear photo or camera capture.</div><pre id="sclScanPreview" class="scl-scan-preview" hidden></pre>
 </div>
@@ -1709,7 +1709,7 @@ function openWorkers(){const m=document.getElementById('workersModal');if(!m)ret
 function startWorkerFlow(mode){workerMode=mode;workerRole='';document.getElementById('workerHome').classList.add('hidden');document.getElementById('workerRoles').classList.remove('hidden');document.getElementById('workerFormWrap').innerHTML='';document.querySelectorAll('.role-btn').forEach(b=>b.classList.remove('selected'))}
 function selectWorkerRole(btn,role){workerRole=role;document.querySelectorAll('.role-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');renderWorkerForm();if(workerMode==='staff'){if(isTeachingRole(role))renderStaffSalaryStatus();else renderNonTeachingStatus()}}
 window.sclUpdateWorkerTenure=function(){const d=document.getElementById('workerStartDate'),out=document.getElementById('workerTenureDisplay'),hidden=document.getElementById('workerExperienceHidden');if(!d||!out||!hidden)return;if(!d.value){out.textContent='Select employment start date';hidden.value='';return}const start=new Date(d.value+'T00:00:00'),now=new Date();if(start>now){out.textContent='Invalid start date';hidden.value='';return}let y=now.getFullYear()-start.getFullYear(),m=now.getMonth()-start.getMonth(),days=now.getDate()-start.getDate();if(days<0){m--;days+=new Date(now.getFullYear(),now.getMonth(),0).getDate()}if(m<0){y--;m+=12}const label=y+' year'+(y===1?'':'s')+(m?' '+m+' month'+(m===1?'':'s'):'');out.textContent=label;hidden.value=label};
-function renderWorkerForm(){const vacancy=workerMode==='vacancy';document.getElementById('workerFormWrap').innerHTML=`<form class="form" id="workerForm" onsubmit="submitWorker(event)"><div class="grid"><div class="field"><label>Surname *</label><input name="surname" required autocomplete="family-name" oninput="sclComposeName(this.form)"></div><div class="field"><label>First Name *</label><input name="firstName" required autocomplete="given-name" oninput="sclComposeName(this.form)"></div><div class="field"><label>Other Names</label><input name="otherNames" autocomplete="additional-name" oninput="sclComposeName(this.form)"></div><input name="fullName" type="hidden"><div class="field"><label>Email *</label><input name="email" type="email" required></div><div class="field"><label>Phone Number *</label><input name="phone" required type="tel" inputmode="tel" autocomplete="tel" maxlength="16" placeholder="08012345678" title="Phone number, e.g. 08012345678" oninput="this.value=this.value.replace(/[^0-9+ ()-]/g,'')"></div><div class="field"><label>Primary Profession *</label>${workerRole==='Other Staff'?'<input name="role" id="sclOtherProf" maxlength="60" autocomplete="off" required placeholder="Type your profession, e.g. Engineer, Plumber, Carpenter, Mechanic">':'<input name="role" value="'+workerRole+'" readonly required>'}</div><div class="field full scl-profession-picker"><label>Additional Professions <small>(optional — maximum 2 more)</small></label><div class="scl-profession-grid"><select class="scl-profession-select" name="profession2"><option value="">No additional profession</option><option>Teacher</option><option>Cleaner / Janitor</option><option>Driver</option><option>Principal / Director</option><option>Administrative Officer</option><option value="__other">Others (type your own)</option></select><select class="scl-profession-select" name="profession3"><option value="">No additional profession</option><option>Teacher</option><option>Cleaner / Janitor</option><option>Driver</option><option>Principal / Director</option><option>Administrative Officer</option><option value="__other">Others (type your own)</option></select></div><small class="scl-auto-note">Example: a person may be registered as Teacher + Administrative Officer + another approved duty.</small></div>${vacancy?`<div class="field"><label>Years of relevant experience *</label><input name="experience" placeholder="e.g. 3 years" required></div>`:`<div class="field"><label>Employment Start Date *</label><input id="workerStartDate" name="employmentStartDate" type="date" required onchange="sclUpdateWorkerTenure()"><small class="scl-auto-note">The system calculates your length of service automatically.</small></div><div class="field"><label>Length of Service — Automatically Calculated</label><div id="workerTenureDisplay" class="scl-auto-output">Select employment start date</div><input id="workerExperienceHidden" name="experience" type="hidden"></div><div class="field"><label>Employment End Date <small>(leave empty if still working)</small></label><input name="employmentEndDate" type="date"></div>`}<div class="field"><label>Qualification / Credentials *</label><input name="credentials" placeholder="Main qualification or credential" required></div><div class="field full"><label>Work Pattern *</label><div class="scl-work-grid"><label><input type="radio" name="workPattern" value="Full-Time" required> Full-Time</label><label><input type="radio" name="workPattern" value="Half-Day Part-Time"> Half-Day Part-Time</label><label><input type="radio" name="workPattern" value="Full-Day Part-Time"> Full-Day Part-Time</label><label><input type="radio" name="workPattern" value="Scheduled Part-Time"> Scheduled Part-Time</label></div></div><div class="field full"><label>Important Information</label><textarea name="notes" rows="3" placeholder="Additional information, certificates, proof, or other relevant details"></textarea></div><div class="field full scl-uploads">
+function renderWorkerForm(){const vacancy=workerMode==='vacancy';document.getElementById('workerFormWrap').innerHTML=`<form class="form" id="workerForm" onsubmit="submitWorker(event)"><div class="grid"><div class="field"><label>Surname *</label><input name="surname" required autocomplete="family-name" oninput="sclComposeName(this.form)"></div><div class="field"><label>First Name *</label><input name="firstName" required autocomplete="given-name" oninput="sclComposeName(this.form)"></div><div class="field"><label>Other Names</label><input name="otherNames" autocomplete="additional-name" oninput="sclComposeName(this.form)"></div><input name="fullName" type="hidden"><div class="field"><label>Email *</label><input name="email" type="email" required></div><div class="field"><label>Phone Number *</label><input name="phone" required type="tel" inputmode="tel" autocomplete="tel" maxlength="16" placeholder="08012345678" title="Phone number, e.g. 08012345678" oninput="this.value=this.value.replace(/[^0-9+ ()-]/g,'')"></div><div class="field"><label>Primary Profession *</label>${workerRole==='Other Staff'?'<input name="role" id="sclOtherProf" maxlength="60" autocomplete="off" required placeholder="Type your profession, e.g. Engineer, Plumber, Carpenter, Mechanic">':'<input name="role" value="'+workerRole+'" readonly required>'}</div><div class="field full scl-profession-picker"><label>Additional Professions <small>(optional — maximum 2 more)</small></label><div class="scl-profession-grid"><select class="scl-profession-select" name="profession2"><option value="">No additional profession</option><option>Teacher</option><option>Cleaner / Janitor</option><option>Driver</option><option>Principal / Director</option><option>Administrative Officer</option><option value="__other">Others (type your own)</option></select><select class="scl-profession-select" name="profession3"><option value="">No additional profession</option><option>Teacher</option><option>Cleaner / Janitor</option><option>Driver</option><option>Principal / Director</option><option>Administrative Officer</option><option value="__other">Others (type your own)</option></select></div><small class="scl-auto-note">Example: a person may be registered as Teacher + Administrative Officer + another approved duty.</small></div>${vacancy?`<div class="field"><label>Years of relevant experience *</label><select name="experience" required><option value="">Choose</option><option>Less than 1 year</option><option>1–2 years</option><option>3–5 years</option><option>6–10 years</option><option>More than 10 years</option></select></div>`:`<div class="field"><label>Employment Start Date *</label><input id="workerStartDate" name="employmentStartDate" type="date" required onchange="sclUpdateWorkerTenure()"><small class="scl-auto-note">The system calculates your length of service automatically.</small></div><div class="field"><label>Length of Service — Automatically Calculated</label><div id="workerTenureDisplay" class="scl-auto-output">Select employment start date</div><input id="workerExperienceHidden" name="experience" type="hidden"></div><div class="field"><label>Employment End Date <small>(leave empty if still working)</small></label><input name="employmentEndDate" type="date"></div>`}<div class="field"><label>Qualification / Credentials *</label><select name="credentials" required data-other="1"><option value="">Choose your highest qualification</option><option>SSCE / WAEC / NECO</option><option>OND / ND</option><option>NCE</option><option>HND</option><option>B.Ed</option><option>B.Sc / B.A / B.Tech</option><option>PGDE</option><option>M.Ed / M.Sc / MBA</option><option>PhD</option><option>Trade certificate</option><option value="">Other (type it)…</option></select></div><div class="field full"><label>Work Pattern *</label><div class="scl-work-grid"><label><input type="radio" name="workPattern" value="Full-Time" required> Full-Time</label><label><input type="radio" name="workPattern" value="Half-Day Part-Time"> Half-Day Part-Time</label><label><input type="radio" name="workPattern" value="Full-Day Part-Time"> Full-Day Part-Time</label><label><input type="radio" name="workPattern" value="Scheduled Part-Time"> Scheduled Part-Time</label></div></div><div class="field full"><label>Important Information</label><textarea name="notes" rows="3" placeholder="Additional information, certificates, proof, or other relevant details"></textarea></div><div class="field full scl-uploads">
 <section class="scl-upsec" data-sec="cv"><h4>1. CV AND SUPPORTING DOCUMENTS</h4>
 <div class="scl-upslot" data-slot="cv"><label>CV (PDF) *</label><div class="scl-upsaved"></div><input name="cv" type="file" accept="application/pdf,.pdf"><div class="scl-uplist"></div></div>
 <div class="scl-upslot" data-slot="cv_documents"><label>Supporting documents <small>(optional: qualifications, credentials; PDF or image, up to 5)</small></label><div class="scl-upsaved"></div><input name="cvSupporting" type="file" multiple accept="application/pdf,.pdf,image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"><div class="scl-uplist"></div></div></section>
@@ -2970,7 +2970,6 @@ window.sclYouTube=function(){const q=(by("sclAiInput")?.value||"").trim();if(q){
     out.textContent=years+' year'+(years===1?'':'s')+(months?' '+months+' month'+(months===1?'':'s'):'');
   };
   function syncFullName(){const s=document.querySelector('[name="surname"]')?.value.trim()||'',f=document.querySelector('[name="firstName"]')?.value.trim()||'',m=document.querySelector('[name="middleName"]')?.value.trim()||'';const x=[s,f,m].filter(Boolean).join(' ');const out=document.getElementById('regChildFullName');if(out)out.value=x}
-  (function(){let timer=0,cache=[];const input=document.getElementById('sclExistingStudentLookup'),list=document.getElementById('sclExistingStudentNames'),hint=document.getElementById('sclExistingStudentHint');if(!input||!list)return;async function search(){const term=input.value.trim();if(term.length<2)return;try{const client=window.sclSupabase;if(!client?.from)throw new Error('');const q=await client.from('students').select('student_id,child_name,class_name,surname,first_name,middle_name').ilike('child_name','%'+term.replace(/[%_]/g,'')+'%').limit(8);if(q.error)throw q.error;cache=q.data||[];list.innerHTML=cache.map(x=>'<option value="'+String(x.child_name||[x.surname,x.first_name,x.middle_name].filter(Boolean).join(' ')).replace(/[&<>"]/g,'')+'">'+String(x.class_name||'Class not set')+' · '+String(x.student_id||'Existing record')+'</option>').join('');if(hint)hint.textContent=cache.length?'Possible matches found. Choose one to review; do not create a duplicate.':'No matching names were returned.';}catch(_){if(hint)hint.textContent='Existing-name lookup is available only when your signed-in role has permission to view student records.'}}input.addEventListener('input',()=>{clearTimeout(timer);timer=setTimeout(search,220)});input.addEventListener('change',()=>{const chosen=cache.find(x=>(x.child_name||[x.surname,x.first_name,x.middle_name].filter(Boolean).join(' '))===input.value.trim());if(!chosen)return;const set=(name,value)=>{const el=document.querySelector('[name="'+name+'"]');if(el&&value!=null)el.value=value};set('surname',chosen.surname||'');set('firstName',chosen.first_name||'');set('middleName',chosen.middle_name||'');const cls=document.querySelector('[name="class"]');if(cls&&chosen.class_name)cls.value=chosen.class_name;syncFullName();if(hint)hint.textContent='Existing record selected ('+(chosen.student_id||'no ID')+'). Verify this is the same child before proceeding.';});})();
   document.addEventListener('input',e=>{if(['firstName','middleName','surname'].includes(e.target?.name))syncFullName()});
   document.addEventListener('DOMContentLoaded',()=>{const today=new Date().toLocaleDateString('en-CA',{timeZone:'Africa/Lagos'});const d=document.getElementById('regAdmissionDate');if(d&&!d.value)d.value=today;const dob=document.getElementById('regDob');if(dob){dob.max=today;dob.addEventListener('input',sclUpdateRegistrationAge);sclUpdateRegistrationAge()}sclRegistrationMode('new')});
   async function promoApi(action,payload){
@@ -2995,10 +2994,10 @@ window.sclYouTube=function(){const q=(by("sclAiInput")?.value||"").trim();if(q){
     const choice=document.querySelector('input[name="academicEmailStatus"]:checked')?.value||'';
     const generated=document.getElementById('regOfficialAcademicEmail')?.value.trim()||'';
     const fd=new FormData(form),d={};
-    const requiredFields=['surname','firstName','phone','email'];
+    const requiredFields=['surname','firstName','dateOfBirth','gender','phone','class'];
     const missing=requiredFields.filter(k=>!String(fd.get(k)||'').trim());
     if(!form.elements.childPhoto?.files?.length)missing.push('childPhoto');
-    if(!String(fd.get('class')||'').trim())missing.push('class');
+    // Parent email is optional. If supplied, it is preserved; if absent the registration is simply incomplete.
     d.registrationStatus=missing.length?'incomplete':'pending_review';
     d.completionStatus=d.registrationStatus==='incomplete'?'incomplete':'submitted';
     d.missingFields=Array.from(new Set(missing));
@@ -3006,6 +3005,9 @@ window.sclYouTube=function(){const q=(by("sclAiInput")?.value||"").trim();if(q){
     d.childName=document.getElementById('regChildFullName')?.value.trim();
     try{d.draftId=sessionStorage.getItem('scl_student_registration_draft_id')||''}catch(_){}
     d.date=new Date().toISOString();d.session=typeof sessionLabel==='function'?sessionLabel():'2026/2027';d.term=typeof currentTerm==='function'?currentTerm():'First Term';
+    d.incompleteRetentionDays=30;
+    d.incompleteExpiresAt=new Date(Date.now()+30*24*60*60*1000).toISOString();
+    d.completionPolicy='Incomplete registrations are retained for up to 30 days from first save; admins are notified before automatic removal.';
     d.officialAcademicEmail=generated;
     if(window.__sclParentChildRelationship){d.relationship=window.__sclParentChildRelationship;d.parentRelationship=window.__sclParentChildRelationship;}
     if(window.__sclParentChildPhone){d.parentPhone=window.__sclParentChildPhone;d.parent_phone=window.__sclParentChildPhone;}
@@ -3027,8 +3029,8 @@ window.sclYouTube=function(){const q=(by("sclAiInput")?.value||"").trim();if(q){
       if(isDraft){
         if(saved.draftId){try{sessionStorage.setItem('scl_student_registration_draft_id',saved.draftId)}catch(_){}}
         const statusBox=document.getElementById('sclStudentRegistrationStatus');
-        if(statusBox)statusBox.textContent='Saved to the school database: '+(saved.status||'Incomplete — Pending Completion')+'. Draft reference: '+(saved.registrationRef||saved.draftId||'saved')+'. Missing: '+(d.missingFields||[]).join(', ')+'. Your entered details remain in this form so you can continue.';
-        toast('Incomplete registration saved as draft.');
+        if(statusBox)statusBox.textContent='Saved to the school database: '+(saved.status||'Incomplete — Pending Completion')+'. Draft reference: '+(saved.registrationRef||saved.draftId||'saved')+'. Missing: '+(d.missingFields||[]).join(', ')+'. Parent email is optional. This incomplete record will be retained for up to 30 days from first save, with administrator warnings before automatic removal.';
+        toast('Saved. This registration is incomplete and can be completed later.');
         return;
       }
       closeM('reg');
@@ -13238,38 +13240,62 @@ function start(){schedule();try{new MutationObserver(schedule).observe(document.
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
 })();
 
-/* 2) Student registration guard. Fixes: incomplete forms were silently saved as drafts with no visible reason, and the
-   "upload documents" path hides the name/phone/email fields so the form could never complete. */
+/* 2) Smart student registration guard.
+   Missing information is now a completion state, not a hard stop. A registration can be saved
+   as an incomplete draft and completed later. Parent email is optional. */
 (function(){
 'use strict';
-var CHECKS=[['surname','Surname'],['firstName','First / given name'],['dateOfBirth','Date of birth'],['gender','Gender'],['class','Class (choose one from Register Your Child)'],['phone','Parent / guardian phone'],['email','Parent / guardian email']];
+var CHECKS=[
+ ['surname','Surname'],['firstName','First / given name'],['dateOfBirth','Date of birth'],
+ ['gender','Gender'],['class','Class'],['phone','Primary contact phone']
+];
 window.sclRegistrationMissing=function(f){
  var el=f.elements,out=[];
  function val(n){var x=el[n];return x?String(x.value||'').trim():''}
  CHECKS.forEach(function(c){
   var v=val(c[0]),bad=!v;
-  if(!bad&&c[0]==='email')bad=!/^\S+@\S+\.\S+$/.test(v);
   if(!bad&&c[0]==='phone')bad=v.replace(/\D/g,'').length<7;
-  if(!bad&&c[0]==='dateOfBirth')bad=isNaN(new Date(v+'T00:00:00'))||new Date(v+'T00:00:00')>new Date();
+  if(!bad&&c[0]==='dateOfBirth'){
+   var d=new Date(v+'T00:00:00');bad=isNaN(d.getTime())||d>new Date();
+  }
   if(bad)out.push({name:c[0],label:c[1]});
  });
- var ph=el.childPhoto;if(!ph||!ph.files||!ph.files.length)out.push({name:'childPhoto',label:"Child's passport photo"});
+ var ph=el.childPhoto;
+ if(!ph||!ph.files||!ph.files.length)out.push({name:'childPhoto',label:"Child's passport photo"});
  return out;
 };
-function box(f){var b=document.getElementById('sclRegErrors');if(!b){b=document.createElement('div');b.id='sclRegErrors';b.setAttribute('role','alert');f.insertBefore(b,f.firstChild)}return b}
-function clear(f){var b=document.getElementById('sclRegErrors');if(b)b.className='';Array.prototype.forEach.call(f.querySelectorAll('[aria-invalid]'),function(x){x.removeAttribute('aria-invalid')})}
+window.sclRegistrationCompletionMessage=function(f){
+ var miss=window.sclRegistrationMissing(f);
+ return miss.length
+  ? 'Saved as INCOMPLETE — Pending Completion. You can add the missing information later.'
+  : 'Registration is complete enough for administrator verification.';
+};
+function box(f){
+ var b=document.getElementById('sclRegErrors');
+ if(!b){b=document.createElement('div');b.id='sclRegErrors';b.setAttribute('role','status');f.insertBefore(b,f.firstChild)}
+ return b;
+}
+function showState(f){
+ var miss=window.sclRegistrationMissing(f),b=box(f);
+ b.innerHTML=miss.length
+  ? '<b>Incomplete registration — this can still be saved.</b><p>Please add these when available:</p><ul>'+miss.map(function(m){return '<li>'+m.label+'</li>'}).join('')+'</ul><small>You do not need a parent email to save the registration.</small>'
+  : '<b>Ready for verification.</b><p>The registration can now be submitted for administrator review.</p>';
+ b.className='on '+(miss.length?'scl-reg-incomplete':'scl-reg-ready');
+ Array.prototype.forEach.call(f.querySelectorAll('[aria-invalid]'),function(x){x.removeAttribute('aria-invalid')});
+ miss.forEach(function(m){var x=f.elements[m.name];if(x)x.setAttribute('aria-invalid','true')});
+}
 document.addEventListener('submit',function(e){
  var f=e.target;if(!f||f.id!=='form')return;
- var miss=window.sclRegistrationMissing(f);clear(f);
- if(!miss.length)return;
- e.preventDefault();e.stopImmediatePropagation();
- var man=document.getElementById('sclManualTab');if(man&&man.getAttribute('aria-selected')==='false')man.click();
- var b=box(f);b.innerHTML='<b>Please complete these before submitting:</b><ul>'+miss.map(function(m){return '<li>'+m.label+'</li>'}).join('')+'</ul>';b.className='on';
- miss.forEach(function(m){var x=f.elements[m.name];if(x)x.setAttribute('aria-invalid','true')});
- var first=f.elements[miss[0].name];
- if(first&&first.type!=='hidden'&&first.offsetParent!==null){try{first.focus({preventScroll:true})}catch(_){}first.scrollIntoView({behavior:'smooth',block:'center'})}else b.scrollIntoView({behavior:'smooth',block:'center'});
+ showState(f);
 },true);
-document.addEventListener('input',function(e){var t=e.target;if(t&&t.getAttribute&&t.getAttribute('aria-invalid'))t.removeAttribute('aria-invalid')},true);
+document.addEventListener('input',function(e){
+ var f=e.target&&e.target.form;
+ if(f&&f.id==='form'){try{showState(f)}catch(_){}}
+},true);
+document.addEventListener('change',function(e){
+ var f=e.target&&e.target.form;
+ if(f&&f.id==='form'){try{showState(f)}catch(_){}}
+},true);
 })();
 </script>
 
@@ -14561,7 +14587,7 @@ window.sclLoc=(function(){var fix=null,wid=null,err=null,started=false,waiters=[
    h+='<label style="display:block;margin:6px 0;font-size:13px">New passport photo<input id="cfPh" type="file" accept="image/*" style="display:block;width:100%"></label>';
    F.forEach(function(f){h+='<label style="display:block;margin:6px 0;font-size:13px">'+f[1]+'<input data-k="'+f[0]+'" type="'+(f[2]||'text')+'" value="'+esc(s[f[0]]||'')+'" style="display:block;width:100%;padding:9px;border:1px solid #ccc;border-radius:8px;color:#111;background:#fff"></label>'});
    h+='<div id="cfMsg" style="font-size:13px;margin:8px 0"></div><button id="cfSave" type="button" style="padding:11px 16px;border:0;border-radius:10px;background:#4a0f2a;color:#fff;font-weight:700">Save changes</button> <button id="cfX" type="button" style="padding:11px 16px;border:1px solid #999;border-radius:10px;background:#fff;color:#222">Close</button></div>';
-   m.innerHTML=h;m.querySelector('#cfX').onclick=close;
+   m.innerHTML=h;m.querySelector('#cfX').onclick=close;window.sclGeo&&window.sclGeo.enhance(m);
    m.querySelector('#cfSave').onclick=async function(){var b=this,msg=m.querySelector('#cfMsg'),patch={};m.querySelectorAll('[data-k]').forEach(function(i){patch[i.dataset.k]=i.value.trim()});b.disabled=true;msg.textContent='Saving…';
     try{var body={action:'update_student',student_id:s.student_id,patch:patch},f=m.querySelector('#cfPh').files[0];if(f&&typeof window.sclCompressedFileDataURL==='function')body.child_photo_data=await window.sclCompressedFileDataURL(f);await call(body);msg.style.color='#0a7a3a';msg.textContent='Saved ✔ The school file is updated.'}catch(e){msg.style.color='#b00020';msg.textContent=e.message}b.disabled=false}
   }catch(e){m.innerHTML='<div style="background:#fff;color:#1a0a1f;border-radius:16px;max-width:520px;width:100%;padding:16px"><b>'+esc(e.message)+'</b><br><br><button id="cfX" type="button" style="padding:10px 14px">Close</button></div>';m.querySelector('#cfX').onclick=close}};
@@ -14732,5 +14758,114 @@ window.__sclUploadStudio={classify:classify,slotOf:slotOf,rescan:scan};
 </script>
 <style id="scl-theme-btn-glass" data-scl-keep>html body #sclThemeToggle,html body.scl-night #sclThemeToggle,html body #sclThemeToggle:active,html body #sclThemeToggle:focus{background:transparent!important;background-image:none!important;border:0!important;box-shadow:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;outline:none!important;opacity:1!important;-webkit-tap-highlight-color:transparent}</style>
 <style id="scl-calendar-compact-css" data-scl-keep>@media(max-width:980px){#approvedAcademicCalendar.scl-cal-compact .aac-notice,#approvedAcademicCalendar.scl-cal-compact .scl-calendar-attendance-card,#approvedAcademicCalendar.scl-cal-compact .aac-events-card,#approvedAcademicCalendar.scl-cal-compact details.aac-details,#approvedAcademicCalendar.scl-cal-compact .aac-heading p{display:none!important}#approvedAcademicCalendar.scl-cal-compact .aac-layout{display:block!important}}@media(min-width:981px){.scl-cal-btn{display:none!important}}html body #sclToTop{background:transparent!important;background-image:none!important;border:0!important;box-shadow:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}html body #sclToTop svg{stroke:#5b1fa8!important;stroke-width:3.4!important;filter:drop-shadow(0 0 3px rgba(255,255,255,.95)) drop-shadow(0 1px 2px rgba(255,255,255,.9))!important}html body.scl-night #sclToTop svg{stroke:#c9a7ff!important;filter:drop-shadow(0 0 3px rgba(0,0,0,.7))!important}</style>
+<style id="scl-dupe-css" data-scl-keep>
+.scl-dupe{grid-column:1/-1!important;margin:2px 0 6px!important;border-radius:16px!important;padding:12px 14px!important;font-size:.92rem!important;line-height:1.45!important;animation:sclDupeIn .35s ease both}
+@keyframes sclDupeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.scl-dupe[hidden]{display:none!important}
+.scl-dupe.chk{background:rgba(255,255,255,.07)!important;color:inherit!important;border:1px dashed rgba(255,255,255,.3)!important}
+.scl-dupe.ok{background:rgba(46,160,90,.16)!important;color:inherit!important;border:1px solid rgba(80,200,120,.5)!important}
+.scl-dupe.hit{background:rgba(240,170,40,.15)!important;color:inherit!important;border:1px solid rgba(240,180,60,.65)!important}
+.scl-dupe b{display:block;margin-bottom:6px!important}
+.scl-dupe ul{list-style:none!important;margin:6px 0 0!important;padding:0!important;display:grid;gap:6px}
+.scl-dupe li{display:flex!important;justify-content:space-between;gap:10px;flex-wrap:wrap;background:rgba(255,255,255,.08);border-radius:12px;padding:8px 10px}
+.scl-dupe li em{font-style:normal;opacity:.85;font-size:.85rem}
+.scl-dupe small{display:block;margin-top:8px!important;opacity:.85}
+</style>
+<script id="scl-dupe-check">
+(function(){
+ var D=document,timers=new WeakMap(),seq=0;
+ function key(){return window.SCL_SUPABASE_ANON_KEY||window.SCL_SUPABASE_PUBLISHABLE_KEY||''}
+ function esc(t){return String(t==null?'':t).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+ function val(f,n){var e=f.querySelector('[name="'+n+'"]');return e&&e.value?e.value.trim():''}
+ function isForm(f){return f&&f.tagName==='FORM'&&f.querySelector('[name="surname"]')&&f.querySelector('[name="firstName"]')}
+ function box(f){
+  var b=f.querySelector('.scl-dupe');if(b)return b;
+  b=D.createElement('div');b.className='scl-dupe chk';b.hidden=true;b.setAttribute('aria-live','polite');
+  var anchor=(f.querySelector('[name="middleName"]')||f.querySelector('[name="otherNames"]')||f.querySelector('[name="firstName"]'));
+  anchor=anchor&&anchor.closest('.field');if(!anchor)return null;
+  anchor.parentNode.insertBefore(b,anchor.nextSibling);return b;
+ }
+ async function run(f){
+  var student=f.id==='form',sn=val(f,'surname'),fn=val(f,'firstName');
+  var b=box(f);if(!b)return;
+  var ph=student?'':val(f,'phone'),em=student?'':val(f,'email');
+  if(sn.length<2||fn.length<2){b.hidden=true;return}
+  var id=++seq;b.hidden=false;b.className='scl-dupe chk';b.innerHTML='Checking our records…';
+  try{
+   var base=window.SCL_SUPABASE_URL;if(!base)throw 0;
+   var r=await fetch(base+'/rest/v1/rpc/scl_duplicate_check',{method:'POST',headers:{'Content-Type':'application/json',apikey:key(),Authorization:'Bearer '+key()},
+    body:JSON.stringify({p_kind:student?'student':'worker',p_surname:sn,p_first:fn,p_other:val(f,student?'middleName':'otherNames'),p_dob:val(f,'dateOfBirth')||null,p_phone:ph,p_email:em})});
+   if(!r.ok)throw 0;var d=await r.json();if(id!==seq)return;
+   var m=(d&&d.matches)||[];
+   if(!m.length){b.className='scl-dupe ok';b.innerHTML='✅ <b style="display:inline">No existing record found.</b> You can continue.';return}
+   b.className='scl-dupe hit';
+   b.innerHTML='<b>⚠️ We found '+(m.length>1?'possible records':'a possible record')+' already in our system</b>'+
+    '<ul>'+m.map(function(x){return '<li><span>'+esc(x.name)+(x.born?' · born '+esc(x.born):'')+'</span><em>'+esc(x.detail)+' — '+esc(x.status)+'</em></li>'}).join('')+'</ul>'+
+    '<small>'+(student?'If this is your child, please do not register again — contact the school office so we can link you to the existing record. If it is a different child, simply continue.':'If this is you, there is no need to apply again — the office will update your existing record. If it is someone else, simply continue.')+'</small>';
+  }catch(_){if(id===seq){b.hidden=true}}
+ }
+ function schedule(e){
+  var t=e.target,f=t&&t.form;if(!isForm(f))return;
+  if(!/^(surname|firstName|middleName|otherNames|dateOfBirth|phone|email)$/.test(t.name||''))return;
+  clearTimeout(timers.get(f));timers.set(f,setTimeout(function(){run(f)},350));
+ }
+ D.addEventListener('focusout',schedule,true);
+ D.addEventListener('change',schedule,true);
+})();
+</script>
+<script id="scl-geo" data-scl-keep>
+(function(){
+ var D=document,NG={},US="Alabama,Alaska,Arizona,Arkansas,California,Colorado,Connecticut,Delaware,District of Columbia,Florida,Georgia,Hawaii,Idaho,Illinois,Indiana,Iowa,Kansas,Kentucky,Louisiana,Maine,Maryland,Massachusetts,Michigan,Minnesota,Mississippi,Missouri,Montana,Nebraska,Nevada,New Hampshire,New Jersey,New Mexico,New York,North Carolina,North Dakota,Ohio,Oklahoma,Oregon,Pennsylvania,Rhode Island,South Carolina,South Dakota,Tennessee,Texas,Utah,Vermont,Virginia,Washington,West Virginia,Wisconsin,Wyoming".split(',');
+ "Abia|Aba North,Aba South,Arochukwu,Bende,Ikwuano,Isiala Ngwa North,Isiala Ngwa South,Isuikwuato,Obi Ngwa,Ohafia,Osisioma,Ugwunagbo,Ukwa East,Ukwa West,Umuahia North,Umuahia South,Umu Nneochi;Adamawa|Demsa,Fufure,Ganye,Gayuk,Gombi,Grie,Hong,Jada,Lamurde,Madagali,Maiha,Mayo Belwa,Michika,Mubi North,Mubi South,Numan,Shelleng,Song,Toungo,Yola North,Yola South;Akwa Ibom|Abak,Eastern Obolo,Eket,Esit Eket,Essien Udim,Etim Ekpo,Etinan,Ibeno,Ibesikpo Asutan,Ibiono Ibom,Ika,Ikono,Ikot Abasi,Ikot Ekpene,Ini,Itu,Mbo,Mkpat Enin,Nsit Atai,Nsit Ibom,Nsit Ubium,Obot Akara,Okobo,Onna,Oron,Oruk Anam,Udung Uko,Ukanafun,Uruan,Urue-Offong/Oruko,Uyo;Anambra|Aguata,Anambra East,Anambra West,Anaocha,Awka North,Awka South,Ayamelum,Dunukofia,Ekwusigo,Idemili North,Idemili South,Ihiala,Njikoka,Nnewi North,Nnewi South,Ogbaru,Onitsha North,Onitsha South,Orumba North,Orumba South,Oyi;Bauchi|Alkaleri,Bauchi,Bogoro,Damban,Darazo,Dass,Gamawa,Ganjuwa,Giade,Itas/Gadau,Jama'are,Katagum,Kirfi,Misau,Ningi,Shira,Tafawa Balewa,Toro,Warji,Zaki;Bayelsa|Brass,Ekeremor,Kolokuma/Opokuma,Nembe,Ogbia,Sagbama,Southern Ijaw,Yenagoa;Benue|Ado,Agatu,Apa,Buruku,Gboko,Guma,Gwer East,Gwer West,Katsina-Ala,Konshisha,Kwande,Logo,Makurdi,Obi,Ogbadibo,Ohimini,Oju,Okpokwu,Otukpo,Tarka,Ukum,Ushongo,Vandeikya;Borno|Abadam,Askira/Uba,Bama,Bayo,Biu,Chibok,Damboa,Dikwa,Gubio,Guzamala,Gwoza,Hawul,Jere,Kaga,Kala/Balge,Konduga,Kukawa,Kwaya Kusar,Mafa,Magumeri,Maiduguri,Marte,Mobbar,Monguno,Ngala,Nganzai,Shani;Cross River|Abi,Akamkpa,Akpabuyo,Bakassi,Bekwarra,Biase,Boki,Calabar Municipal,Calabar South,Etung,Ikom,Obanliku,Obubra,Obudu,Odukpani,Ogoja,Yakurr,Yala;Delta|Aniocha North,Aniocha South,Bomadi,Burutu,Ethiope East,Ethiope West,Ika North East,Ika South,Isoko North,Isoko South,Ndokwa East,Ndokwa West,Okpe,Oshimili North,Oshimili South,Patani,Sapele,Udu,Ughelli North,Ughelli South,Ukwuani,Uvwie,Warri North,Warri South,Warri South West;Ebonyi|Abakaliki,Afikpo North,Afikpo South,Ebonyi,Ezza North,Ezza South,Ikwo,Ishielu,Ivo,Izzi,Ohaozara,Ohaukwu,Onicha;Edo|Akoko-Edo,Egor,Esan Central,Esan North-East,Esan South-East,Esan West,Etsako Central,Etsako East,Etsako West,Igueben,Ikpoba Okha,Orhionmwon,Oredo,Ovia North-East,Ovia South-West,Owan East,Owan West,Uhunmwonde;Ekiti|Ado Ekiti,Efon,Ekiti East,Ekiti South-West,Ekiti West,Emure,Gbonyin,Ido Osi,Ijero,Ikere,Ikole,Ilejemeje,Irepodun/Ifelodun,Ise/Orun,Moba,Oye;Enugu|Aninri,Awgu,Enugu East,Enugu North,Enugu South,Ezeagu,Igbo Etiti,Igbo Eze North,Igbo Eze South,Isi Uzo,Nkanu East,Nkanu West,Nsukka,Oji River,Udenu,Udi,Uzo Uwani;FCT (Abuja)|Abaji,Bwari,Gwagwalada,Kuje,Kwali,Municipal Area Council;Gombe|Akko,Balanga,Billiri,Dukku,Funakaye,Gombe,Kaltungo,Kwami,Nafada,Shongom,Yamaltu/Deba;Imo|Aboh Mbaise,Ahiazu Mbaise,Ehime Mbano,Ezinihitte Mbaise,Ideato North,Ideato South,Ihitte/Uboma,Ikeduru,Isiala Mbano,Isu,Mbaitoli,Ngor Okpala,Nkwerre,Nwangele,Obowo,Oguta,Ohaji/Egbema,Okigwe,Onuimo,Orlu,Orsu,Oru East,Oru West,Owerri Municipal,Owerri North,Owerri West;Jigawa|Auyo,Babura,Biriniwa,Birnin Kudu,Buji,Dutse,Gagarawa,Garki,Gumel,Guri,Gwaram,Gwiwa,Hadejia,Jahun,Kafin Hausa,Kaugama,Kazaure,Kiri Kasama,Kiyawa,Maigatari,Malam Madori,Miga,Ringim,Roni,Sule Tankarkar,Taura,Yankwashi;Kaduna|Birnin Gwari,Chikun,Giwa,Igabi,Ikara,Jaba,Jema'a,Kachia,Kaduna North,Kaduna South,Kagarko,Kajuru,Kaura,Kauru,Kubau,Kudan,Lere,Makarfi,Sabon Gari,Sanga,Soba,Zangon Kataf,Zaria;Kano|Ajingi,Albasu,Bagwai,Bebeji,Bichi,Bunkure,Dala,Dambatta,Dawakin Kudu,Dawakin Tofa,Doguwa,Fagge,Gabasawa,Garko,Garun Mallam,Gaya,Gezawa,Gwale,Gwarzo,Kabo,Kano Municipal,Karaye,Kibiya,Kiru,Kumbotso,Kunchi,Kura,Madobi,Makoda,Minjibir,Nasarawa,Rano,Rimin Gado,Rogo,Shanono,Sumaila,Takai,Tarauni,Tofa,Tsanyawa,Tudun Wada,Ungogo,Warawa,Wudil;Katsina|Bakori,Batagarawa,Batsari,Baure,Bindawa,Charanchi,Dandume,Danja,Dan Musa,Daura,Dutsi,Dutsin-Ma,Faskari,Funtua,Ingawa,Jibia,Kafur,Kaita,Kankara,Kankia,Katsina,Kurfi,Kusada,Mai'Adua,Malumfashi,Mani,Mashi,Matazu,Musawa,Rimi,Sabuwa,Safana,Sandamu,Zango;Kebbi|Aleiro,Arewa Dandi,Argungu,Augie,Bagudo,Birnin Kebbi,Bunza,Dandi,Fakai,Gwandu,Jega,Kalgo,Koko/Besse,Maiyama,Ngaski,Sakaba,Shanga,Suru,Wasagu/Danko,Yauri,Zuru;Kogi|Adavi,Ajaokuta,Ankpa,Bassa,Dekina,Ibaji,Idah,Igalamela-Odolu,Ijumu,Kabba/Bunu,Kogi,Lokoja,Mopa-Muro,Ofu,Ogori/Magongo,Okehi,Okene,Olamaboro,Omala,Oyi,Yagba East,Yagba West;Kwara|Asa,Baruten,Edu,Ekiti,Ifelodun,Ilorin East,Ilorin South,Ilorin West,Irepodun,Isin,Kaiama,Moro,Offa,Oke Ero,Oyun,Pategi;Lagos|Agege,Ajeromi-Ifelodun,Alimosho,Amuwo-Odofin,Apapa,Badagry,Epe,Eti-Osa,Ibeju-Lekki,Ifako-Ijaiye,Ikeja,Ikorodu,Kosofe,Lagos Island,Lagos Mainland,Mushin,Ojo,Oshodi-Isolo,Shomolu,Surulere;Nasarawa|Akwanga,Awe,Doma,Karu,Keana,Keffi,Kokona,Lafia,Nasarawa,Nasarawa Egon,Obi,Toto,Wamba;Niger|Agaie,Agwara,Bida,Borgu,Bosso,Chanchaga,Edati,Gbako,Gurara,Katcha,Kontagora,Lapai,Lavun,Magama,Mariga,Mashegu,Mokwa,Moya,Paikoro,Rafi,Rijau,Shiroro,Suleja,Tafa,Wushishi;Ogun|Abeokuta North,Abeokuta South,Ado-Odo/Ota,Egbado North,Egbado South,Ewekoro,Ifo,Ijebu East,Ijebu North,Ijebu North East,Ijebu Ode,Ikenne,Imeko Afon,Ipokia,Obafemi Owode,Odeda,Odogbolu,Ogun Waterside,Remo North,Shagamu;Ondo|Akoko North-East,Akoko North-West,Akoko South-East,Akoko South-West,Akure North,Akure South,Ese Odo,Idanre,Ifedore,Ilaje,Ile Oluji/Okeigbo,Irele,Odigbo,Okitipupa,Ondo East,Ondo West,Ose,Owo;Osun|Atakunmosa East,Atakunmosa West,Aiyedaade,Aiyedire,Boluwaduro,Boripe,Ede North,Ede South,Egbedore,Ejigbo,Ife Central,Ife East,Ife North,Ife South,Ifedayo,Ifelodun,Ila,Ilesa East,Ilesa West,Irepodun,Irewole,Isokan,Iwo,Obokun,Odo Otin,Ola Oluwa,Olorunda,Oriade,Orolu,Osogbo;Oyo|Afijio,Akinyele,Atiba,Atisbo,Egbeda,Ibadan North,Ibadan North-East,Ibadan North-West,Ibadan South-East,Ibadan South-West,Ibarapa Central,Ibarapa East,Ibarapa North,Ido,Irepo,Iseyin,Itesiwaju,Iwajowa,Kajola,Lagelu,Ogbomosho North,Ogbomosho South,Ogo Oluwa,Olorunsogo,Oluyole,Ona Ara,Orelope,Ori Ire,Oyo East,Oyo West,Saki East,Saki West,Surulere;Plateau|Barkin Ladi,Bassa,Bokkos,Jos East,Jos North,Jos South,Kanam,Kanke,Langtang North,Langtang South,Mangu,Mikang,Pankshin,Qua'an Pan,Riyom,Shendam,Wase;Rivers|Abua/Odual,Ahoada East,Ahoada West,Akuku-Toru,Andoni,Asari-Toru,Bonny,Degema,Eleme,Emohua,Etche,Gokana,Ikwerre,Khana,Obio/Akpor,Ogba/Egbema/Ndoni,Ogu/Bolo,Okrika,Omuma,Opobo/Nkoro,Oyigbo,Port Harcourt,Tai;Sokoto|Binji,Bodinga,Dange Shuni,Gada,Goronyo,Gudu,Gwadabawa,Illela,Isa,Kebbe,Kware,Rabah,Sabon Birni,Shagari,Silame,Sokoto North,Sokoto South,Tambuwal,Tangaza,Tureta,Wamako,Wurno,Yabo;Taraba|Ardo Kola,Bali,Donga,Gashaka,Gassol,Ibi,Jalingo,Karim Lamido,Kurmi,Lau,Sardauna,Takum,Ussa,Wukari,Yorro,Zing;Yobe|Bade,Bursari,Damaturu,Fika,Fune,Geidam,Gujba,Gulani,Jakusko,Karasuwa,Machina,Nangere,Nguru,Potiskum,Tarmuwa,Yunusari,Yusufari;Zamfara|Anka,Bakura,Birnin Magaji/Kiyaw,Bukkuyum,Bungudu,Gummi,Gusau,Kaura Namoda,Maradun,Maru,Shinkafi,Talata Mafara,Tsafe,Zurmi".split(';').forEach(function(r){var p=r.split('|');NG[p[0]]=p[1].split(',')});
+ var FIX={religion:['Christianity','Islam','Traditional','Prefer not to say'],gender:['Male','Female']};
+ function opt(v,t,sel){var o=D.createElement('option');o.value=v;o.textContent=t==null?v:t;if(sel)o.selected=true;return o}
+ function swap(el,tag){ // replace element keeping identity attributes
+  if(el.tagName.toLowerCase()===tag)return el;
+  var n=D.createElement(tag);['name','id','class','style','required'].forEach(function(a){if(el.hasAttribute(a))n.setAttribute(a,el.getAttribute(a))});
+  if(el.dataset.k)n.dataset.k=el.dataset.k;if(tag==='input'){n.type='text';n.placeholder=el.dataset.ph||''}
+  el.parentNode.replaceChild(n,el);return n}
+ function fill(sel,list,first,keep){
+  var cur=keep!==undefined?keep:sel.value;sel.innerHTML='';sel.appendChild(opt('',first));
+  list.forEach(function(x){sel.appendChild(opt(x,x,x===cur))});
+  if(cur&&list.indexOf(cur)<0){sel.appendChild(opt(cur,cur,true))}
+ }
+ function otherable(sel){ // "Other (type it)" option reveals a text box; typed value becomes the option value
+  if(sel.__oth)return;sel.__oth=1;
+  var oi=[].findIndex.call(sel.options,function(o){return /^other/i.test(o.textContent)&&!o.value});
+  if(oi<0)return;var box=null;
+  function show(){
+   if(sel.selectedIndex!==oi){if(box){box.remove();box=null}return}
+   if(box)return;box=D.createElement('input');box.type='text';box.placeholder='Type it here';box.className=sel.className;box.setAttribute('style',sel.getAttribute('style')||'');box.style.marginTop='6px';
+   box.addEventListener('input',function(){sel.options[oi].value=box.value.trim();sel.dispatchEvent(new Event('change',{bubbles:true}))});
+   sel.parentNode.insertBefore(box,sel.nextSibling);box.focus()}
+  sel.addEventListener('change',show);
+  var v=sel.dataset.pre;if(v&&!/^$/.test(v)){} }
+ function geo(root){
+  var st=root.querySelector('[name="stateOfOrigin"],[data-k="state_of_origin"]'),lg=root.querySelector('[name="lgaOfOrigin"],[data-k="lga_of_origin"]');
+  if(!st||!lg||st.__geo)return;
+  var cc=root.querySelector('[name="countryOfOrigin"]'),pre=[st.value,lg.value];
+  st=swap(st,'select');st.__geo=1;lg=swap(lg,'select');
+  function setLga(keep){lg=root.querySelector('[name="lgaOfOrigin"],[data-k="lga_of_origin"]');var c=cc?cc.value:'Nigeria';
+   if(c!=='Nigeria'){lg=swap(lg,'input');lg.placeholder=c==='United States'?'County or city':'Region / district';return}
+   lg=swap(lg,'select');var L=NG[st.value];
+   if(!L){fill(lg,[],'Choose state first');return}
+   fill(lg,L,'Choose LGA',keep);lg.appendChild(opt('', 'Other (type it)…'));lg.__oth=0;otherable(lg)}
+  function setState(keep){st=root.querySelector('[name="stateOfOrigin"],[data-k="state_of_origin"]');var c=cc?cc.value:'Nigeria';
+   if(c==='Other country'){st=swap(st,'input');st.placeholder='State / province';st.__geo=1;st.addEventListener('input',function(){});setLga();return}
+   st=swap(st,'select');st.__geo=1;fill(st,c==='United States'?US:Object.keys(NG),'Choose state',keep);
+   st.addEventListener('change',function(){setLga()});setLga()}
+  if(cc)cc.addEventListener('change',function(){setState('')});
+  setState(pre[0]);if(pre[1])setLga(pre[1]);
+ }
+ function simple(root){
+  root.querySelectorAll('[data-k="religion"],[data-k="gender"]').forEach(function(el){var k=el.dataset.k,v=el.value,s=swap(el,'select');fill(s,FIX[k],'Choose',v);if(k==='religion'){s.appendChild(opt('','Other (type it)…'));otherable(s)}});
+  root.querySelectorAll('select[data-other]').forEach(otherable)}
+ window.sclGeo={enhance:function(root){root=root||D;geo(root);simple(root)}};
+ function init(){var f=D.getElementById('form');if(f)geo(f);simple(D)}
+ if(D.readyState==='loading')D.addEventListener('DOMContentLoaded',init);else init();
+ // worker form is built on demand
+ new MutationObserver(function(){D.querySelectorAll('select[data-other]').forEach(otherable)}).observe(D.body||D.documentElement,{childList:true,subtree:true});
+})();
+</script>
 </body>
 </html>
