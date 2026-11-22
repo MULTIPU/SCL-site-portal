@@ -2,6 +2,25 @@
 
 <html lang="en">
 <head>
+<script id="scl-whitepage-guard">
+/* If the page ever fails to draw, show what went wrong instead of a blank white screen. */
+(function(){var errs=[];
+ function note(t){if(errs.length<6)errs.push(String(t).slice(0,240))}
+ window.addEventListener('error',function(e){note((e.message||'Script error')+(e.filename?' ('+String(e.filename).split('/').pop()+':'+(e.lineno||0)+')':''))},true);
+ window.addEventListener('unhandledrejection',function(e){note('Promise: '+((e.reason&&e.reason.message)||e.reason))});
+ function blank(){try{var b=document.body;if(!b)return true;var el=document.elementFromPoint(Math.floor(innerWidth/2),Math.floor(innerHeight/2));return !el||el===b||el===document.documentElement}catch(_){return false}}
+ function show(){
+  if(document.getElementById('sclWhiteGuard'))return;
+  var d=document.createElement('div');d.id='sclWhiteGuard';
+  d.style.cssText='position:fixed!important;inset:0!important;z-index:2147483647!important;background:#fffaf0!important;color:#3b0a14!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:20px!important;font:16px/1.5 system-ui,sans-serif!important';
+  d.innerHTML='<div style="max-width:420px;text-align:center"><div style="font-size:42px">🏫</div><h2 style="margin:8px 0;font:700 22px Georgia,serif">The page is taking too long to load</h2><p style="margin:0 0 14px">Please tap <b>Reload fresh</b>. If it is still blank, send the note below to the school developer.</p><button id="sclWgGo" style="width:100%;padding:14px;border:0;border-radius:999px;background:#6b0f1f;color:#fff;font:700 16px system-ui">Reload fresh</button><pre style="text-align:left;white-space:pre-wrap;word-break:break-word;margin:14px 0 0;padding:10px;border-radius:12px;background:#f3e8d6;font:12px/1.4 ui-monospace,monospace">'+(errs.length?errs.map(function(x){return x.replace(/</g,'&lt;')}).join('\n'):'No script error was reported.')+'</pre></div>';
+  (document.body||document.documentElement).appendChild(d);
+  d.querySelector('#sclWgGo').onclick=function(){var jobs=[];try{if(window.caches)jobs.push(caches.keys().then(function(k){return Promise.all(k.map(function(x){return caches.delete(x)}))}))}catch(_){}try{if(navigator.serviceWorker)jobs.push(navigator.serviceWorker.getRegistrations().then(function(r){return Promise.all(r.map(function(x){return x.unregister()}))}))}catch(_){}Promise.all(jobs).catch(function(){}).then(function(){location.reload()})}}
+ var tries=0;(function chk(){tries++;if(blank()){if(tries>=2)show();else setTimeout(chk,3500)}else if(tries<3)setTimeout(chk,4000)})();
+ window.addEventListener('load',function(){setTimeout(function(){if(blank())show()},6000)});
+})();
+</script>
+
 <script id="scl-api-shim">
 /* SCL backend connector. Legacy /api/* routes are not deployed on GitHub Pages. Set SCL_API_BASE only when a compatible legacy API is deployed separately. */
 (function(){var of=window.fetch;if(!of||of.__scl)return;window.SCL_API_BASE=window.SCL_API_BASE||'';
