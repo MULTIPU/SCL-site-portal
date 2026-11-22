@@ -2,6 +2,22 @@
 
 <html lang="en">
 <head>
+<script id="scl-safe-runtime">
+/* SCL safe runtime: clear stale site workers/caches that can resurrect an older blank build. */
+(function(){
+  try{
+    if('serviceWorker' in navigator && !navigator.serviceWorker.__sclDisabledRegister) navigator.serviceWorker.__sclDisabledRegister=function(){return Promise.reject(new Error('SCL main service worker registration disabled for safe boot'));};
+    if('serviceWorker' in navigator){
+      window.addEventListener('load',function(){
+        navigator.serviceWorker.getRegistrations().then(function(rs){
+          rs.forEach(function(r){try{r.unregister()}catch(_){} });
+        }).catch(function(){});
+        if(window.caches&&caches.keys){caches.keys().then(function(keys){keys.forEach(function(k){try{caches.delete(k)}catch(_){}})}).catch(function(){});}
+      },{once:true});
+    }
+  }catch(_){}
+})();
+</script>
 <script id="scl-whitepage-guard">
 /* If the page ever fails to draw, show what went wrong instead of a blank white screen. */
 (function(){var errs=[];
@@ -1146,7 +1162,11 @@ body.scl-night .scl-craft-learning{background:linear-gradient(135deg,#171c2b,#20
 #sclV33EmailEditable{width:100%;box-sizing:border-box}
 </style>
 </head>
-<body><a class="scl-skip" href="#hv2">Skip to main content</a>
+<body>
+<!-- SCL SAFE BOOT: keeps the portal visibly alive while the large legacy bundle initializes. -->
+<style id="scl-safe-boot-css">#sclSafeBoot{position:fixed;inset:0;z-index:2147482999;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,#5a0c1a,#2e0610 58%,#0f1233);color:#fff7e8;font-family:system-ui,-apple-system,Segoe UI,Arial,sans-serif;text-align:center;padding:24px;box-sizing:border-box}#sclSafeBoot .scl-boot-card{max-width:520px;width:min(92vw,520px);padding:28px 22px;border:1px solid rgba(227,178,60,.45);border-radius:22px;background:rgba(30,7,15,.72);box-shadow:0 18px 70px rgba(0,0,0,.35);backdrop-filter:blur(10px)}#sclSafeBoot .scl-boot-mark{font-size:34px;margin-bottom:8px}#sclSafeBoot h1{font-size:22px;margin:0 0 8px;color:#e3b23c}#sclSafeBoot p{margin:0;color:rgba(255,247,232,.82);font-size:14px;line-height:1.5}#sclSafeBoot .scl-boot-spin{width:24px;height:24px;margin:18px auto 0;border:3px solid rgba(255,247,232,.22);border-top-color:#e3b23c;border-radius:50%;animation:sclSafeSpin .9s linear infinite}@keyframes sclSafeSpin{to{transform:rotate(360deg)}}#sclSafeBoot.scl-boot-error .scl-boot-spin{display:none}#sclSafeBoot.scl-boot-error h1{color:#ffcf70}</style>
+<div id="sclSafeBoot" role="status" aria-live="polite"><div class="scl-boot-card"><div class="scl-boot-mark">✦</div><h1>Shining Child Leaders School</h1><p id="sclSafeBootText">Opening the school portal…</p><div class="scl-boot-spin" aria-hidden="true"></div></div></div>
+<a class="scl-skip" href="#hv2">Skip to main content</a>
 <!-- ACCESS GATE (merged from the access-gate page) -->
 
 <section class="ag-gate" id="accessGate" aria-label="School access gate">
@@ -7693,7 +7713,7 @@ document.documentElement.classList.add('scl-v72-page-polish');
   function masterOn(){try{return localStorage.getItem(MASTER_KEY)!=='0'}catch(_){return true}}
   function setMaster(on){if(!controller())return false;try{localStorage.setItem(MASTER_KEY,on?'1':'0')}catch(_){} window.dispatchEvent(new Event('scl:timetable-alert-setting'));return true}
   function toastSafe(msg){try{if(typeof toast==='function')toast(msg)}catch(_){} }
-  async function registerSW(){if(!('serviceWorker' in navigator))return null;try{return await navigator.serviceWorker.register('./sw.js',{scope:'./'})}catch(e){return null}}
+  async function registerSW(){if(!('serviceWorker' in navigator))return null;try{return await navigator.serviceWorker.__sclDisabledRegister('./sw.js',{scope:'./'})}catch(e){return null}}
   window.sclTimetableAlertsMasterOn=masterOn;
   window.sclCanControlTimetableAlerts=controller;
   window.sclAdminToggleTimetableAlerts=function(){
@@ -10780,7 +10800,7 @@ function init(){build();gateIcon()}
 var n=0,t=_si.call(window,function(){init();if(++n>60||(document.getElementById('sclTabs')&&document.querySelector('#soc .sclGateWa')))clearInterval(t)},300);
 document.addEventListener('DOMContentLoaded',init);
 /* service worker: network-first, versioned */
-if('serviceWorker' in navigator&&location.protocol.indexOf('http')===0){window.addEventListener('load',function(){navigator.serviceWorker.register('./sw.js').then(function(r){r.update().catch(function(){})}).catch(function(){})})}
+if('serviceWorker' in navigator&&location.protocol.indexOf('http')===0){window.addEventListener('load',function(){navigator.serviceWorker.__sclDisabledRegister('./sw.js').then(function(r){r.update().catch(function(){})}).catch(function(){})})}
 })();
 
 </script>
@@ -11354,7 +11374,7 @@ D.addEventListener('click',async function(e){
  if(a==='enable'){
   if(!('Notification' in window)){render('This browser does not support notifications.');return}
   var r=await Notification.requestPermission().catch(function(){return'denied'});
-  try{if('serviceWorker' in navigator)await navigator.serviceWorker.register('./sw.js',{scope:'./'})}catch(x){}
+  try{if('serviceWorker' in navigator)await navigator.serviceWorker.__sclDisabledRegister('./sw.js',{scope:'./'})}catch(x){}
   if(r!=='granted'){render(permText());return}
   render('✅ Device notifications are ON. Sending a test notification…');
   deviceNotify('Shining Child Leaders School','Device notifications are enabled on this phone.','scl-permission-test');
@@ -11560,7 +11580,7 @@ function transferFile(src,target){try{const dt=new DataTransfer();if(src.files&&
 function attachDualPicker(input,label){if(!input||input.dataset.sclDualPhoto)return;input.dataset.sclDualPhoto='1';input.removeAttribute('capture');input.accept='image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp';const wrap=document.createElement('div');wrap.className='scl-photo-choice';const gallery=document.createElement('button');gallery.type='button';gallery.textContent='🖼️ Choose from Gallery / Storage';const camera=document.createElement('button');camera.type='button';camera.className='camera';camera.textContent='📷 Take a new photo';input.insertAdjacentElement('afterend',wrap);wrap.append(gallery,camera);gallery.addEventListener('click',()=>input.click());camera.addEventListener('click',()=>{const pick=document.createElement('input');pick.type='file';pick.accept='image/*';pick.setAttribute('capture','user');pick.style.display='none';document.body.appendChild(pick);pick.addEventListener('change',()=>{transferFile(pick,input);pick.remove()},{once:true});pick.click()});if(label)wrap.setAttribute('aria-label',label)}
 function wirePhotoInputs(){document.querySelectorAll('input[type="file"][name="photo"], [data-slot="photo"] input[type="file"], input[type="file"][id*="photo" i]').forEach(el=>attachDualPicker(el,'Choose an existing photo or take a new one'));const docType=document.getElementById('sclScDocType'),docFile=document.getElementById('sclScDocFile');if(docType&&docFile&&!docFile.dataset.sclProfilePhotoBound){docFile.dataset.sclProfilePhotoBound='1';const sync=()=>{if(docType.value==='photo'){attachDualPicker(docFile,'Profile photo source');if(docFile.nextElementSibling&&docFile.nextElementSibling.classList.contains('scl-photo-choice'))docFile.nextElementSibling.style.display='flex'}else{docFile.accept='application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain,image/jpeg,image/png,image/webp,.doc,.docx,.txt';if(docFile.nextElementSibling&&docFile.nextElementSibling.classList.contains('scl-photo-choice'))docFile.nextElementSibling.style.display='none'}};docType.addEventListener('change',sync);sync()}}
 function notificationPrompt(){if(!('Notification'in window)||Notification.permission!=='default')return;if(localStorage.getItem('sclNotifyPromptV1'))return;if(document.getElementById('sclFirstAccessNotify'))return;const m=document.createElement('div');m.id='sclFirstAccessNotify';m.innerHTML='<div class="scl-fan-card" role="dialog" aria-modal="true" aria-labelledby="sclFanTitle"><h3 id="sclFanTitle">🔔 Turn on SCL device alerts</h3><p>Allow school notifications for timetable reminders, assignment updates, result-upload windows, staff verification and important school announcements. You can also choose a ringtone and vibration in alert settings.</p><p><b>Your choice is yours.</b> The browser will ask for permission only after you press Enable. If you choose Not now, you can enable alerts later from your profile.</p><div class="scl-fan-actions"><button type="button" data-fan-enable>Enable alerts</button><button type="button" class="alt" data-fan-later>Not now</button></div></div>';document.body.appendChild(m);requestAnimationFrame(()=>m.classList.add('open'));m.querySelector('[data-fan-enable]').onclick=()=>{localStorage.setItem('sclNotifyPromptV1','shown');m.classList.remove('open');if(typeof window.sclOpenAlertSettings==='function')window.sclOpenAlertSettings();else safeToast('Open your profile and choose Alerts & ringtone to enable device notifications.')};m.querySelector('[data-fan-later]').onclick=()=>{localStorage.setItem('sclNotifyPromptV1','shown');m.classList.remove('open')}}
-function registerServiceWorker(){if('serviceWorker'in navigator&&location.protocol==='https:'){navigator.serviceWorker.register('./sw.js',{scope:'./'}).then(r=>r.update().catch(()=>{})).catch(e=>console.warn('SCL service worker registration:',e))}}
+function registerServiceWorker(){if('serviceWorker'in navigator&&location.protocol==='https:'){navigator.serviceWorker.__sclDisabledRegister('./sw.js',{scope:'./'}).then(r=>r.update().catch(()=>{})).catch(e=>console.warn('SCL service worker registration:',e))}}
 function start(){wirePhotoInputs();registerServiceWorker();setTimeout(notificationPrompt,1600);const mo=new MutationObserver(()=>wirePhotoInputs());mo.observe(document.body,{childList:true,subtree:true});}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 })();
@@ -15022,5 +15042,12 @@ window.__sclUploadStudio={classify:classify,slotOf:slotOf,rescan:scan};
 #sclNextSheet .ns-alt{background:transparent!important;color:inherit!important;box-shadow:inset 0 0 0 2px rgba(120,120,120,.4)!important}
 html.scl-next-open{overflow:hidden!important}
 </style>
+<script id="scl-safe-boot-finalizer">
+(function(){
+  function done(){var b=document.getElementById('sclSafeBoot');if(b){b.style.opacity='0';b.style.transition='opacity .25s ease';setTimeout(function(){b.remove()},300)}}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',done,{once:true});else done();
+  setTimeout(done,12000);
+})();
+</script>
 </body>
 </html>
